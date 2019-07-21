@@ -1,0 +1,282 @@
+// ==UserScript==
+// @name         Fire power seek + Auto bullet screen
+// @name:zh-CN   火力搜寻+自动弹幕
+// @namespace    http://tampermonkey.net/
+// @version      0.3.1
+// @description  点击火力全开按钮（在举报旁边），自动跳转到火力全开房间，然后监听是否火力全开，如果开启，且奖品是否发红包、鱼丸或鱼翅，则自动随机发送对应弹幕,且弹幕间隔时长根据房间热度跳动; 若奖品不符合，则跳转新的火力全开房间，然后继续开火！火力全开结束后，监听本房间下一次火力全开开启，或者手动点击火力跳转按钮到新房间！
+// @author       sky
+// @icon         https://www.douyutv.com/favicon.ico
+// @include      https://www.douyu.com/0*
+// @include      https://www.douyu.com/1*
+// @include      https://www.douyu.com/2*
+// @include      https://www.douyu.com/3*
+// @include      https://www.douyu.com/4*
+// @include      https://www.douyu.com/5*
+// @include      https://www.douyu.com/6*
+// @include      https://www.douyu.com/7*
+// @include      https://www.douyu.com/8*
+// @include      https://www.douyu.com/9*
+// @include      https://www.douyu.com/*?rid=*
+// @mail         lvlanxing@gmail.com
+// @license      MIT
+// @grant        none
+// @run-at       document-idle
+// @compatible   chrome
+// @note         暂时未添加网址 https://www.douyu.com/topic/* 的匹配，因为专题直播间不发丸子，只抽奖
+// ==/UserScript==
+
+
+
+
+//火力自动监听弹幕
+var arrCommon = ["主播加油！","666","点击关注，不会迷路！","弹幕冲鸭冲鸭！","主播牛批！","火力全开暴躁起来！","土豪礼物刷起来！","主播又开火骗我弹幕！"];
+
+var arrPoetry = ["咸阳古道音尘短，斗鱼房间弹幕长！", "安能摧眉折腰事权贵，皇国公伯子骑皆大佬！","衣带渐宽终不悔，鱼丸输的人憔悴","斗鱼不倒，陪你到老，网络不断，与你相伴！",
+                 "抽刀断水水更流，火力全开开火冲！", "抽刀断水水更流，火力轰趴趴更久！", "大风起兮云飞扬，弹幕冲兮人满房！", "钟鼓馔玉不足贵，福袋办卡不嫌多！",
+                 "欲渡黄河冰塞川，弹幕留言堆满山！","山重水复疑无路，关注主播不迷路！","黄云万里动风色，鱼塘百亩无飞船！", "金樽清酒斗十千，火箭飞船直万钱！",
+                 "天生我材必有用，鱼翅散尽把家还！","人生得意须尽欢，福袋办卡刷满天！","这是一个有味道的主播,隔着屏幕我都闻到了浓浓的火药味！",
+                 "黑云压城城欲摧，主播开车我来黑！","花谢花飞花满天，鱼丸输光有谁怜！","真正的主播，敢于直面水友的怒喷，敢于正视同行的腹黑！",
+                 "钱入鱼塘，三分红烧鱼翅，七分水煮鱼丸，大锅一顿，就是一锅鱼汤！","道路千万条，关注第一条，文明刷弹幕，远离小黑屋！",
+                 "风声雨声读书声声声入耳，子爵伯爵公爵爵爵高贵！","踏破铁鞋无觅处，中奖极度费工夫！","海阔凭鱼跃，弹幕满屏飞！",
+                 "千磨万击还坚韧，任你来黑让你喷！","运筹帷幄中，主宰PK之胜！","风萧萧兮易水寒，鱼丸一去兮不复还！","临渊羡鱼，不如退而买鱼翅！",
+                 "海纳百川，有容乃大，主播PK，没粉必输！","山无棱江水为竭，冬雷震震夏雨雪，天地合，乃敢关直播！","身无彩凤双飞翼，心欲送礼包里空！",
+                 "众里寻你千百度，蓦然回首，而你却在，我口袋最深处——买鱼翅的私房钱！","关关雎鸠，在河之洲，红包鱼翅，君子好逑！",
+                 "心有猛虎，细嗅蔷薇。刷礼之后，包里空空！","人生自古谁无死，留得鱼丸送主播！"];
+
+
+let tmGap = 1000 * 7;//默认弹幕时间间隔与轮询间隔
+let tmTemp = 0;
+var msgTxt = null;
+var msgBtn = null;
+let awardGap = 0; //上次火力全开时间间隔
+
+//自动开启弹幕
+function start() {
+    var probNum = parseInt(Math.random() * 6);
+    if(probNum == 0){
+        var num = parseInt(Math.random() * arrPoetry.length);
+        console.log("精选弹幕第<"+num+">条,时间间隔<"+tmGap/1000+"s>" + arrPoetry[num]);
+        msgTxt.value = arrPoetry[num];
+    }else{
+        var num1 = parseInt(Math.random() * arrCommon.length);
+        console.log("普通弹幕第<"+num1+">条,时间间隔<"+tmGap/1000+"s>" + arrCommon[num1]);
+        msgTxt.value = arrCommon[num1];
+    }
+    msgBtn.click();
+}
+
+// 判断当前房间是否火力全开,自动监听
+function firePowerMsg() {
+    var fireObj = document.getElementsByClassName("FirePowerChatModal-Notice")[0];
+    if (fireObj != undefined && fireObj != null && joinCondition() == true) {
+        start();
+        fireObj = null;
+        awardGap = 0;
+    } else {
+        awardGap += tmGap;
+        console.log("弹幕停止时间累计："+ awardGap/1000 + "s");
+        // if(awardGap >300000){
+        // netRequest();//如果累计超过5分钟没有火力全开，则跳转！
+        // }
+    }
+    tmGap = tmTemp;
+    randomTime();//回调随机时间弹幕
+}
+
+// 添加手动火力跳转按钮
+function fireBtnEvent() {
+    var reportNode = document.getElementsByClassName("Title-blockInline")[0];
+    var fireBtn = document.createElement("button");
+    fireBtn.innerHTML = "火力跳转";
+    fireBtn.className = "Wallet-content-recharge"; //这个控制按钮样式,如Category-item, BackpackButton,PlayerToolbar-getYCBtn
+    fireBtn.addEventListener("click", netRequest);
+    //Title-blockInline             RankCoverage
+    var blankTag = document.createElement("span");
+    blankTag.innerHTML = "&nbsp;&nbsp;&nbsp;";
+    if(reportNode != undefined && reportNode != null){
+        reportNode.append(fireBtn);
+        reportNode.append(blankTag);
+    }else {
+        console.log("未找到举报节点，无法创建(火力跳转)按钮");
+    }
+    fireBtn = null; //及时解除不再使用的变量引用,即将其赋值为 null;
+}
+
+// 火力全开房间搜索并跳转
+function netRequest() {
+    //步骤一:创建异步对象
+    var ajax = new XMLHttpRequest();
+    //步骤二:设置请求的url参数,参数一是请求的类型,参数二是请求的url,可以带参数,动态的传递参数starName到服务端
+    ajax.open('get', 'https://www.douyu.com/japi/firepower/apinc/activeTask/getRecRid');
+    //步骤三:发送请求
+    ajax.send();
+    //步骤四:注册事件 onreadystatechange 状态改变就会调用
+    ajax.onreadystatechange = function() {
+        if (ajax.readyState == 4 && ajax.status == 200) {
+            //步骤五 如果能够进到这个判断 说明 数据 完美的回来了,并且请求的页面是存在的
+            var jsonData = JSON.parse(ajax.responseText);
+            var fireUrl = jsonData.data;
+            fireUrl = "https://www.douyu.com/" + fireUrl;
+            console.log(fireUrl);
+            window.location.href = fireUrl;
+            //window.open(fireUrl);//打开新tab
+            //setTimeout(closeTab,2000);
+        }
+    }
+}
+
+//关闭当前页面
+function closeTab(){
+    open(location, '_self').close();//关闭当前tab
+}
+
+// 参与条件关注，则自动点击关注         -----------待完成取消关注
+function followRoom() {
+    var subObj = document.getElementsByClassName("FirePowerChatModal-subscribeBtn")[0];
+    if (subObj != undefined && subObj != null) {
+        subObj.click();
+        console.log("已经关注主播");
+    }
+}
+
+// 参与条件,是否要求为-粉丝团成员  true为不用粉，false 为需要粉
+function joinCondition(){
+    var joinFlag = true;
+    var joinObj = document.getElementsByClassName("FirePowerChatModal-content")[0];
+    if(joinObj != undefined && joinObj != null){
+        joinObj = joinObj.innerHTML;
+        if(joinObj.indexOf("粉丝团成员") != -1){
+            joinFlag = false;
+            console.log("只有粉丝团才能参与！");
+        }
+    }
+    return joinFlag;
+}
+
+// 关注人数筛选,已去除
+//var followNum = document.getElementsByClassName("Title-followNum")[0];//主播订阅
+
+// 主播热度筛选
+function hotFilter() {
+    var hotFlag = true;
+    var hotNum = document.getElementsByClassName("Title-anchorText")[0];//主播热度
+    if (hotNum != undefined && hotNum != null) {
+        if (hotNum.innerHTML <= 1000) {
+            console.log("热度太低，网页跳转！");
+            hotFlag = false;
+        } else if(hotNum.innerHTML > 1000 && hotNum.innerHTML <= 10000 ){
+            tmGap = 13000;
+        } else if(hotNum.innerHTML> 10000 && hotNum.innerHTML <= 100000){
+            tmGap = 11000;
+        } else if(hotNum.innerHTML> 100000 && hotNum.innerHTML <= 300000){
+            tmGap = 6000;
+        } else if(hotNum.innerHTML> 300000 && hotNum.innerHTML <= 500000){
+            tmGap = 4500;
+        } else {
+            tmGap = 3500;
+        }
+    } else {
+        console.log("未获取到热度值，马上刷新页面！");
+        location.reload(true);
+    }
+    tmTemp = tmGap;
+    return hotFlag;
+}
+
+// 判断奖品是否是鱼丸或红包奖励
+function awardJudge() {
+    var awardFlag = false;
+    var awardDet = document.getElementsByClassName("FirePowerChatModal-detail")[0];
+    var awardStr = document.getElementsByClassName("FirePowerChatModal-award")[0];
+    if (awardStr != undefined || awardStr != null) {
+        awardStr = awardStr.innerHTML;
+        if (awardStr.indexOf("鱼丸") != -1 || awardStr.indexOf("红包") != -1 || awardStr.indexOf("鱼翅") != -1) {
+            console.log("奖品符合参与条件！");
+            awardFlag =true;
+        } else {
+            console.log("非鱼丸红包奖励：内");
+            awardFlag = false;
+        }
+    } else if (awardDet != undefined || awardDet != null) {
+        awardDet = awardDet.innerHTML;
+        if (awardDet.indexOf("鱼丸") != -1 || awardDet.indexOf("红包") != -1 || awardDet.indexOf("鱼翅") != -1) {
+            awardFlag = true;
+        } else {
+            console.log("非鱼丸红包奖励：内");
+            awardFlag = false;
+        }
+    } else {
+        console.log("非鱼丸红包奖励：外");
+        awardFlag = false;
+    }
+    return awardFlag;
+}
+
+//随机时间差发弹幕
+function randomTime(){
+    // let tmChange = Math.round(Math.random() * (tmGap/2));
+    let tmChange = Math.round( tmGap/2 - 1);
+    let tmStatus = parseInt( Math.random() * 3) ;
+    if( tmStatus == 0){
+        tmGap = tmGap + tmChange;
+    }else if( tmStatus == 1){
+        tmGap = tmGap - tmChange;
+    }
+    setTimeout(firePowerMsg, tmGap);
+}
+
+//获取该直播间的分类名称,有区别针对发送弹幕
+function roomCategory(){
+    var category = document.getElementsByClassName("Title-categoryItem");
+    if(category !=undefined){
+        for(let j= category.length - 1 ; j !=-1; j--){
+            if (category[j].innerHTML.indexOf("网游竞技")!= -1 || category[j].innerHTML.indexOf("单机热游")!= -1){
+                arrCommon = arrCommon.concat(["这波操作很赞！","主播睿智无敌！","这操作牛的一塌糊涂！","主播手速天下罕有敌手!","小仙掐指一算，主播五行太帅呀！","对面又皮痒了！","一顿操作猛如虎，仔细一看原地杵！"]);break;
+            }else if(category[j].innerHTML.indexOf("颜值")!= -1){
+                arrCommon = arrCommon.concat(["小姐姐举若流风之回雪，行如轻云之闭月，气若空谷之幽兰，貌如广寒之月仙!","天若有情天亦老，主播丽质永妖娆！","人生若只如初见，邂逅主播似初恋！","没有比人更高的山，没有比你更美的girl!","主播女王，待你长发及腰时，把我带走可否？","一群老色批，代表月亮净化你们！","千金纵买相如赋，此情唯向主播诉！","美美美！"]);break;
+            }else if(category[j].innerHTML.indexOf("王者荣耀")!= -1){
+                arrCommon = arrCommon.concat(["主播睥睨王者之巅","主播排位峡谷打穿！","让对面知道什么是天秀！","干就完了!","逆风不倒，顺风不浪！","一顿操作猛如虎，可惜队友二百五！", "锤爆那个小短腿，冲鸭！"]);break;
+            }else if(category[j].innerHTML.indexOf("和平精英")!= -1 || category[j].innerHTML.indexOf("绝地求生")!= -1){
+                arrCommon = arrCommon.concat(["你钢枪，我隐形，你屠城，我躺赢！","主播不要怂！","大吉大利,这局吃鸡!","干就完了！","伏地魔终结者！","来个雷，屠一队！"
+                                              ,"风萧萧兮易水寒，主播落地兮化盒还！","你去杀人，我舔包，你来掩护，我先撂！","苟一苟，进前九！","大城钢枪不要怂！"]);break;
+            }else if(category[j].innerHTML.indexOf("一起看")!= -1){
+                arrCommon = arrCommon.concat(["这段剧情有点狗血！","主角光环在哪里!","无敌帅气的我，又来看电影了！","这剪辑的有点low呀！","这句台词不错！"]);break;
+            }else if(category[j].innerHTML.indexOf("音乐")!= -1){
+                arrCommon = arrCommon.concat(["余音绕梁，不知肉味！","犹如天籁之音!","空谷绝响，万籁俱寂！","好听极了，主播好棒！","此曲只应天上有，人间哪得几回闻！"]);break;
+            }
+        }
+    }
+}
+
+// 调整画质为流畅
+function adjustClarity(){
+    var videoClarity = document.getElementsByClassName("panelFill-d95ee8")[0];
+    if(videoClarity != undefined && videoClarity != null){
+        videoClarity.previousSibling.lastChild.click();
+    }else{
+        console.log("没有画质选项！");
+    }
+}
+
+// 主函数入口
+function mainFunc(){
+    fireBtnEvent();//先添加手动按钮
+    if(awardJudge() == true && hotFilter() == true && joinCondition() == true){ //判断奖品、热度数量和是否要求粉丝团
+        followRoom(); //如果符合条件，则按要求是否关注主播
+        msgTxt = document.getElementsByClassName("ChatSend-txt")[0];
+        msgBtn = document.getElementsByClassName("ChatSend-button")[0];
+        console.log("该房间符合开火条件！");
+        roomCategory();//增加弹幕选项
+        adjustClarity();//调整画质
+        firePowerMsg();//立即执行火力全开
+    }else{
+        console.log("不符合开火环境，9秒后跳转新房间！");
+        setTimeout(netRequest,9000);//*秒后自动跳转
+    }
+}
+
+setTimeout(mainFunc, 11000);//等待*s页面加载完毕后执行脚本
+
+
+
+
