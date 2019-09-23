@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name  斗鱼自动火力全开搜寻+自动发送弹幕轰炸+超级皇帝弹幕特效+不绑定手机发弹幕+房间真实人数...
+// @name         斗鱼自动发弹幕抢鱼丸神器(日进2W鱼丸不是梦，有截图为证)
 // @namespace    https://greasyfork.org/zh-CN/scripts/389379
-// @version      0.3.7
-// @description  包含主要功能：斗鱼自动火力全开搜寻+自动发送弹幕轰炸+皇帝弹幕特效(本机)+不绑定手机发弹幕+房间自动签到+房间真实人数+主播开播时间累积+今日跳转次数+主播信用值+默认最低画质(用户自行开启)+关闭自动播放(用户自行开启)+关闭滚屏弹幕(用户自行开启)等功能 && Main Function of Script：Auto Fire Power Seek + Auto Barrage Bombing + Royal Barrage Effect + Sent Barrage Without Binding Phone + Room Assign + Real People number + Jumping Page Times + Host Credit and so forth;
-// @author       Alexander
+// @version      0.3.8
+// @description  本脚本包含主要功能：斗鱼自动火力全开搜寻+自动发送抢鱼丸红包的弹幕+皇帝弹幕特效(本机)+不绑定手机号发弹幕+房间自动签到+房间真实人数+主播开播时间累积+今日跳转次数+主播信用值+画质调整(用户自行开启)+是否自动播放(用户自行开启)+关闭滚屏弹幕(用户自行开启)等功能 && Main Function of Script：Auto Fire Power Seek + Auto Barrage Bombing + Royal Barrage Effect + Sent Barrage Without Binding Phone + Room Assign + Real People number + Jumping Page Times + Host Credit and so forth;
+// @author       lvlanxing
 // @supportURL   https://github.com/wolf-scream/FirePowerSeek
 // @icon         http://www.douyutv.com/favicon.ico
 // @include      https://www.douyu.com/0*
@@ -39,7 +39,7 @@
 // @note         V0.1.6 禁言判断，如果之前被正浏览的房间禁言，则自动跳转
 // @note         V0.1.7 增加画质调整，因为是抢丸子，所以默认为最低画质，函数中也带了最高画质的代码，可自行注掉更换，该方法参考greaseFork中wah0713大神的方法实现，在此拜谢！
 // @note         V0.2.0 增加自动按钮的UI按钮和样式radio,实现手动自动自由切换的方案，由你喜好决定
-// @note         V0.2.1 增加复选框radio的记录功能，序列化localStrage,记录上次跳转的操作，如果是自动，则一直会筛选到符合的房间为之，如果错过房间想停止，你在程序初始化显示界面后有3s的时间选择，点击停止🙈，即可停留界面
+// @note         V0.2.1 增加复选框radio的记录功能，序列化localStorage,记录上次跳转的操作，如果是自动，则一直会筛选到符合的房间为之，如果错过房间想停止，你在程序初始化显示界面后有3s的时间选择，点击停止🙈，即可停留界面
 // @note         V0.2.2 添加满足筛选条件的当前房间自动关注与房间签到功能，毕竟都抢人红包或丸子了，给个关注应该的，也方便以后继续抢哈……
 // @note         V0.2.3 添加默认关闭滚屏弹幕方法，用户可按需要在尾部mainFunc中注掉或打开此方法
 // @note         V0.2.4 添加默认关闭自动视频播放的方法，用户可按需要在尾部mainFunc中注掉或打开此方法
@@ -56,16 +56,16 @@
 // @note         V0.3.5 增加了当前直播间主播已经开启直播时间的计时，单位/分钟，增加了当前浏览器弹幕系统（包含竞猜的实时赔率显示）的延迟时间显示，单位/毫秒，增加了鼠标悬浮此区域的文字提示tip说明
 // @note         V0.3.6 修改了脚本加载的固定时间，改为根据用户端的网络的页面加载进度自动执行脚本初始化，去除了上方弹幕延迟数据90ms(无意义)，增加了当前房间的签到排行显示，便于用户抢签到手气王，需要注意处于开火仍执行自动房间签到，停火才能手动签到，最多显示签到人数100+
 // @note         V0.3.7 增加弹幕轰炸功能，当前房间符合火力全开搜索条件时，则自动发送弹幕抢奖品，弹幕发送时间算法是当前房间的自己已经发送弹幕间隔数和房间的热度值段联合决定的，不需要用户自定义，弹幕内容为普通候选弹幕。待完成：后期会增加联网云弹幕，自动判定当前房间类型有针对发送合适弹幕！
-// @note         todo:云端弹幕库筹建，幻神弹幕特效抓取
-// @lastmodified    2019.09.13
+// @note         V0.3.8 增加云端弹幕功能，根据当前房间的二级分类标题，选取符合房间类别的弹幕，随机选取后自动发送.修复自动火力搜索火力按钮无法跳转的bug，增加云弹幕json接口的访问频次统计，暂时没有限定云弹幕的访问,如果频次过高，则后续做本地缓存处理;去除签到手气王标志，与王者神豪不协调
+// @note         todo: 幻神弹幕特效抓取
+// @lastmodified    2019.09.22
 // ==/UserScript==
 
 
 (function() {
 
-    var arrCommon = ["主播加油💪","好nice","点击关注，不会迷路","弹幕冲鸭冲鸭","俺也冒个泡","火力全开得瑟起来","小礼物飞起来","一发入魂","主播又涨粉了",
-                     "可以夸下🐷播，但懒得打字","神奇的主播，优质的弹幕","水军来捧，主播威猛","铁粉驾到，热度必爆","自家人，别误伤","主播666！",
-                     "主播越来越红，越来越火！","กิิิิิ荧กิิิิิิิิิิิ光กิิิิิิิิิิิ棒กิิิิิ","支持主播，来办卡吧"];
+    var arrCommon = ["主播加油💪","好nice","点击关注，不会迷路","弹幕冲鸭冲鸭","我来冒个泡","火力全开得瑟起来","小礼物刷起来","一发入魂","支持主播，来办卡吧",
+                    "神奇的主播，优质的弹幕","水军来捧，主播威猛","铁粉驾到，热度必爆","自家人，别误伤","主播贼6！","主播越来越红，越来越火！","กิิิิิ荧กิิิิิิิิิิิ光กิิิิิิิิิิิ棒กิิิิิ"]; 
 
     const royalTime = 300;//发送弹幕后更改皇族的时间间隔，网络延迟大则增加此数值 ,反正则减小 ms;
     var tmGap = 10000;//默认弹幕时间间隔与轮询间隔 ms
@@ -74,14 +74,46 @@
     var sbts = (new Date()).getTime();//当前时间戳
     var radioStorage = "ceaseFire";
 
+    //=============================================================================
+    //++++++++++++++++++++++云端获取弹幕，暂时不启用本地缓存++++++++++++++++++++++++++
+    //=============================================================================
+    function cloudBarrage(){
+        var categoryName = document.getElementsByClassName("Title-categoryItem")[1];
+        categoryName = categoryName.innerText;
+        // var cloudBarrage = localStorage.getItem("cloudBarrage✨🌌✨");
+        // var dailyPageCount = localStorage.getItem((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]");
+        // if(dailyPageCount !=null && cloudBarrage!=null){
+        //     cloudBarrage = JSON.parse(cloudBarrage);
+        //     if(cloudBarrage[categoryName]!=undefined){
+        //         arrCommon = arrCommon.concat(cloudBarrage.通用);
+        //         arrCommon = arrCommon.concat(cloudBarrage[categoryName]);
+        //     }
+        // }else{
+            fetch('https://raw.githubusercontent.com/wolf-scream/danmu_repository/master/cloud_danmu.json',{
+                method: 'GET',
+                mode: 'cors', //请求模式为跨域
+                cache: 'default', //no-cache
+                credentials: 'omit', // 同源则加入凭据头,cookies
+            }).then(res => {
+                return res.json();
+            }).then(json => {
+                // console.log('获取的结果', json.data);
+                arrCommon = json.data.通用!=undefined ? arrCommon.concat(json.data.通用):arrCommon;
+                arrCommon = json.data[categoryName]!=undefined ? arrCommon.concat(json.data[categoryName]):arrCommon;
+                // localStorage.setItem("cloudBarrage✨🌌✨", JSON.stringify(json.data));
+            }).catch(err => {
+                console.log('请求错误', err);
+            })
+        // }
+    }
 
     //=============================================================================
     //+++++++++++++++++++++++++++++++++弹幕轰炸++++++++++++++++++++++++++++++++++++
     //=============================================================================
     function bombBarrage(){
-        var num1 = parseInt(Math.random() * arrCommon.length);
-        console.log("候选弹幕第<"+num1+">条,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + arrCommon[num1]);
-        msgTxt.value = arrCommon[num1];
+        var num = parseInt(Math.random() * arrCommon.length);
+        console.log("候选弹幕第<"+num+">条,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + arrCommon[num]);
+        msgTxt.value = arrCommon[num];
         msgBtn.click();
         clickBtnEvent();
     }
@@ -136,7 +168,6 @@
         firePowerTimeout= setTimeout(firePowerMsg, tmChange);
     }
 
-
     //=============================================================================
     //+++++++++++++++++++++++++++++++火力全开房间号搜索++++++++++++++++++++++++++++++
     //=============================================================================
@@ -163,12 +194,12 @@
                 console.log("主播昵称:【"+jsonData.nickname+"】++++++在线人数:【" + jsonData.online + "】++++++游戏名称:【" + jsonData.game_name+"】++++++URL=>https://www.douyu.com/"+fireUrl);
                 if (jsonData.online < 3000 && jsonData.game_name.indexOf("一起看") == -1 && jsonData.game_name.indexOf("二次元") == -1 && jsonData.game_name.indexOf("户外") == -1 && jsonData.game_name.indexOf("汽车") == -1) { //筛选条件：过滤二次元、看电影、户外和人数>3000的房间
                     fireUrl = "https://www.douyu.com/" + fireUrl;
-                    var dailyPageCount = localStorage.getItem((new Date()).toLocaleDateString() + "🐛🌵🐤[" + uname + ":" + uid + "]");
+                    var dailyPageCount = localStorage.getItem((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]");
                     if (dailyPageCount != null && dailyPageCount != undefined) {
                         dailyPageCount = parseInt(dailyPageCount) + 1;
-                        localStorage.setItem((new Date()).toLocaleDateString() + "🐛🌵🐤[" + uname + ":" + uid + "]", dailyPageCount);
+                        localStorage.setItem((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]", dailyPageCount);
                     } else {
-                        localStorage.setItem((new Date()).toLocaleDateString() + "🐛🌵🐤[" + uname + ":" + uid + "]", 1);
+                        localStorage.setItem((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]", 1);
                     }
                     window.location.href = fireUrl;
                     // setTimeout(function(){window.location.href = fireUrl},1000);//延迟跳转，防止服务器不响应
@@ -227,16 +258,16 @@
                         barrageArr[i].lastElementChild.insertBefore(roomTag,barrageArr[i].lastElementChild.children[1]);
                     }
 
-                    // 增加签到手气王+增加王者神豪特效
+                    // 增加签到手气王+增加王者神豪特效(已去除签到手气王，和王者神豪不在同行，不优雅)
                     var fireIconObj = barrageArr[i].lastElementChild.getElementsByClassName("FirePowerIcon")[0];
                     var signTag = document.createElement("a");
                     signTag.setAttribute("class","Baby");
                     signTag.setAttribute("data-id","1500000312");
-                    var signIconImg = document.createElement("img");
-                    signIconImg.setAttribute("class","Baby-image  js-baby-signMedalClick");
-                    signIconImg.setAttribute("src","https://res.douyucdn.cn/resource/2019/06/27/reward/15fd9177ac85d6e91414e3ea00c2d720.png");
-                    signIconImg.setAttribute("title","签到手气王");
-                    signTag.appendChild(signIconImg);
+                    // var signIconImg = document.createElement("img");
+                    // signIconImg.setAttribute("class","Baby-image js-baby-signMedalClick");
+                    // signIconImg.setAttribute("src","https://res.douyucdn.cn/resource/2019/06/27/reward/15fd9177ac85d6e91414e3ea00c2d720.png");
+                    // signIconImg.setAttribute("title","签到手气王");
+                    // signTag.appendChild(signIconImg);
                     var kingIconImg = document.createElement("img");
                     kingIconImg.setAttribute("class","Baby-image is-achievement");
                     kingIconImg.setAttribute("src","https://sta-op.douyucdn.cn/douyu/3d416f83fb2de6e4e8de5ce4e24b424e4eccc705.gif");
@@ -247,7 +278,7 @@
                         fireIconObj!=undefined? barrageArr[i].lastElementChild.insertBefore(signTag,fireIconObj): barrageArr[i].lastElementChild.appendChild(signTag);
                     }
 
-                    //增加猜王图标,不优雅，放弃增加
+                    //增加猜王图标,不在同水平线，不优雅去除
                     // var guessTag = document.createElement("a");
                     // guessTag.className = "Medal";
                     // guessTag.setAttribute("data-id","1500000230");
@@ -493,7 +524,7 @@
 
         // 创建radio元素标签，后于样式执行，样式独有
         var radioBtnTag = (function(){/*
-        <dfn data-info="🧐-手动火力全开房间搜索，用户可以自行选择跳转；⛔-火力停止状态，初始化组件展示数据或停止弹幕；🔥-火力搜寻状态，自动搜索符合火力全开筛选的房间才停留，火力停止后累计60s不重新开火则继续搜寻；💥-弹幕轰炸功能，可自动发弹幕，发送时间算法根据弹幕间隔数和房间热度计算，弹幕内容从候选弹幕随机抽取。后期打算建立云端弹幕库，依据房间类别自动从云端抽取弹幕，目前正筹建中……;">
+        <dfn data-info="🧐-手动火力全开房间搜索，用户可以自行选择跳转；⛔-火力停止状态，初始化组件展示数据或停止弹幕；🔥-火力搜寻状态，自动搜索火力全开筛选的房间，火力停止>60s重新搜寻，筛选条件详见脚本更新描述；💥-弹幕轰炸功能，满足🔥的房间，切换到💥会自动发弹幕，发送时间根据弹幕间隔数和房间热度计算，根据火力全开有无自动发停，弹幕内容根据房间的二级类别从本地与云端弹幕库随机抽取;">
         <label for="ceaseFire" class="radio">
             <span class="radio-bg"></span>
             <input type="radio" name="radio_fire" id="ceaseFire"  value="⛔" checked="checked"/>⛔
@@ -556,7 +587,7 @@
         storage.removeItem("game_recode_listdata_h5p_room");
         //取出跳转数据
         for(let i = 0; i< storage.length; i++ ){
-            if(storage.key(i).indexOf("FIRE_POWER_ACT_") != -1 || storage.key(i).indexOf("RankCoverage_vesion_") != -1){
+            if(storage.key(i).indexOf("FIRE_POWER_ACT_") != -1 || storage.key(i).indexOf("RankCoverage_vesion_") != -1 || storage.key(i).indexOf("RankCoverage_vesion_") != -1){
                 storage.removeItem(storage.key(i));
             }
         }
@@ -698,31 +729,6 @@
         }
     }
 
-    // 监听radio的onchange事件
-    function radioFunc(msg){
-        if(msg == "ceaseFire"){//停火
-            radioStorage = "ceaseFire";
-            localStorage.setItem("radioTagStatus🌼🍄🌼",msg);
-            clearTimeout(firePowerTimeout);
-            clearTimeout(fireSeekJump);
-            console.log("⛔停止开火");
-        }else if(msg =="openFire"){//开火
-            radioStorage = "openFire";
-            localStorage.setItem("radioTagStatus🌼🍄🌼",msg);
-            clearTimeout(firePowerTimeout);
-            clearTimeout(fireSeekJump);
-            firePowerMsg();
-        }else if(msg =="bombFire"){//轰炸
-            radioStorage = "bombFire";
-            localStorage.setItem("radioTagStatus🌼🍄🌼",msg);
-            clearTimeout(firePowerTimeout);
-            clearTimeout(fireSeekJump);
-            console.log("💥弹幕轰炸");
-            firePowerMsg();
-            
-        }
-    }
-
     // 获取当前房间的roomId
     function getRoomId(){
         roomId = document.getElementsByClassName("Title-anchorName")[0];
@@ -731,12 +737,12 @@
 
    // 显示当前直播间主播信用，真实人数，和累计开播时间在房间热度图标左侧
     function realPersonNum(){
-        var dailyJumpCount = localStorage.getItem((new Date()).toLocaleDateString() + "🐛🌵🐤[" + uname +":"+ uid + "]");
+        var dailyJumpCount = localStorage.getItem((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]");
         dailyJumpCount = dailyJumpCount!=null?dailyJumpCount:0;
         var showPosition = document.querySelector(".Title-anchorHot");
         var divTag = document.createElement("div");
         divTag.className = "Title-anchorName";
-        divTag.innerHTML = "<dfn id = 'real_person_num' data-info='点击此区域🧐可以更新这四组数据，图标说明如下： 🌐-今日跳转次数(仅统计用此脚本自动或手动跳转)； 💎-主播当前信用值(若<=4则不能送礼物,满值12)； 🎅-当前房间在线人数(未开播房间则为0未统计)； ⏰-房间本次开播时间累计/min(未开播则为【-】);'> 🌐- 💎- 🎅- ⏰- </dfn>";//显示当前跳转次数，主播信用，真实人数，和累计开播时间
+        divTag.innerHTML = "<dfn id = 'real_person_num' data-info='点击此区域可以更新以下四组数据，图标说明如下： 🌐-今日跳转次数(仅统计用此脚本自动或手动跳转)； 💎-主播当前信用值(若<=4则不能送礼物,满值12)； 🎅-当前房间在线人数(未开播房间则为0未统计)； ⏰-房间本次开播时间累计/min(未开播则为【-】);'> 🌐- 💎- 🎅- ⏰- </dfn>";//显示当前跳转次数，主播信用，真实人数，和累计开播时间
         showPosition.parentNode.insertBefore(divTag, showPosition);
         realPersonNumRefresh();//更新数据；
         divTag.addEventListener("click",realPersonNumRefresh);
@@ -744,7 +750,7 @@
     
     //自动刷新真实人数
     function realPersonNumRefresh(){
-        var dailyJumpCount = localStorage.getItem((new Date()).toLocaleDateString() + "🐛🌵🐤[" + uname +":"+ uid + "]");
+        var dailyJumpCount = localStorage.getItem((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]");
         dailyJumpCount = dailyJumpCount!=null?dailyJumpCount:0;
         fetch('https://www.douyu.com/swf_api/h5room/'+ roomId).then(res => {
             return res.json();
@@ -829,14 +835,14 @@
 
     // 斗鱼平台礼物展示     需要用到postMessage页面传值gift_json
     function giftView(){
-        var giftDataLength = localStorage.getItem("giftData💖🎁💖"+(new Date()).toLocaleDateString());
+        var giftDataLength = localStorage.getItem("giftData💖🎁💖");
+        var dailyPageCount = localStorage.getItem((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]");
         var showPlace = document.querySelector(".Title-anchorHot");
         var giftTag = document.createElement("dfn");
         giftTag.setAttribute("class","Title-anchorName");
-        giftTag.setAttribute("data-info","🎁-表示平台的礼物种类总量，点击则可以查看礼物展示图片，数据每天自动更新一次，跳转网页的图片则与服务器端实时同步；");
-
-        if(giftDataLength!=null){
-            giftTag.innerHTML="<a href='https://raw.githack.com/wolf-scream/gift_effect/master/index.html' target='_blank' style='text-decoration:none;'>🎁"+giftDataLength+"</a>";
+        giftTag.setAttribute("data-info","🎁-表示平台礼物种类总量，点击可查看礼物图片，数据统计每天自动更新一次，图片则与服务端实时同步;");
+        if( dailyPageCount!=null && giftDataLength!=null ){
+            giftTag.innerHTML="<a href='https://wolf-scream.github.io/gift_effect' target='_blank' style='text-decoration:none;'>🎁"+giftDataLength+"</a>";
         }else{
             //获取所有礼物图片url,并展示
             fetch('https://webconf.douyucdn.cn/resource/common/gift/flash/gift_effect.json').then(res => {
@@ -849,9 +855,9 @@
                 for(let key in jsonData){
                   jsonLength++;
                 }
-                localStorage.setItem("giftData💖🎁💖"+(new Date()).toLocaleDateString(),jsonLength);
+                localStorage.setItem("giftData💖🎁💖",jsonLength);
                 // localStorage.setItem("giftDataLength💖🎁💖",jsonLength);
-                giftTag.innerHTML="<a href='https://raw.githack.com/wolf-scream/gift_effect/master/index.html' style='text-decoration:none;'>🎁"+jsonLength+"</a>";
+                giftTag.innerHTML="<a href='https://wolf-scream.github.io/gift_effect' target='_blank' style='text-decoration:none;'>🎁"+jsonLength+"</a>";
                 // console.log(jsonLength);
             }).catch(err => {
                 console.error('请求错误', err);
@@ -877,6 +883,55 @@
         }
     }
 
+    // 增加代码统计，主要测试下云端弹幕访问频次，如果频次过高，后期改为本地缓存，每日更新一次
+    function cnzzJsonTest(){
+        var siteId = '1278051049';
+        var cnzzJs = document.createElement('script');
+        cnzzJs.type = 'text/javascript';
+        cnzzJs.async = true;
+        cnzzJs.charset = 'utf-8';
+        cnzzJs.src = 'https://w.cnzz.com/c.php?async=1&id=' + siteId;
+        var rootJs = document.getElementsByTagName('script')[0];
+        rootJs.parentNode.insertBefore(cnzzJs, rootJs);
+    }
+
+    // 重新点击radio的跳转处理
+    function openFireStatus(){
+        var fireCheck = document.querySelector(".FirePowerChatModal-Notice");//检测火力全开
+        if( fireCheck != undefined && hotFilter() && awardJudge() && !joinCondition() && !banSpeak() ){ //判断奖品、热度数量和是否要求粉丝团,hotFilter需要初始化
+            followRoom();//自动关注主播
+            firePowerMsg();//立即执行火力全开
+        }else{//有火力不符合筛选
+            console.log("不符合开火🔥条件，自动跳转新房间🏠");
+            randomFireRequest();
+        }
+    }
+
+    // 监听radio的onchange事件
+    function radioFunc(msg){
+        if(msg == "ceaseFire"){//停火
+            radioStorage = "ceaseFire";
+            localStorage.setItem("radioTagStatus🌼🍄🌼",msg);
+            clearTimeout(firePowerTimeout);
+            clearTimeout(fireSeekJump);
+            console.log("⛔停止开火");
+        }else if(msg =="openFire"){//开火
+            radioStorage = "openFire";
+            localStorage.setItem("radioTagStatus🌼🍄🌼",msg);
+            clearTimeout(firePowerTimeout);
+            clearTimeout(fireSeekJump);
+            openFireStatus();
+        }else if(msg =="bombFire"){//轰炸
+            radioStorage = "bombFire";
+            localStorage.setItem("radioTagStatus🌼🍄🌼",msg);
+            clearTimeout(firePowerTimeout);
+            clearTimeout(fireSeekJump);
+            console.log("💥弹幕轰炸");
+            firePowerMsg();
+            
+        }
+    }
+
     //===============================================================
     //++++++++++主函数入口区域,根据元素加载进度自动开始初始化程序++++++++
     //===============================================================
@@ -893,27 +948,20 @@
             creatBtnTag();//先添加手动按钮
             var radioNode = document.getElementById(radioStorage);
             radioNode.setAttribute("checked","checked");
+            cnzzJsonTest();//统计云弹幕接口访问频次
             getUserInfo();//需要前置执行
             getRoomId();//获取房间真实ID
-            giftView();
+            giftView();//礼物种类加载
             realPersonNum();//房间真实人数模块加载
-            releasePhoneLimit();//去除手机绑定的限制
-            setTimeout(assignRank, 1000);//房间延时签到
+            setTimeout(assignRank, 1000);//房间延时签到,需要roomId
+            setTimeout(releasePhoneLimit,4000);//去除手机绑定的限制
             hotFilter();//获取tmGap
+            cloudBarrage();//云弹幕加载
             // setInterval(captureDeityBarrage,7000);//抓捕幻神弹幕特效，建议用户打开帮博主抓幻神
             sbts = (new Date()).getTime();//记录初始化时间戳
             checkDelayCallback(1);//继续延迟回调
         }
     }
-
-    // //绑定监听事件,部分要延迟执行，等待ajax请求
-    // function bindingEventListener(code){
-    //     if(code===1){//绑定皇帝弹幕监听
-    //         var chatCheck = document.querySelector(".ChatSend-button");//检测聊天区加载
-    //         chatCheck.addEventListener("mouseup",clickBtnEvent);//绑定鼠标事件
-    //         document.onkeydown = function(e){e.keyCode==13?clickBtnEvent():false}//绑定键盘事件
-    //     }
-    // }
 
     //回调延迟函数检测
     function checkDelayCallback(code){
@@ -949,13 +997,13 @@
                     followRoom();//自动关注主播
                     // adjustClarity(0);//调整画质为最低,1为画质最高
                     // closeScreenBarrage();//关闭滚屏弹幕
-                    closeAutoPlay();//关闭自动播放，延迟等待元素标签加载
+                    // closeAutoPlay();//关闭自动播放，延迟等待元素标签加载
                     firePowerMsg();//立即执行火力全开
                     setTimeout(storageOperate, 15000);//自动清理localStorage
             }else{//有火力不符合筛选
                 if(radioStorage == "openFire"){
-                    console.log("不符合开火🔥条件，秒后自动跳转新房间🏠");
-                    fireSeekJump = setTimeout(randomFireRequest,5000);
+                    console.log("不符合开火🔥条件，3秒后自动跳转新房间🏠");
+                    fireSeekJump = setTimeout(randomFireRequest,4000);
                 }else if(radioStorage =="ceaseFire"){
                     autoAssign();
                     console.log("初始化火力🔥停止，等待用户的操作🏠");
@@ -972,4 +1020,3 @@
     setTimeout(programInitCheck, 5000); //5S后按页面加载进度自动设定执行脚本初始化加载时间
 
 })();
-
