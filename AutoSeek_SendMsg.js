@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         斗鱼全自动发弹幕抢鱼丸神器
+// @name         斗鱼全自动火力搜寻+自动发弹幕抢鱼丸二合一神器
 // @namespace    https://greasyfork.org/zh-CN/scripts/389379
-// @version      3.0
-// @description  本脚本是全自动火力搜索+自动发弹幕抢红包，开启后将脚本按钮停在🔥，然后就不需要您的任何操作了，剩下的都交给脚本了。不过需要警惕的是，当🌐跳转房间超过100次以上时，您处于高危状态，随时会被斗鱼屏蔽发言，还有当跳转频率过高时，会引起浏览器崩溃，这时重新启动浏览器即可；
+// @version      3.3
+// @description  本脚本是全自动火力搜索+自动发弹幕抢红包二合一脚本，开启后将脚本按钮停在🔥，然后就不需要您的任何操作了，剩下的都交给脚本了。不过需要警惕的是，当🌐跳转房间超过100次以上时，您处于高危状态，随时会被斗鱼屏蔽发言，还有当跳转频率过高时，会引起浏览器崩溃，这时重新启动浏览器即可。
 // @author       lvlanxing
 // @supportURL   https://github.com/wolf-scream/FirePowerSeek
 // @icon         http://www.douyutv.com/favicon.ico
@@ -24,14 +24,13 @@
 // @compatible   chrome
 // @license      GPL-3.0
 // @run-at       document-end
-// @lastmodified    2019.09.23
 // ==/UserScript==
 
 
 (function() {
 
     var arrCommon = ["主播加油💪","好nice","点击关注，不会迷路","弹幕冲鸭冲鸭","我来冒个泡","火力全开得瑟起来","小礼物刷起来","一发入魂","支持主播，来办卡吧",
-                    "神奇的主播，优质的弹幕","水军来捧，主播威猛","铁粉驾到，热度必爆","自家人，别误伤","主播贼6！","主播越来越红，越来越火！","กิิิิิ荧กิิิิิิิิิิิ光กิิิิิิิิิิิ棒กิิิิิ"]; 
+                    "神奇的主播，优质的弹幕","水军来捧，主播威猛","铁粉驾到，热度必爆","自家人，别误伤","主播贼6！","主播越来越红，越来越火！","กิิิิิ荧กิิิิิิิิิิิ光กิิิิิิิิิิิ棒กิิิิิ"];
 
     const royalTime = 300;//发送弹幕后更改皇族的时间间隔，网络延迟大则增加此数值 ,反正则减小 ms;
     var tmGap = 10000;//默认弹幕时间间隔与轮询间隔 ms
@@ -487,7 +486,7 @@
 
         // 创建radio元素标签，后于样式执行，样式独有
         var radioBtnTag = (function(){/*
-        <dfn data-info="🧐-手动火力全开房间搜索，用户可以自行选择跳转；⛔-火力停止状态，初始化组件展示数据或停止弹幕；🔥-火力搜寻状态，自动搜索火力全开筛选的房间，满足筛选的房间则自动发弹幕，房间筛选条件详见greaseFork描述，根据火力全开有无自动发停，火力停止累计>80s则重新搜寻，发送时间根据弹幕间隔数和房间热度计算，弹幕内容根据房间的二级类别从本地与云端弹幕库随机抽取;">
+        <dfn data-info="🧐-手动火力全开房间搜索，用户可以自行选择跳转；⛔-火力停止状态，初始化组件展示数据或停止弹幕；🔥-火力搜寻状态，自动搜索火力全开筛选的房间，火力停止>60s重新搜寻，筛选条件详见脚本更新描述；💥-弹幕轰炸功能，满足🔥的房间，切换到💥会自动发弹幕，发送时间根据弹幕间隔数和房间热度计算，根据火力全开有无自动发停，弹幕内容根据房间的二级类别从本地与云端弹幕库随机抽取;">
         <label for="ceaseFire" class="radio">
             <span class="radio-bg"></span>
             <input type="radio" name="radio_fire" id="ceaseFire"  value="⛔" checked="checked"/>⛔
@@ -635,32 +634,59 @@
         return awardConditionFilter(awardStr) || awardConditionFilter(awardDet) ;
     }
 
-    // 默认调整画质为流畅， 1.最高画质； 其他.最低画质
+    // 调整画质， 1.最高画质； 其他.最低画质
     function adjustClarity(code){
         var videoClarity = document.querySelector(".panelFill-d95ee8");
         if(videoClarity != undefined && videoClarity != null){
-            code===1?videoClarity.previousSibling.firstElementChild.click():videoClarity.previousSibling.lastElementChild.click();
+            code===1 ? videoClarity.previousSibling.firstElementChild.click() : videoClarity.previousSibling.lastElementChild.click();
         }else{
             console.log("没有画质📺选项！");
         }
     }
 
-    // 关闭屏幕显示弹幕
-    function closeScreenBarrage(){
+    // 记忆滚屏弹幕开关
+    function screenBarrageMemory(){
         var closeBarrageObj = document.getElementsByClassName("showdanmu-42b0ac")[0];
+        var closeBarrageViceObj = document.getElementsByClassName("hidedanmu-5d54e2")[0];
         if(closeBarrageObj !=undefined ){
-            closeBarrageObj.click();
+            var scrollStatus = localStorage.getItem("scrollBarrage➰🍚➰");
+            if(scrollStatus == "close"){
+                closeBarrageObj.click();
+            }
+            closeBarrageObj.addEventListener("mouseup",getScrollStatus);
+            closeBarrageViceObj.addEventListener("mouseup",getScrollStatus);
+        }else{
+            checkDelayCallback(4);//延迟等待元素标签加载
         }
     }
 
-    // 关闭自动播放
-    function closeAutoPlay(){
+    // 监听用户更改滚屏弹幕状态
+    function getScrollStatus(){
+        var scrollBarrageObj = document.getElementsByClassName("showdanmu-42b0ac removed-9d4c42")[0];//滚屏弹幕关闭状态
+        scrollBarrageObj == undefined ? localStorage.setItem("scrollBarrage➰🍚➰","close") : localStorage.setItem("scrollBarrage➰🍚➰","open");
+
+    }
+
+    // 记忆自动播放开关
+    function autoPlayMemory(){
+        var playObj = document.getElementsByClassName("play-8dbf03")[0];
         var pauseObj = document.getElementsByClassName("pause-c594e8")[0];
         if(pauseObj!=undefined){
-            pauseObj.click();
+            var autoPlayStatus = localStorage.getItem("autoPlayStatus📀📺📀");
+            if(autoPlayStatus == "close"){
+                pauseObj.click();
+            }
+            playObj.addEventListener("mouseup",getAutoPlayStatus);
+            pauseObj.addEventListener("mouseup",getAutoPlayStatus);
         }else{
-            checkDelayCallback(3);
+            checkDelayCallback(3);//延迟等待元素标签加载
         }
+    }
+
+    // 监听用户更改自动播放状态
+    function getAutoPlayStatus(){
+        var autoPlayObj = document.getElementsByClassName("pause-c594e8 removed-9d4c42")[0];//播放器暂停状态
+        autoPlayObj == undefined ? localStorage.setItem("autoPlayStatus📀📺📀","close") : localStorage.setItem("autoPlayStatus📀📺📀","open");
     }
 
     //获取用户uid,uname
@@ -703,7 +729,7 @@
         realPersonNumRefresh();//更新数据；
         divTag.addEventListener("click",realPersonNumRefresh);
     }
-    
+
     //自动刷新真实人数
     function realPersonNumRefresh(){
         var dailyJumpCount = localStorage.getItem((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]");
@@ -838,16 +864,16 @@
         }
     }
 
-    // 增加代码统计，主要测试下云端弹幕访问频次，如果频次过高，后期改为本地缓存，每日更新一次
-    function cnzzJsonTest(){
+    // 增加代码统计，主要测试下云端弹幕访问频次，如果频次高的话，后期增加本地缓存
+    function jsonCloudStat(){
         var siteId = '1278051049';
-        var cnzzJs = document.createElement('script');
-        cnzzJs.type = 'text/javascript';
-        cnzzJs.async = true;
-        cnzzJs.charset = 'utf-8';
-        cnzzJs.src = 'https://w.cnzz.com/c.php?async=1&id=' + siteId;
+        var statJs = document.createElement('script');
+        statJs.type = 'text/javascript';
+        statJs.async = true;
+        statJs.charset = 'utf-8';
+        statJs.src = 'https://w.cnzz.com/c.php?async=1&id=' + siteId;
         var rootJs = document.getElementsByTagName('script')[0];
-        rootJs.parentNode.insertBefore(cnzzJs, rootJs);
+        rootJs.parentNode.insertBefore(statJs, rootJs);
     }
 
     // 重新点击radio的跳转处理
@@ -895,7 +921,9 @@
             creatBtnTag();//先添加手动按钮
             var radioNode = document.getElementById(radioStorage);
             radioNode.setAttribute("checked","checked");
-            cnzzJsonTest();//统计云弹幕接口访问频次
+            screenBarrageMemory();//记忆滚屏弹幕状态
+            autoPlayMemory();//记忆自动播放状态
+            jsonCloudStat();//统计云弹幕接口访问频次
             getUserInfo();//需要前置执行
             getRoomId();//获取房间真实ID
             giftView();//礼物种类加载
@@ -928,7 +956,11 @@
             }
         }else if(code===3){
             if(((new Date()).getTime() - sbts)/1000 < 15){
-                setTimeout(closeAutoPlay,1000);//关闭自动播放，延迟等待元素标签加载
+                setTimeout(autoPlayMemory,1000);//关闭自动播放，延迟15s等待元素标签加载
+            }
+        }else if(code===4){
+            if(((new Date()).getTime() - sbts)/1000 < 15){
+                setTimeout(screenBarrageMemory,1000);//恢复记忆滚屏弹幕，延迟等待15s元素标签加载
             }
         }
     }
@@ -940,9 +972,7 @@
             if( hotFilter() && awardJudge() && !joinCondition() && !banSpeak() && radioStorage=="openFire"){ //判断奖品、热度数量和是否要求粉丝团,hotFilter需要初始化
                     console.log("符合开火🔥条件，初始化准备开火");
                     followRoom();//自动关注主播
-                    // adjustClarity(0);//调整画质为最低,1为画质最高
-                    // closeScreenBarrage();//关闭滚屏弹幕
-                    // closeAutoPlay();//关闭自动播放，延迟等待元素标签加载
+                    // adjustClarity(0);////调整画质，其他.画质最低,1.画质最高
                     firePowerMsg();//立即执行火力全开
                     setTimeout(storageOperate, 15000);//自动清理localStorage
             }else{//有火力不符合筛选
@@ -959,6 +989,6 @@
         }
     }
 
-    setTimeout(programInitCheck, 5000); //5S后按页面加载进度自动设定执行脚本初始化加载时间
+    setTimeout(programInitCheck, 4000); //4S后按页面加载进度自动设定执行脚本初始化加载时间
 
 })();
