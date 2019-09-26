@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         斗鱼全自动火力搜寻+自动发弹幕抢鱼丸二合一神器
 // @namespace    https://greasyfork.org/zh-CN/scripts/389379
-// @version      3.3
+// @version      3.5
 // @description  本脚本是全自动火力搜索+自动发弹幕抢红包二合一脚本，开启后将脚本按钮停在🔥，然后就不需要您的任何操作了，剩下的都交给脚本了。不过需要警惕的是，当🌐跳转房间超过100次以上时，您处于高危状态，随时会被斗鱼屏蔽发言，还有当跳转频率过高时，会引起浏览器崩溃，这时重新启动浏览器即可。
 // @author       lvlanxing
 // @supportURL   https://github.com/wolf-scream/FirePowerSeek
@@ -118,7 +118,7 @@
             sbts = (new Date()).getTime();
         } else {
             console.log("火力停止时间累计："+ ((new Date()).getTime() - sbts)/1000 + "s" );
-            if(radioStorage == "openFire" && ((new Date()).getTime() - sbts) > 1000 * 80){//如果累计超过80s没有火力全开，则跳转！
+            if(radioStorage == "openFire" && ((new Date()).getTime() - sbts) > 1000 * 60){//如果累计超过60s没有火力全开，则跳转！
                 randomFireRequest();
             }
         }
@@ -157,7 +157,7 @@
                 if (jsonData.online < 3000 && jsonData.game_name.indexOf("一起看") == -1 && jsonData.game_name.indexOf("二次元") == -1 && jsonData.game_name.indexOf("户外") == -1 && jsonData.game_name.indexOf("汽车") == -1) { //筛选条件：过滤二次元、看电影、户外和人数>3000的房间
                     fireUrl = "https://www.douyu.com/" + fireUrl;
                     var dailyPageCount = localStorage.getItem((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]");
-                    if (dailyPageCount != null && dailyPageCount != undefined) {
+                    if (dailyPageCount != null ) {
                         dailyPageCount = parseInt(dailyPageCount) + 1;
                         localStorage.setItem((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]", dailyPageCount);
                     } else {
@@ -765,22 +765,27 @@
         chatLogin!=undefined ? chatLogin.remove():false;
     }
 
-    // 参与条件关注，则自动点击关注   dm----#关注  #取关
+    // 参与条件关注，则自动点击关注   #关注  #取关
     function followRoom() {
         var subObj = document.querySelector(".Title-followBtn");
-        if (subObj != undefined && subObj != null) {
+        if (subObj != undefined) {
             subObj.click();
             console.log("已经关注💓主播");
-            setTimeout(autoAssign, 1500);//房间延时签到
+            setTimeout(autoAssign, 1000);//房间延时签到
         }
     }
 
     // 房间自动签到
     function autoAssign(){
+        var anchorLevel = (document.getElementsByClassName("AnchorLevel")[0]).getAttribute("class").substring(24);
         var unassignObj = document.getElementsByClassName("RoomLevelDetail-icon RoomLevelDetail-icon--zn")[0];//未签到
-        if(unassignObj!=undefined){
-            unassignObj.click();
-            console.log("房间已经📝签到！");
+        if(anchorLevel>=30){//不排除已签到，因为还需要手动刷新
+            if(unassignObj!=undefined){
+                unassignObj.click();
+                console.log("房间已经📝签到！");
+            }else{
+                checkDelayCallback(5);
+            }
         }
     }
 
@@ -914,6 +919,7 @@
         if(chatCheck==undefined){
             checkDelayCallback(0);
         }else{//执行初始化组件
+            sbts = (new Date()).getTime();//记录初始化时间戳
             msgTxt = document.querySelector(".ChatSend-txt");
             msgBtn = document.querySelector(".ChatSend-button");
             msgBtn.addEventListener("mouseup",clickBtnEvent);//绑定鼠标事件
@@ -929,9 +935,10 @@
             giftView();//礼物种类加载
             realPersonNum();//房间真实人数模块加载
             setTimeout(assignRank, 1000);//房间延时签到,需要roomId
-            setTimeout(releasePhoneLimit,4000);//去除手机绑定的限制
+            setTimeout(releasePhoneLimit,3000);//去除手机绑定的限制
             hotFilter();//获取tmGap
             cloudBarrage();//云弹幕加载
+            autoAssign();//房间自动签到
             // setInterval(captureDeityBarrage,7000);//抓捕幻神弹幕特效，建议用户打开帮博主抓幻神
             sbts = (new Date()).getTime();//记录初始化时间戳
             checkDelayCallback(1);//继续延迟回调
@@ -962,6 +969,10 @@
             if(((new Date()).getTime() - sbts)/1000 < 15){
                 setTimeout(screenBarrageMemory,1000);//恢复记忆滚屏弹幕，延迟等待15s元素标签加载
             }
+        }else if(code===5){
+            if(((new Date()).getTime() - sbts)/1000 < 15){
+                setTimeout(autoAssign,1000);//恢复记忆滚屏弹幕，延迟等待15s元素标签加载
+            }
         }
     }
 
@@ -974,13 +985,12 @@
                     followRoom();//自动关注主播
                     // adjustClarity(0);////调整画质，其他.画质最低,1.画质最高
                     firePowerMsg();//立即执行火力全开
-                    setTimeout(storageOperate, 15000);//自动清理localStorage
+                    setTimeout(storageOperate, 10000);//自动清理localStorage
             }else{//有火力不符合筛选
                 if(radioStorage == "openFire"){
                     console.log("不符合开火🔥条件，4秒后自动跳转新房间🏠");
                     fireSeekJump = setTimeout(randomFireRequest,4000);
                 }else if(radioStorage =="ceaseFire"){
-                    autoAssign();
                     console.log("初始化火力🔥停止，等待用户的操作🏠");
                 }
             }
