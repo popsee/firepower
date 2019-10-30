@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         斗鱼自动搜火力+发AI弹幕+极速签到=抢鱼丸红包沙发神器(日进2W丸子，有图为证)
 // @namespace    https://github.com/wolf-scream
-// @version      0.5.9
+// @version      0.6.1
 // @description  这里有斗鱼真正全自动搜索🧐火力全开+自动发AI智能弹幕的抢鱼丸红包二合一的神级😇脚本，您安装脚本后，需要做的只需要两步，一是功能选择💥弹幕轰炸，二是打开鱼吧右侧的二合一开关，然后就不需要您的任何操作了，自动参与火力全开发弹幕抢丸子红包的事情都交给脚本帮你搞定。进来体验下土豪玩家💰😎💰的感脚吧，让您做一个真正有牌面的斗鱼白嫖看客，幻神弹幕特效-有撒，满级粉丝牌子-有撒，顶级车队logo-有撒，极速签到手速王-还是有撒，茫茫人海一眼就相中这个主播，大手🖐一挥，鱼丸万两——💲赏💲！睥睨水友、笑傲鱼塘、彪炳平台全都有撒🐷~！
 // @author       lvlanxing
 // @supportURL   https://github.com/wolf-scream/FirePowerSeek
@@ -56,7 +56,7 @@
 // @note         V0.3.6 修改了脚本加载的固定时间，改为根据用户端的网络的页面加载进度自动执行脚本初始化，去除了上方弹幕延迟数据90ms(无意义)，增加了当前房间的签到排行显示，便于用户抢签到手气王，需要注意处于开火仍执行自动房间签到，停火才能手动签到，最多显示签到人数100+;
 // @note         V0.3.7 增加弹幕轰炸功能，当前房间符合火力全开搜索条件时，则自动发送弹幕抢奖品，弹幕发送时间算法是当前房间的自己已经发送弹幕间隔数和房间的热度值段联合决定的，不需要用户自定义，弹幕内容为普通候选弹幕。待完成：后期会增加联网云弹幕，自动判定当前房间类型有针对发送合适弹幕！
 // @note         V0.3.8 增加云端弹幕功能，根据当前房间的二级分类标题，选取符合房间类别的弹幕，随机选取后自动发送.修复自动火力搜索火力按钮无法跳转的bug，增加云弹幕json接口的访问频次统计，暂时没有限定云弹幕的访问,如果频次过高，则后续做本地缓存处理;去除签到手气王标志，与王者神豪不协调;
-// @note         V0.3.9 增加滚屏弹幕和自动播放的记忆功能，即如果用户关闭过滚屏弹幕，则用户跳转新直播间，滚屏弹幕仍保持关闭状态，自动播放功能也如此。这样方便满足大家在不同场景的不用需要，也避免了增加按钮开关的繁琐操作;
+// @note         V0.3.9 增加滚屏弹幕和自动播放的记忆功能，即如果用户关闭过滚屏弹幕，则用户跳转新直播间，滚屏弹幕仍保持关闭状态，自动播放功能也如此。这样方便满足大家在不同场景的需要，也避免了增加按钮开关的繁琐操作;
 // @note         V0.4.0 优化房间自动签到的功能，初始化脚本后即可自动签到，修复在无火力全开情况下无自动签到的问题;
 // @note         V0.4.1 新增arrPoetry精选弹幕，与云精选弹幕混合使用，精选弹幕的随机使用比例为1/5，普通弹幕的随机使用比例为4/5，大家可以F12在控制台查看是普通弹幕还是精选弹幕类型；
 // @note         V0.4.2 新增极速签到功能，直接调用签到API接口，检测到主播开播后极速签到，延迟为ms级别，使用此功能记住一定要将主播加入特别关注，否则无法获取主播开播状态，由于此功能对服务器压力较大，建议最好在主播开播前几分钟使用；
@@ -76,6 +76,8 @@
 // @note         V0.5.7 修改增加了一些个性的云弹幕，增大火力重开的等待时间为2min，过滤了AI的一些弱智回答，修复innerText为null的bug报错问题；
 // @note         V0.5.8 新增感谢弹幕，感谢赠送礼物的人，新增中奖弹幕回复，随机抽取发表中奖感言，新增房间过滤功能，可以过滤不友好的房间，自动跳过此类房间；
 // @note         V0.5.9 新增自动领取鱼所有鱼粮的功能，包括上面的泡泡区鱼粮和下面的每日任务与每周任务鱼粮，当刷新页面或跳转网页时自动领取, 也可手动点击鱼丸旁边的鱼粮按钮，可以一键领取鱼丸并自动参与一次小礼物抽奖；
+// @note         V0.6.0 新增天威幻神和年度神豪动态弹幕logo，新增房管图标，增加弹幕负载均衡方案，过滤一些AI小白回答，修改了由于斗鱼升级导致的聊天区部分logo图标不显示的问题；
+// @note         V0.6.1 增加cdn加速云弹幕接口，由于之前访问github接口太过于频繁，被github限制接口访问速度，所以更新额云弹幕接口为cdn加速，这样可以加速接口访问速度，防止出现不能访问的情况；
 // ==/UserScript==
 
 //=============================================================================
@@ -90,17 +92,22 @@ function roomScript() {
     var arrPoetry =["山重水复疑无路，关注主播不迷路！","大风起兮云飞扬，弹幕冲兮人满房！","海阔凭鱼跃，弹幕满屏飞！","这是一位神奇的主播，这是一条优质的弹幕"];//refine barrage,used with clould refine barrage;
     const royalTime = 300;//adapt royal effect, don't suggest value less than 100 (ms);
     const sendGap = 150;//check anchor living status，don't suggest the value less than 100 (ms)；
+    const pigFlag = (localStorage.getItem("collectUserBarrage")!=null) && (localStorage.getItem("collectUserBarrage").indexOf("🀄🐷🀄")>-1);
     var tmGap = 10000;//default send barrage time gap (ms)
     var msgTxt, msgBtn, firePowerTime, fireJumpTime, popLoopTime, roomAssignTime, statusInterval;//delay task object
-    var uid = "-", uname="-", roomId="99999", roomBan;//user id，name，roomid, room filter
-    var sbts = (new Date()).getTime();//present timestamp
-    var radioStorage = "ceaseFire";//default radio status
+    var uid = "-", uname="-", roomId="99999", banRoom=[], giftDonatorStr="";//user id，name，roomid, room filter
+    var sbts = (new Date()).getTime();//globle present timestamp
+    var tkAdTs = (new Date()).getTime();//thank admin timestamp
+    var radioStorage = localStorage.getItem("radioTagStatus🌼🍄🌼")!=null? localStorage.getItem("radioTagStatus🌼🍄🌼"): "ceaseFire";// var radioStorage = "ceaseFire";//default radio status
+    var AIwordFilter = ["机器人"], donatorThank = ["老板大气"],arrWinning = ["哈哈，中了"], arrNoPrize = ["又么得中，蓝瘦"];
     //=============================================================================
     //cloud barrage
     function cloudBarrage(){
         var categoryName = document.getElementsByClassName("Title-categoryItem")[1];
         categoryName = categoryName.innerText;
-        fetch('https://raw.githubusercontent.com/popzoo/barrage/master/danmu.json',{
+        let selfDanmu = localStorage.getItem("selfDanmu🌋🌌🌋");//origin json https://raw.githubusercontent.com/popzoo/barrage/master/danmu.json
+        let cloudDMURL = selfDanmu !=null ? selfDanmu :'https://cdn.statically.io/gh/popzoo/barrage/master/danmu.json';//cdn acceleration
+        fetch(cloudDMURL,{
             method: 'GET',
             mode: 'cors',
             cache: 'default',
@@ -110,53 +117,13 @@ function roomScript() {
         }).then(json => {
             arrCommon = json.data.通用!=undefined ? arrCommon.concat(json.data.通用) : arrCommon;
             arrCommon = json.data[categoryName]!=undefined ? arrCommon.concat(json.data[categoryName]) : arrCommon;
+            arrCommon = json.data[uname]!=undefined ? arrCommon.concat(json.data[uname]) : arrCommon;
             arrPoetry = json.data.精选!=undefined ? arrPoetry.concat(json.data.精选) : arrPoetry;
-            roomBan = json.data.roomFiter!=undefined?json.data.roomFiter:undefined;
-            // arrWinning = json.data.winning!=undefined ? arrWinning.concat(json.data.winning): arrWinning;
-            // arrNoPrize = json.data.noprize!=undefined ? arrNoPrize.concat(json.data.noprize): arrNoPrize;
-        }).catch(err => {
-            console.error('REQUEST ERROR', err);
-        })
-    }
-    //String lenght chinese is 2，english is 1
-    function getRealStrLength(str){
-        var realLength = 0, len = str.length, charCode = -1;
-        for (var i = 0; i < len; i++) {
-            charCode = str.charCodeAt(i);
-            if (charCode >= 0 && charCode <= 128){
-                realLength += 1;
-            }else{
-                realLength += 2;
-            }
-        }
-        return realLength;
-    }
-    //AI chat function，140 million relations entity
-    function robotAIChat(msg){
-        var wordFilter = ["机器人","不","懵","小思","什么","感谢","优秀","智商","卡壳","聪明","想想","深奥","搞蒙","回答","会更多","喜欢主播"];
-        let appid = "&appid=e231f81cd82f994e2843c870f391ac7c";
-        fetch('https://api.ownthink.com/bot?spoken='+msg+appid).then(res => {
-            return res.json();
-        }).then(json => {
-            if(json.message=="success" && json.data.type==5000){
-                json = json.data.info.text;//filter AI stupid answer
-                var sendflag = false;
-                for(let i=0;i<wordFilter.length;i++){
-                    if(json.indexOf(wordFilter[i])>-1){
-                        sendflag = true;
-                    }
-                }
-                if(sendflag){
-                    bombBarrage();
-                }else{
-                    msgTxt.value = json;
-                    msgBtn.click();
-                    console.info("小思弹幕,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>【问】" + msg +"【答】" + json);
-                    clickBtnEvent();
-                }
-            }else{
-                bombBarrage();
-            }
+            banRoom = json.data.roomFiter!=undefined?json.data.roomFiter:banRoom;
+            AIwordFilter = json.data.AIFilter!=undefined?json.data.AIFilter:AIwordFilter;
+            donatorThank = json.data.giftThank!=undefined?json.data.giftThank:donatorThank;
+            arrWinning = json.data.winning!=undefined ? json.data.winning : arrWinning;
+            arrNoPrize = json.data.noprize!=undefined ? json.data.noprize : arrNoPrize;
         }).catch(err => {
             console.error('REQUEST ERROR', err);
         })
@@ -169,7 +136,7 @@ function roomScript() {
             var barrageArr = document.getElementsByClassName('Barrage-content');
             function loopSeek(){
                 var danmuMsg = barrageArr[barrageArr.length-danmuCount];//.replace(/\s/g, '')  remove blank tab and change row；
-                if(danmuMsg!=undefined && escape(danmuMsg.innerText).indexOf( "%u" )!=-1 && getRealStrLength(danmuMsg.innerText)>4 ){//judge str is chinese
+                if(danmuMsg!=undefined && escape(danmuMsg.innerText).indexOf( "%u" )!=-1 && getRealStrLength(danmuMsg.innerText)>6 ){//judge str is chinese
                     robotAIChat(danmuMsg.innerText.trim());
                 }else{
                     if(danmuCount<= Math.min(20, danmuLength)){//capture lastest 20 danmu
@@ -185,57 +152,109 @@ function roomScript() {
         }else{
             bombBarrage();
         }
+    }   
+    //String length chinese is 2，english is 1
+    function getRealStrLength(str){
+        var realLength = 0, len = str.length, charCode = -1;
+        for (var i = 0; i < len; i++) {
+            charCode = str.charCodeAt(i);
+            if (charCode >= 0 && charCode <= 128){
+                realLength += 1;
+            }else{
+                realLength += 2;
+            }
+        }
+        return realLength;
+    }
+    //AI chat function，140 million relations entity
+    function robotAIChat(question){
+        let appid = "&appid=e231f81cd82f994e2843c870f391ac7c";
+        fetch('https://api.ownthink.com/bot?spoken='+question+appid).then(res => {
+            return res.json();
+        }).then(json => {
+            if(json.message=="success" && json.data.type==5000){
+                json = json.data.info.text;//filter AI stupid answer
+                var sendflag = false;
+                for(let i=0;i<AIwordFilter.length;i++){
+                    if(json.indexOf(AIwordFilter[i])>-1){
+                        sendflag = true;
+                        break;
+                    }
+                }
+                if(sendflag){
+                    bombBarrage();
+                }else{
+                    msgTxt.value = json;
+                    msgBtn.click();
+                    console.info("AI小思弹幕,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>【问】" + question +"【答】" + json);
+                    clickBtnEvent();
+                }
+            }else{
+                bombBarrage();
+            }
+        }).catch(err => {
+            bombBarrage();//protect running from AI robot death
+            console.error('REQUEST ERROR', err);
+        })
     }
     //Send Barrage
     function bombBarrage(){
-        var probNum = parseInt(Math.random() * 5);
-        if(probNum == 10){//thankful barrage
-            var fireMaker = document.getElementsByClassName("FirePowerChatModal-roomAdminTitle")[0];
-            if(fireMaker!= undefined && fireMaker.innerText.indexOf("发起了火力全开") ){
-                var reg = new RegExp("发起了火力全开");//remove blank
-                var makerName = fireMaker.innerText.replace(reg,"");
-                makerName = parseInt(Math.random()*2)==1?"感谢房管的丸子，@"+ makerName + "：老板大气！":"房管发丸我来抢，房管开火我上场！";
-                msgTxt.value = makerName;
-                console.info("感谢弹幕,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + msgTxt.value);
+        let probNum = parseInt(Math.random() * 5);
+        if(probNum == 0 && pigFlag){//thankful barrage
+            let fireMaker = document.querySelector(".FirePowerChatModal-roomAdminTitle");
+            if(fireMaker!= undefined && fireMaker.innerText.indexOf("发起了火力全开") >-1){
+                let reg = new RegExp(" 发起了火力全开");//remove word 
+                let makerName = fireMaker.innerText.replace(reg,"");
+                if((new Date()).getTime() - tkAdTs >150 *1000){
+                    msgTxt.value = "感谢房管【"+makerName+"】的火力丸子，"+ donatorThank[parseInt(Math.random()*donatorThank.length)];
+                    tkAdTs = (new Date()).getTime();
+                }else{
+                    msgTxt.value = "房管发丸我来抢，房管开火我上场！";
+                }
+                console.info("感谢房管,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + msgTxt.value);
             }else{
-                msgTxt.value = parseInt(Math.random()*2)==1?"PICK我吧，主播气质无双，惊艳了时光！":"PICK俺吧，房间高朋满座，激情了岁月！";
-                console.info("感谢弹幕,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + msgTxt.value);
+                msgTxt.value = "求PICK，主播才华横溢，"+arrPoetry[parseInt(Math.random() * arrCommon.length)];
+                console.info("感谢主播,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + msgTxt.value);
             }
-            msgBtn.click();
-            clickBtnEvent();  
         }else if(probNum == 1){
-            var num = parseInt(Math.random() * arrPoetry.length);
-            console.info("精选弹幕,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + arrPoetry[num]);
-            msgTxt.value = arrPoetry[num];
-            msgBtn.click();
-            clickBtnEvent();
+            msgTxt.value = arrPoetry[parseInt(Math.random() * arrPoetry.length)];
+            console.info("精选弹幕,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + msgTxt.value);
         }else{
-            var num1 = parseInt(Math.random() * arrCommon.length);
-            console.info("普通弹幕,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + arrCommon[num1]);
-            msgTxt.value = arrCommon[num1];
-            msgBtn.click();
-            clickBtnEvent();
+            msgTxt.value = arrCommon[parseInt(Math.random() * arrCommon.length)];
+            console.info("普通弹幕,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + msgTxt.value);
         }
+        msgBtn.click();
+        clickBtnEvent();
     }
-    // gift thank barrage, only thanks to the first guy
+    // gift thank barrage
     function giftTankBarrage(){
-        var giftBanner = document.getElementsByClassName(".Banner4gift")[0];
-        if(giftBanner!=undefined && (giftBanner.innerText.indexOf("飞机")>-1 || giftBanner.innerText.indexOf("火箭")>-1 || giftBanner.innerText.indexOf("超级火箭")>-1 || giftBanner.innerText.indexOf("办卡")>-1)){
-                let giftWords = "感谢"+giftBanner.innerText.replace(/\s/g, '');//remove blank and tab
-                giftWords += parseInt(Math.random()*2)==1 ? ",灰常大气！":",老板大大大气！";
-                msgTxt.value = giftWords;
-                msgBtn.click();
-                console.info("谢礼弹幕,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + giftWords);
-                clickBtnEvent();
-        }else{
-            parseInt(Math.random()*2)==1?bombBarrage():captureBarrage();//timestamp should be inner since of async
+        let giftBannerList = document.querySelector(".BarrageBanner").children;//include Banner4gift and Banner4noble
+        if(giftBannerList.length>0){
+            for(let i=0;i<giftBannerList.length;i++){
+                let giftBanner = giftBannerList.item(i);
+                if(giftBanner!=undefined ){
+                    // &&(giftBanner.innerText.indexOf("飞机")>-1 || giftBanner.innerText.indexOf("火箭")>-1 || giftBanner.innerText.indexOf("超级火箭")>-1 || giftBanner.innerText.indexOf("办卡")>-1)
+                    let giftWords = "感谢"+giftBanner.innerText.replace(/\s/g, '')+"，";//remove blank and tab
+                    if(giftDonatorStr.indexOf(giftWords)==-1 && giftWords.indexOf(uname)==-1){
+                    // if(giftDonatorStr.indexOf(giftWords)==-1){//remove redupication
+                        giftWords += donatorThank[parseInt(Math.random()* donatorThank.length)];
+                        msgTxt.value = giftWords;
+                        msgBtn.click();
+                        console.info("感谢礼物,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + giftWords);
+                        giftDonatorStr = (giftWords + giftDonatorStr).substr(0,150);
+                        // clickBtnEvent();
+                        setTimeout(function(){royalChatEffect(1)}, royalTime);
+                        setTimeout(function(){screenEmpireBarrage()}, royalTime);                        
+                        return false;//only thanks to nearest one piece of donator
+                    }
+                }
+            }
         }
+        return true;
     }
     //winning barrage
     function awardBarrage(){
         var awardRecord = document.querySelector(".FirePowerRewardModal-rewardList");
-        let arrWinning = ["哈哈哈，中了，中了，😘老板大气！","谢谢大佬，我居然中了！","中奖的赶脚，舒服!","好嗨哟，奖品又被成功撩到！","中奖了，好开森","运气爆棚，时来运转！","这运气爆表的，没谁了"];
-        let arrNoPrize = ["又木有中，被厄运诅咒了🤢","又双叒叕没中呀，好蓝瘦！","为啥又没中呀","能不能中一回哈","求大佬让我中一次","中科院高能物理研究所之超高介电常数————中奖绝缘体","中奖名单再一次把我深深地雪藏"];
         if(awardRecord!=undefined){
             if(awardRecord.innerText.indexOf(uname)!=-1){
                 msgTxt.value = arrWinning[parseInt(Math.random()*arrWinning.length)];
@@ -269,22 +288,27 @@ function roomScript() {
     }
     // controller to send barrage and listen fire power activity
     function firePowerController() {
+        let printFlag = pigFlag ? giftTankBarrage() : true;//gift thank barrage,should be pre
         var fireObj = document.getElementsByClassName("FirePowerChatModal-Notice")[0];
         if ( fireObj != undefined && hotFilter() && awardJudge() && !joinCondition() && !banSpeak() ) {
-            let num = parseInt(Math.random()*3) + 3; //random to wait 3~5 barrage gap 
+            let num = parseInt(Math.random()*4) + 2; //random to wait 2~5 barrage gap
             // if(radioStorage == "bombFire" && countBarrageGap(num) && !roomFilter(roomId)){
             if(radioStorage == "bombFire" && countBarrageGap(num) ){
-                giftTankBarrage();
+                parseInt(Math.random()*2)==1?bombBarrage():captureBarrage();//timestamp should be inner since of async
                 jsonAnalytics(0);
             }else if(radioStorage == "openFire"){
-                console.info("火力监测时间间隔："+ ((new Date()).getTime() - sbts)/1000 + "s");
+                if(printFlag){
+                    console.info("火力监测时间间隔："+ ((new Date()).getTime() - sbts)/1000 + "s");
+                }
                 sbts = (new Date()).getTime();
             }
         } else {
-            if( (new Date()).getTime() - sbts < 1000*30){
+            if( (new Date()).getTime() - sbts < 1000*40 ){
                 awardBarrage();//winning barrage
             }
-            console.info("火力停止时间累计："+ ((new Date()).getTime() - sbts)/1000 + "s" );
+            if(printFlag){
+                console.info("火力停止时间累计："+ ((new Date()).getTime() - sbts)/1000 + "s" ); 
+            }
             if((radioStorage == "openFire" || (radioStorage == "bombFire" && localStorage.getItem("switchStatus🏮🎎🏮")=="on"))
                && ((new Date()).getTime() - sbts) > 1000 * 120 && localStorage.getItem((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]") <100){//如果超过2分钟没有开火，则跳转！
                 popupToast("《火力搜寻跳转》<br>该房间已经超过2min没重开火力<br>3秒后自动跳转！", 3);
@@ -337,9 +361,9 @@ function roomScript() {
                         randomFireRequest();
                     }
                 });
-            });            
+            });
         }else{
-            randomFireRequest();            
+            randomFireRequest();
         }
     }
     //Binding God Barrage
@@ -354,120 +378,143 @@ function roomScript() {
     function royalChatEffect(roles) {//roles:1:god，other：empire
         let barrageArr = document.getElementsByClassName('Barrage-listItem');
         if (barrageArr.length > 1) {
-            var roomFlag = false;
             for (let i = barrageArr.length - 1; i >-1; i--) {
                 if (barrageArr[i].lastElementChild != null && barrageArr[i].lastElementChild.innerHTML.indexOf("Barrage-nobleImg") == -1 && barrageArr[i].lastElementChild.innerHTML.indexOf("is-self") != -1) { //not null，remove reduplicttion，find self
-                    //add motorcade flag
-                    if(barrageArr[i].lastElementChild.innerHTML.indexOf("Motor")==-1){
-                        var iconTag = document.createElement("span");
+                    // revise father element class
+                    barrageArr[i].className = "Barrage-listItem js-noblefloating-barrage";
+                    let chatArea = barrageArr[i].lastElementChild;
+                    chatArea.className = "js-noblefloating-barragecont Barrage-notice--noble";
+                    chatArea.setAttribute('style','background-color: #fff3df');
+                    // revise nickname class
+                    let nickNameObj = chatArea.getElementsByClassName("Barrage-nickName")[0];
+                    nickNameObj.setAttribute('class','Barrage-nickName is-self js-nick');//here need reserved is-self
+                    //add motorcade flag, already remove reduplication
+                    let motorFlagObj = chatArea.getElementsByClassName("Motor")[0];
+                    if(motorFlagObj==undefined){
+                        let iconTag = document.createElement("span");
                         iconTag.className = "Motor"
                         iconTag.setAttribute("title","中");
                         iconTag.setAttribute("data-motorcade","中");
                         iconTag.setAttribute("style","background-image:url(https://img.douyucdn.cn/data/yuba/admin/2019/01/07/201901071437499042327937962.png)");
-                        var iconSpan = document.createElement("span");
+                        let iconSpan = document.createElement("span");
                         iconSpan.className = "Motor-flag";
                         iconSpan.innerText = "中"
                         iconTag.appendChild(iconSpan);
-                        barrageArr[i].lastElementChild.insertBefore(iconTag,barrageArr[i].lastElementChild.children[1]);
+                        chatArea.insertBefore(iconTag,nickNameObj);
                     }
-                    //tranform user level,room level and barrage color
-                    var userLevelObj = barrageArr[i].lastElementChild.querySelector(".UserLevel");
+                    //tranform user level
+                    let userLevelObj = chatArea.querySelector(".UserLevel");
                     if( userLevelObj!=undefined){
                         userLevelObj.className = "UserLevel UserLevel--120";
                         userLevelObj.setAttribute("title", "用户等级：120");
                     }
-                    var roomLevelObj = barrageArr[i].lastElementChild.querySelector(".RoomLevel");
+                    // revise or create Room element unless no room level
+                    let roomLevelObj = chatArea.querySelector(".RoomLevel");
                     if( roomLevelObj!=undefined){
                         roomLevelObj.className = "RoomLevel RoomLevel--17";
                         roomLevelObj.setAttribute("title","房间等级：17");
-                        roomFlag=true;
-                    }
-                    var barrageColorObj = barrageArr[i].lastElementChild.querySelector(".Barrage-content");
-                    if(barrageColorObj !=undefined){
-                        barrageColorObj.className = "Barrage-content Barrage-content--color0";
-                    }
-                    //create Room element unless no room level
-                    if(roomFlag == false){
-                        var roomTag = document.createElement("span");
+                    }else{
+                        let roomTag = document.createElement("span");
                         roomTag.className ="RoomLevel RoomLevel--17";
                         roomTag.setAttribute("title","房间等级：17");
-                        barrageArr[i].lastElementChild.insertBefore(roomTag,barrageArr[i].lastElementChild.children[1]);
+                        chatArea.insertBefore(roomTag,motorFlagObj);
                     }
-                    // add king-hao dynamic logo
-                    var fireIconObj = barrageArr[i].lastElementChild.getElementsByClassName("FirePowerIcon")[0];
-                    var signTag = document.createElement("a");
-                    signTag.setAttribute("class","Baby");
-                    var kingIconImg = document.createElement("img");
-                    kingIconImg.setAttribute("class","Baby-image is-achievement");
-                    let kingIconUrl = parseInt(Math.random()*2)==1 ?"https://sta-op.douyucdn.cn/douyu/412bc7d49e40c245a0b140b8d2ae5f2db420e36c.gif":"https://sta-op.douyucdn.cn/douyu/3d416f83fb2de6e4e8de5ce4e24b424e4eccc705.gif";//honor king
-                    kingIconImg.setAttribute("src",kingIconUrl);
-                    // kingIconImg.setAttribute("data-achievementid","188");
-                    signTag.appendChild(kingIconImg);
-                    if( barrageArr[i].lastElementChild.innerHTML.indexOf("Baby-image")==-1 ){//redupliction removing
-                        fireIconObj!=undefined? barrageArr[i].lastElementChild.insertBefore(signTag,fireIconObj): barrageArr[i].lastElementChild.appendChild(signTag);
+                    // barrage color
+                    let barrageColorObj = chatArea.querySelector(".Barrage-content");
+                    if(barrageColorObj !=undefined){
+                        barrageColorObj.className = "Barrage-content Barrage-content--color0";//red color
                     }
+
+                    // add king-hao dynamic logo        ==1
+                    let kingIconUrl = ["https://sta-op.douyucdn.cn/douyu/412bc7d49e40c245a0b140b8d2ae5f2db420e36c.gif","https://sta-op.douyucdn.cn/douyu/3d416f83fb2de6e4e8de5ce4e24b424e4eccc705.gif",
+                                       "https://sta-op.douyucdn.cn/douyu/0b9f31cf073fa88c1daade3a08252f90bdd18a0a.gif","https://sta-op.douyucdn.cn/douyu/6467a61a8e57944b09ddb68a7673c9f6164335e9.gif"]//honor hao, king hao,annually hao,tianwei God
+                    let tailTagObj = chatArea.querySelector(".Baby");
+                    if(tailTagObj != undefined){
+                        let kingIconImg = document.createElement("img");
+                        kingIconImg.setAttribute("class","Baby-image is-achievement");
+                        kingIconImg.setAttribute("src",kingIconUrl[parseInt(Math.random()*4)]);
+                        // kingIconImg.setAttribute("data-achievementid","213");
+                        tailTagObj.insertBefore(kingIconImg,tailTagObj.firstElementChild);
+                    }else{
+                        let signTag = document.createElement("a");
+                        signTag.setAttribute("class","Baby");
+                        let kingIconImg = document.createElement("img");
+                        kingIconImg.setAttribute("class","Baby-image is-achievement");
+                        kingIconImg.setAttribute("src",kingIconUrl[parseInt(Math.random()*4)]);
+                        // kingIconImg.setAttribute("data-achievementid","188");
+                        signTag.appendChild(kingIconImg);
+                        let fireIconObj = chatArea.getElementsByClassName("FirePowerIcon")[0];
+                        fireIconObj!=undefined? chatArea.insertBefore(signTag,fireIconObj): chatArea.appendChild(signTag);
+                    }
+
                     //guess king
                     // var guessTag = document.createElement("a");
                     // guessTag.className = "Medal";
                     // guessTag.setAttribute("data-id","1500000230");
-                    // var guessImg = document.createElement("img");
+                    // let guessImg = document.createElement("img");
                     // guessImg.setAttribute("class","Medal-image");
                     // guessImg.setAttribute("src","//res.douyucdn.cn//resource/2018/03/16/reward/9f192d005a697258371bef79e4550295.png");
                     // guessImg.setAttribute("title","竞猜周榜收益第一名");
                     // guessTag.appendChild(guessImg);
-                    // barrageArr[i].lastElementChild.insertBefore(guessTag,barrageArr[i].lastElementChild.children[1]);
+                    // chatArea.insertBefore(guessTag,chatArea.children[1]);
+
                     // add fans medal without redupliction remove
-                    var fansMedalName = document.getElementsByClassName("FansMedal-name")[0];//fans medal
-                    var fansBackgroundImg = document.getElementsByClassName("FansRankList-item FansRankList-item--top")[0];
-                    barrageArr[i].className = "Barrage-listItem js-floating-barrage js-fansfloating-barrage";
-                    barrageArr[i].lastElementChild.className = "js-fansfloating-barragecont Barrage--paddedBarrage";
-                    if(fansMedalName!=undefined && roomId!=undefined && fansBackgroundImg!= undefined ){//common fans medal
-                        if(fansBackgroundImg.innerHTML.indexOf("background-image:")==-1){
-                            var fansTag = document.createElement("div");
+                    let fansMedalName = document.getElementsByClassName("FansMedal-name")[0];//fans medal
+                    let fansBackgroundImg = document.getElementsByClassName("FansRankList-item FansRankList-item--top")[0];
+                    if(fansMedalName!=undefined && roomId!=undefined && fansBackgroundImg!= undefined ){
+                        if(fansBackgroundImg.innerHTML.indexOf("background-image:")==-1){//common fans medal
+                            let fansTag = document.createElement("div");
+                            let fansSpan = document.createElement("span");
                             fansTag.className="FansMedal level-30 js-fans-dysclick Barrage-icon";
                             fansTag.setAttribute("data-rid",roomId);//id is same to roomId
-                            var fansSpan = document.createElement("span");
                             fansSpan.className = "FansMedal-name js-fans-dysclick";
                             fansSpan.setAttribute("data-rid",roomId);
                             fansSpan.innerHTML = fansMedalName.innerText;
                             fansTag.appendChild(fansSpan);
-                            barrageArr[i].lastElementChild.insertBefore(fansTag,barrageArr[i].lastElementChild.firstElementChild);
-                        }else{//dynamic fans medal
-                            var fansTag1 = document.createElement("div");
+                            chatArea.insertBefore(fansTag,chatArea.firstElementChild);
+                        }else{//special fans medal
+                            let fansTag1 = document.createElement("div");
                             fansTag1.className="FansMedal is-made js-fans-dysclick Barrage-icon";
                             fansTag1.setAttribute("style", fansBackgroundImg.getElementsByClassName("FansMedal is-made")[0].getAttribute("style") );
                             fansTag1.setAttribute("data-rid",roomId);
-                            var fansSpan1 = document.createElement("span");
+                            let fansSpan1 = document.createElement("span");
                             fansSpan1.className = "FansMedal-name js-fans-dysclick";
                             fansSpan1.setAttribute("data-rid",roomId);
                             fansSpan1.innerHTML = fansMedalName.innerText;
                             fansTag1.appendChild(fansSpan1);
-                            barrageArr[i].lastElementChild.insertBefore(fansTag1,barrageArr[i].lastElementChild.firstElementChild);
+                            chatArea.insertBefore(fansTag1,chatArea.firstElementChild);
                         }
                     }else{//point to a fans medal when room have none of fans medal
-                        var fansTag2 = document.createElement("div");
+                        let fansTag2 = document.createElement("div");
                         fansTag2.className="FansMedal is-made js-fans-dysclick Barrage-icon";
                         fansTag2.setAttribute("style","background-image: url('https://gfs-op.douyucdn.cn/fans_medal_resource/2019/07/12/5a5efaca4d1250413ed9c3c36438f6cb.gif')");
                         fansTag2.setAttribute("data-rid","4615502");
-                        var fansSpan2 = document.createElement("span");
+                        let fansSpan2 = document.createElement("span");
                         fansSpan2.className = "FansMedal-name js-fans-dysclick";
                         fansSpan2.setAttribute("data-rid","4615502");
                         fansSpan2.innerHTML = "猪叫团";
                         fansTag2.appendChild(fansSpan2);
-                        barrageArr[i].lastElementChild.insertBefore(fansTag2,barrageArr[i].lastElementChild.firstElementChild);
+                        chatArea.insertBefore(fansTag2,chatArea.firstElementChild);
                     }
-                    //add god log without considering redupliction remove
-                    var nobleIconObj = barrageArr[i].getElementsByClassName("Barrage-icon Barrage-noble")[0];
+                    //add noble logo,if you have this identity,this will be not display
+                    let nobleIconObj = barrageArr[i].getElementsByClassName("Barrage-icon Barrage-noble")[0];
                     if(nobleIconObj==undefined){//noble logo
-                        var royalTag = document.createElement("span");
-                        var royalImg = document.createElement("img");
+                        let royalTag = document.createElement("span");
+                        let royalImg = document.createElement("img");
                         royalTag.className = "Barrage-icon Barrage-noble";
                         royalImg.className = "Barrage-nobleImg";
-                        var nobleImgUrl = roles == 1 ? "//res.douyucdn.cn/resource/2019/08/15/common/4e85776071ffbae2867bb9d116e9a43c.gif" : "//res.douyucdn.cn/resource/2019/08/09/common/3d994a081e5384de14e6893d1d8b94c5.gif";
+                        let nobleImgUrl = roles == 1 ? "//res.douyucdn.cn/resource/2019/08/15/common/4e85776071ffbae2867bb9d116e9a43c.gif" : "//res.douyucdn.cn/resource/2019/08/09/common/3d994a081e5384de14e6893d1d8b94c5.gif";
                         royalImg.setAttribute("src", nobleImgUrl);
                         royalImg.setAttribute("title", roles == 1?"幻神":"超级皇帝");
                         royalTag.appendChild(royalImg);
-                        barrageArr[i].lastElementChild.insertBefore(royalTag, barrageArr[i].lastElementChild.firstElementChild);
+                        chatArea.insertBefore(royalTag, chatArea.firstElementChild);
+                    }
+                    // add admin logo,if you have this identity,this will be not display
+                    let adminIconObj = barrageArr[i].getElementsByClassName("Barrage-icon Barrage-icon--roomAdmin")[0];
+                    if(adminIconObj == undefined){
+                        let adminTag = document.createElement("span");
+                        adminTag.setAttribute("class","Barrage-icon Barrage-icon--roomAdmin");
+                        chatArea.insertBefore(adminTag, chatArea.firstElementChild);
                     }
                     break;//avoid cpu resource wasted
                 }
@@ -479,65 +526,65 @@ function roomScript() {
     //+++++++++++++++++++++++++god scroll effect+++++++++++++++++++
     //===============================================================
     function screenEmpireBarrage(){
-        var fatherNode = document.querySelector(".danmu-6e95c1");
+        let fatherNode = document.querySelector(".danmu-6e95c1");
         for(let i = fatherNode.children.length-1;i>=0;i--){
             if(fatherNode.children[i].className.indexOf("noble-bf13ad")==-1 && fatherNode.children[i].innerHTML.indexOf("border: 2px solid rgb(2, 255, 255)")!=-1){//find self and remove redupliction
                 //transform parent node
-                var liStyle = fatherNode.children[i].getAttribute("style");
+                let liStyle = fatherNode.children[i].getAttribute("style");
                 let characterLength = liStyle.substring(liStyle.indexOf("translateX(-")+12,liStyle.indexOf("px); transition"));
                 let transformLength = liStyle.substring(liStyle.indexOf("transform ")+10,liStyle.indexOf("s linear"));
                 let screenOpacity = liStyle.substring(liStyle.indexOf("opacity:")+8,liStyle.indexOf("; z-index:"));
-                var characterStyle = "opacity: "+ screenOpacity +"; z-index: 30; background: rgba(0, 0, 0, 0); top: 4px; transform: translateX(-"+ characterLength +"px); transition: transform "+ transformLength +"s linear;"
+                let characterStyle = "opacity: "+ screenOpacity +"; z-index: 30; background: rgba(0, 0, 0, 0); top: 4px; transform: translateX(-"+ characterLength +"px); transition: transform "+ transformLength +"s linear 0s;"
                 fatherNode.children[i].className = "danmuItem-31f924 noble-bf13ad";
                 fatherNode.children[i].setAttribute("style",characterStyle);
-                //noble logo without redupliction remove
-                var nobleImgTag = document.createElement("img");
+                //noble icon without redupliction remove
+                let nobleImgTag = document.createElement("img");
                 nobleImgTag.className = "super-noble-icon-9aacaf";
                 nobleImgTag.setAttribute("src","https://shark2.douyucdn.cn/front-publish/live_player-master/assets/images/h1_dcd226.png");
                 nobleImgTag.setAttribute("style","margin-left: -57px; margin-top: -4px;");
                 fatherNode.children[i].insertBefore(nobleImgTag,fatherNode.children[i].firstElementChild);
-                //user atavar img
-                var userIconTag = document.createElement("img");
-                var userIconObj = document.getElementsByClassName("Avatar is-circle")[0];
+                //user avatar img
+                let userIconTag = document.createElement("img");
+                userIconTag.className = "super-user-icon-574f31";
+                let userIconObj = document.getElementsByClassName("Avatar is-circle")[0];
                 if(userIconObj !=undefined){
                     userIconObj = userIconObj.getElementsByTagName("img")[0].getAttribute("src");
                     userIconTag.setAttribute("src", userIconObj.replace((new RegExp("_middle")),"_small"));
                 }else{
                     console.error("未能获取到用户头像");
                 }
-                userIconTag.className = "super-user-icon-574f31";
                 fatherNode.children[i].insertBefore(userIconTag,fatherNode.children[i].firstElementChild);
-                //remove tail tag
-                var tailTag = fatherNode.children[i].getElementsByClassName("afterpic-8a2e13")[0];
+                //remove out tail tag
+                let tailTag = fatherNode.children[i].getElementsByClassName("afterpic-8a2e13")[0];
                 tailTag.remove();
-                //transform scroll barrage effect
-                var textContent = fatherNode.children[i].getElementsByClassName("text-879f3e")[0];
+                //transform barrage effect
+                let textContent = fatherNode.children[i].getElementsByClassName("text-879f3e")[0];
                 textContent.className = "super-text-0281ca";
-                textContent.setAttribute("style","font-style: normal; font-variant: normal; font-weight: 500; font-stretch: normal; font-size: 23px; line-height: normal; font-family: SimHei, &quot;Microsoft JhengHei&quot;, Arial, Helvetica, sans-serif; color: rgb(255, 255, 255); background: url('https://shark2.douyucdn.cn/front-publish/live_player-master/assets/images/h2_8e5e64.png'); height: 44px;");
-                //tail icon
-                var superTailImg = document.createElement("img");
-                superTailImg.className = "super-tail-bffa58";
-                superTailImg.setAttribute("src","https://shark2.douyucdn.cn/front-publish/live_player-master/assets/images/h3_fd2e5b.png");
-                fatherNode.children[i].appendChild(superTailImg);
-                //add fire icon or sign icon
-                var afterpicTag = document.createElement("div");
+                textContent.setAttribute("style","font: bold 23px SimHei, 'Microsoft JhengHei', Arial, Helvetica, sans-serif; color: rgb(255, 255, 255); background: url('https://shark2.douyucdn.cn/front-publish/live_player-master/assets/images/h2_8e5e64.png'); height: 44px;");
+                //add tag tail includes fire icon or sign icon
+                let afterpicTag = document.createElement("div");
                 afterpicTag.setAttribute("class","afterpic-8a2e13");
-                afterpicTag.setAttribute("style","margin-top: 7px; margin-left: -43px;");
-                // afterpicTag.setAttribute("style","margin-top: 7px; margin-left: -1px;");
+                afterpicTag.setAttribute("style","margin-top: 7px; margin-left: -1px;");// afterpicTag.setAttribute("style","margin-top: 7px; margin-left: -43px;");
                 if(document.querySelector(".FirePowerChatModal-Notice")==undefined){//add sign icon
-                    var signImgTag = document.createElement("img");
-                    signImgTag.setAttribute("class","afterpic-8a2e13");
-                    signImgTag.setAttribute("src","https://shark2.douyucdn.cn/front-publish/live_player-master/assets/images/lucky_c5d02e.png");
-                    signImgTag.setAttribute("style","width: 28.8px; height: 28.8px;");
-                    afterpicTag.appendChild(signImgTag);
+                    let signImg = document.createElement("img");
+                    signImg.setAttribute("class","afterpic-8a2e13");
+                    let signImgUrl = ["https://shark2.douyucdn.cn/front-publish/live_player-master/assets/images/lucky_c5d02e.png","https://shark2.douyucdn.cn/front-publish/live_player-master/assets/images/first_e511ac.png"];
+                    signImg.setAttribute("src",signImgUrl[parseInt(Math.random()*2)]);
+                    signImg.setAttribute("style","width: 28.8px; height: 28.8px;");
+                    afterpicTag.appendChild(signImg);
                 }else{//add fire icon
-                    var fireImg = document.createElement("img");
+                    let fireImg = document.createElement("img");
                     fireImg.setAttribute("class","afterpic-8a2e13");
-                    fireImg.setAttribute("src","https://shark2.douyucdn.cn/front-publish/live_player-master/assets/images/hlqk_61648e.svg");
+                    fireImg.setAttribute("src","https://shark2.douyucdn.cn/front-publish/live_player-master/assets/images/hlqk_61648e.svg");//fire
                     fireImg.setAttribute("style","width: 28.8px; height: 28.8px;");//margin-left: -42px;
                     afterpicTag.appendChild(fireImg);
                 }
-                fatherNode.children[i].appendChild(afterpicTag);
+                textContent.appendChild(afterpicTag);
+                //tail icon
+                let superTailImg = document.createElement("img");
+                superTailImg.className = "super-tail-bffa58";
+                superTailImg.setAttribute("src","https://shark2.douyucdn.cn/front-publish/live_player-master/assets/images/h3_fd2e5b.png");
+                fatherNode.children[i].appendChild(superTailImg);
             }
         }
     }
@@ -662,7 +709,6 @@ function roomScript() {
             console.error("未找到房间类别元素，无法创建单选框");
         }
         // remember and restore radio status
-        radioStorage = localStorage.getItem("radioTagStatus🌼🍄🌼")!=null? localStorage.getItem("radioTagStatus🌼🍄🌼"): "ceaseFire";
         var radioNode = document.getElementById(radioStorage);
         radioNode.setAttribute("checked","checked");
     }
@@ -756,12 +802,10 @@ function roomScript() {
                 tmGap = tmGap - 2000;
             } else if(hotValue.innerText > 300000 && hotValue.innerText <= 500000){
                 tmGap = tmGap - 4000;
-                console.info("热度高中奖难，请跳转！");
-                hotFlag = false;
             } else {
                 tmGap = tmGap - 6000;
-                console.info("热度高中奖难，请跳转！");
-                hotFlag = false;
+                // console.info("热度高中奖难，请跳转！");
+                // hotFlag = false;
             }
         }else{
             console.error("未获取到热度值");// location.reload(true);
@@ -785,7 +829,7 @@ function roomScript() {
                         console.info("鱼丸奖励不达标-->内");
                     }
                 }else if (prizeObj.indexOf("红包") != -1 || prizeObj.indexOf("现金") != -1) {
-                    if(prizeObj.indexOf("0.01元") == -1 && prizeObj.indexOf("0.1元") == -1 && prizeObj.indexOf("0.5元") == -1 ){
+                    if(prizeObj.indexOf("0.01元") == -1 && prizeObj.indexOf("0.1元") == -1 && prizeObj.indexOf("0.2元") == -1 && prizeObj.indexOf("0.5元") == -1 ){
                         awardFlag = true;
                     }else{
                         console.info("红包奖励不达标-->内");
@@ -908,7 +952,7 @@ function roomScript() {
                 }else{
                     let room_id = badgeList.children[i].getAttribute("data-fans-room");
                     let room_name = badgeList.children[i].firstElementChild.nextElementSibling.innerText.trim();
-                    //send fansBar to anchor ||赞4 弱鸡5 稳23 荧光棒268 棒棒哒178 辣眼睛179 怂180 加油卡912 
+                    //send fansBar to anchor ||赞4 弱鸡5 稳23 荧光棒268 棒棒哒178 辣眼睛179 怂180 加油卡912
                     let postData = "propId=268&propCount=1&roomId="+room_id+"&bizExt=%7B%22yzxq%22%3A%7B%7D%7D";
                     fetch('https://www.douyu.com/japi/prop/donate/mainsite/v1', {
                         method: 'POST',
@@ -930,7 +974,7 @@ function roomScript() {
                             if(badgeStr.indexOf("】")>-1){
                                 badgeStr=badgeStr.substr(0,badgeStr.length-1);
                                 setTimeout(function(){
-                                    popupToast("《粉丝续牌子打卡》<br>"+badgeStr+"<br>以上带粉丝牌房间打卡成功！", 3);     
+                                    popupToast("《粉丝续牌子打卡》<br>"+badgeStr+"<br>以上带粉丝牌房间打卡成功！", 3);
                                 },2500);
                             }
                             return;
@@ -965,13 +1009,14 @@ function roomScript() {
         var rootJs = document.getElementsByTagName('script')[0];
         rootJs.parentNode.insertBefore(statJs, rootJs);
     }
-    //room filter ; true-contain; false-not include  
+    //room filter ; true-contain; false-not include
     function roomFilter(roomNB){
         var roomFlag = false;
-        if(roomBan.length>0){
-            for(let i=0;i< roomBan.length;i++){
-                if(roomBan[i]==roomNB){
+        if(banRoom.length>0){
+            for(let i=0;i< banRoom.length;i++){
+                if(banRoom[i]==roomNB){
                     roomFlag = true;
+                    break;
                 }
             }
         }
@@ -1031,7 +1076,7 @@ function roomScript() {
             let btnGray = document.getElementsByClassName("ChatSend-button is-gray")[0];
             btnGray!=undefined ? btnGray.className = "ChatSend-button":"";
         }else{
-            checkDelayCallback(6);
+            checkDelayCallback(7);
         }
     }
 
@@ -1363,9 +1408,9 @@ function roomScript() {
                             if(btnBox!=undefined){
                                 btnBox.click();
                                 console.info("每日任务鱼粮领取完毕！");
-                                setTimeout(function(){loopSingTask(2)},200);  
-                            // }else{
-                            //     console.info("鱼粮领取无法完成，请手动一键领取鱼粮！");
+                                setTimeout(function(){loopSingTask(2)},200);
+                                // }else{
+                                //     console.info("鱼粮领取无法完成，请手动一键领取鱼粮！");
                             }
                         }else if(code === 2){
                             console.info("每周任务鱼粮领取完毕！");
@@ -1390,7 +1435,7 @@ function roomScript() {
             let divTag = document.createElement("dfn");
             divTag.className = "PlayerToolbar-ywInfo";
             divTag.setAttribute("style","text-align:left;margin-right:2px;");
-            divTag.setAttribute("data-info","🍰-领鱼粮和小礼物，一键自动领取所有可以领取的鱼粮，并自动参与一次鱼粮抽奖，抽取小礼物呦！");
+            divTag.setAttribute("data-info","🍰-领鱼粮和小礼物，一键领取所有鱼粮，并自动参与一次鱼粮抽奖，抽取小礼物。每次页面刷新或跳转，也会自动领取鱼粮，但不参与抽奖哟！");
             divTag.innerText = "🍰鱼粮";
             divTag.addEventListener("click",function(){getAllFishFood(100)});
             fishballBtn.parentNode.insertBefore(divTag,fishballBtn);
@@ -1408,7 +1453,7 @@ function roomScript() {
             },
             body: postData
         }).then(res => {
-            return res.json();    
+            return res.json();
         }).then(json => {
             if(json.data!=null && json.data.msg!=null){
                 // console.info(json.data.msg);
@@ -1535,10 +1580,9 @@ function roomScript() {
             // setTimeout(assignRank, 1000);//room assign rank
             addFansClickEvent();//fans donate bars btn
             addFishFoodClickEvent();//add fish food btn
-            checkDelayCallback(6);// send barrage without binding phone
+            checkDelayCallback(6);// send barrage without binding phone and auto get fish food
             cloudBarrage();//get cloud barrge
             autoAssign();//room auto assign
-            setTimeout(getAllFishFood,1000*10);//auto get fish food
             sbts = (new Date()).getTime();//reset timestamp
             checkDelayCallback(1);//go to barrageInitCheck
         }
@@ -1573,13 +1617,15 @@ function roomScript() {
                 setTimeout(autoAssign,2000);//wait 15s for element loading
             }
         }else if(code===6){
-            if(((new Date()).getTime() - sbts)/1000 < 15){
+            if(((new Date()).getTime() - sbts)/1000 < 11){
                 setTimeout(releasePhoneLimit,3000);//wait 15s for element loading
+            }else{
+                getAllFishFood();//auto get fish food
             }
         }else if(code===7){
             if(((new Date()).getTime() - sbts)/1000 < 15){
                 setTimeout(getAllFishFood,3000);//wait 15s for element loading
-            }           
+            }
         }
     }
 
