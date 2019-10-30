@@ -4,16 +4,16 @@
 <ul><li>二合一(自动搜火力+自动发弹幕)脚本功能已经和原安全脚本功能合体了，旧的二合一脚本功能不再更新了，建议大家下载本页面的合体脚本即可，如仍需要旧的清爽版二和一脚本的朋友，请<a style="color:red;text-decoration:none;font-weight:bold;" href="https://greasyfork.org/zh-CN/scripts/390551" target="_blank">这里下载</a>；</li></ul>
 <hr> -->
 <h2><a style=" color:red; text-decoration:none; background-color:yellow">必知内容</a></h2>
-<p><strong>本脚所包含的所有功能：自动搜索火力全开房间+自动随机发送云端弹幕(已整合二合一功能)+极速签到手速王+幻神弹幕特效(本机)+不绑定手机发弹幕+鱼吧收藏列表自动签到+自动跳转车队页面签到+粉丝牌一键打卡+鱼粮自动领取+房间自动签到+房间在线人数+当日跳转次数+平台礼物种数+平台车队总数+主播信用值+主播开播时长+是否自动播放(记忆上次操作)+关闭滚屏弹幕(记忆上次操作)+画质调整(已关闭)+房间签到排行(已关闭)</strong></p>
+<p><strong>本脚所包含的所有功能：自动搜索火力全开房间+随机发云端或AI弹幕(已整合二合一功能)+极速签到手速王+幻神弹幕特效(本机)+不绑定手机发弹幕+鱼吧收藏列表自动签到+车队页面签到领加油卡+一键打卡所有粉丝牌房间+鱼粮自动领取并抽奖+房间自动签到(分为极速签到和普通签到)+房间在线人数+自动跳转次数+平台礼物种数+平台车队总数+主播信用值+主播开播时长+是否自动播放(记忆上次操作)+是否开滚屏弹幕(记忆上次操作)+房间签到排行(已关闭)+自动答谢礼物弹幕(隐藏功能)+感谢房管弹幕(隐藏功能)</strong></p>
 <ol>
     <li>如果是为了使用幻神弹幕特效和自动签到等功能，那将复选框点到⛔-火力停止状态,等待组件初始化就好了，其他的都不理会，按以往您斗鱼习惯操作就好。以下内容是其他功能的详细介绍，<strong style="color: red">懒人可以不看！</strong></li>
     <li>如果是为了抢丸子或红包，且每天看斗鱼时间较短(一般2~3h以内的用户)或纯粹的懒人可以用二合一功能(火力搜寻+自动弹幕)，控制开关在菜单鱼吧的右侧，开启二合一开关+停留💥弹幕轰炸，会自动搜索火力全开+自动发送弹幕，每天跳转超过100次后，则停止自动跳转；</li>
     <li>如何每天看斗鱼时间较长，100次满足不了你，那么采用如下方法，准备个小号，小号可以不绑定手机但要用任意账号登陆登录（比如用QQ、微信或微博注册就可以，非登陆状态火力全开是不出现），保持在自动搜索状态🔥，来搜索符合筛选的房间（注：小号不要发弹幕，只做火力全开搜寻跳转用，已测可跳转上千次）。通过小号找到合适的房间网址拷贝下来。然后用主账号访问这个网址，状态保持在💥弹幕轰炸功能，即自动发弹幕抢丸子红包。脚本可以自动检测有无火力全开而发停弹幕，主账号可以开2~3个页面，再多了会被平台检测异常被封（亲测）；</li>
     <li>🔥自动搜索火力全开房间的筛选条件包含：
         <ul><li>房间需要有火力全开活动才符合条件；</li>
-            <li>热度大于300000的则房间被过滤掉，因为中奖难度太高；</li>
+            <li>房间人数大于3000的被过滤掉，中奖难度太高；</li>
             <li>奖品内容要为鱼丸、红包或现金，鱼丸份数>2，数量>100；</li>
-            <li>红包或现金过滤0.01、0.1等无意义的红包；；</li>
+            <li>红包或现金过滤0.01、0.1、0.2等无意义的红包；</li>
             <li>粉丝专属活动自动判断是否满足参与条件；</li>
             <li>过滤掉被房间禁言的直播间；</li>
         </ul>
@@ -21,7 +21,7 @@
 </ol>
 <hr>
 <h2>脚本说明</h2>
-    <p><img src="https://coding.net/u/lvlanxing/p/popzoo/git/raw/master/pics/newInstruction.jpg" width="100%"></p>
+    <p><img src="https://rawcdn.githack.com/wolf-scream/FirePowerSeek/9fdabab520a3fd9143a015872a00208e7908ef23/pics/newInstruction.jpg" width="100%"></p>
     <p>本脚本的使用方法特别简单，因为可供操作的区域都集中在房间标题附近，如图所示；</p>
 <ul>
     <li>序号1是二合一开关，开启开关且保持在💥弹幕轰炸处，会自动搜索火力全开+自动发送弹幕，每天跳转页面超过100次后，则停止自动跳转，但仍可手动🧐或自动🔥跳转；</li>
@@ -29,7 +29,7 @@
     <li>图序3区域是脚本的主要功能，从左向右依次是⛔-火力停止状态；🔥-火力搜寻状态；💥-自动发弹幕功能；⚡-极速签到功能；下面图解说明；</li>
     <li>序号4区域是一些数据的显示，从左向右依次：
         <ul>
-            <li>🎁平台车队的总数,每日首次访问更新一次缓存到本地，点击后可以进入车队的签到入口;</li>
+            <li>🚖平台车队的总数,每日首次访问更新一次缓存到本地，点击后可以进入车队的签到入口;</li>
             <li>🎁平台礼物种类数量,每日首次访问更新一次缓存到本地，点击后可以看到礼物的展示网址;</li>
             <li>🌐今日跳转次数,仅统计使用本脚本自动或手动跳转的次数，供用户参考防止跳转多被封禁；</li>
             <li>💎主播信用度,主播的信用值，最高12，低于4分则不能送主播礼物；</li>
@@ -38,19 +38,21 @@
         </ul>
     </li>
     <li>序号5和6是幻神聊天特效与满级粉丝牌，满级房间等级，满级账号等级、定制车队logo和王者神豪特效；</li>
-    <li>序号7是粉丝打卡功能，点击一键赠送所有粉丝牌房间各一个荧光棒续牌子；</li>
+    <li>序号7是粉丝打卡功能，点击一键赠送自己所有粉丝牌房间各一个荧光棒续牌子；</li>
+    <li>序号8是鱼粮领取+小礼物抽奖，点击后自动领取所有鱼粮并参与一次小礼物抽奖，每次刷新页面或跳转也会自动领取鱼粮但不参与抽小礼物；</li>
+    <!-- https://raw.githubusercontent.com/wolf-scream/FirePowerSeek/master/pics/fishFoodAlert.png -->
 </ul><table><tr>
-    <td><img src = "https://raw.githubusercontent.com/wolf-scream/FirePowerSeek/master/pics/functionCar.png" width="100%" ></td><td>&nbsp;&nbsp;</td>
-    <td><img src = "https://raw.githubusercontent.com/wolf-scream/FirePowerSeek/master/pics/funcionGift.png" width="100%" ></td>
+    <td><img src = "https://rawcdn.githack.com/wolf-scream/FirePowerSeek/9fdabab520a3fd9143a015872a00208e7908ef23/pics/functionCar.png" width="100%" ></td><td>&nbsp;&nbsp;</td>
+    <td><img src = "https://rawcdn.githack.com/wolf-scream/FirePowerSeek/9fdabab520a3fd9143a015872a00208e7908ef23/pics/funcionGift.png" width="100%" ></td>
 </tr><tr>
-    <td><img src = "https://raw.githubusercontent.com/wolf-scream/FirePowerSeek/master/pics/functionPeople.png" width="100%" ></td><td>&nbsp;&nbsp;</td>
-    <td><img src = "https://raw.githubusercontent.com/wolf-scream/FirePowerSeek/master/pics/funcionSeek.png" width="100%" ></td>
+    <td><img src = "https://rawcdn.githack.com/wolf-scream/FirePowerSeek/9fdabab520a3fd9143a015872a00208e7908ef23/pics/functionPeople.png" width="100%" ></td><td>&nbsp;&nbsp;</td>
+    <td><img src = "https://rawcdn.githack.com/wolf-scream/FirePowerSeek/9fdabab520a3fd9143a015872a00208e7908ef23/pics/funcionSeek.png" width="100%" ></td>
 </tr><tr>
-    <td><img src="https://raw.githubusercontent.com/wolf-scream/FirePowerSeek/master/pics/fishfood.png" width="100%"></td><td>&nbsp;&nbsp;</td>
-    <td><img src="https://raw.githubusercontent.com/wolf-scream/FirePowerSeek/master/pics/donateBar.png" width="100%"></td>
+    <td><img src="https://rawcdn.githack.com/wolf-scream/FirePowerSeek/636280339bfea5cde531b530aa797c3c1861a7b2/pics/fishFood.png" width="100%"></td><td>&nbsp;&nbsp;</td>
+    <td><img src="https://rawcdn.githack.com/wolf-scream/FirePowerSeek/9fdabab520a3fd9143a015872a00208e7908ef23/pics/donateBar.png" width="100%"></td>
 </tr><tr>
-    <td><img src="https://raw.githubusercontent.com/wolf-scream/FirePowerSeek/master/pics/switchTip.png" width="100%"></td><td>&nbsp;&nbsp;</td>
-    <td><img src="https://raw.githubusercontent.com/wolf-scream/FirePowerSeek/master/pics/fishFoodAlert.png" width="100%"></td>
+    <td><img src="https://rawcdn.githack.com/wolf-scream/FirePowerSeek/9fdabab520a3fd9143a015872a00208e7908ef23/pics/switchTip.png" width="100%"></td><td>&nbsp;&nbsp;</td>
+    <td><img src="https://rawcdn.githack.com/wolf-scream/FirePowerSeek/9fdabab520a3fd9143a015872a00208e7908ef23/pics/fishFoodAlert.png" width="100%"></td>
 </tr></table><ul>
    <li>各区域详细说明见上面小图，脚本执行后鼠标悬浮在对应的功能按钮上也有相同的浮窗说明提示；</li></ul>
 <ul>
@@ -67,8 +69,8 @@
 <ol>    
     <li>新增滚屏弹幕和自动播放开关记忆功能，如果用户关闭了视频播放，或关闭的滚屏弹幕，那么会记录在本地，下次刷新页面或跳转其他直播间会自动还原为记忆的状态，满足大家不同场景的需求撒~；</li>
     <table><tr>
-        <td><img src="https://raw.githubusercontent.com/wolf-scream/FirePowerSeek/master/pics/fastAssign1.png" width="100%"></td><td>&nbsp;&nbsp;</td>
-        <td><img src="https://raw.githubusercontent.com/wolf-scream/FirePowerSeek/master/pics/fastAssign2.png" width="100%"></td>
+        <td><img src="https://rawcdn.githack.com/wolf-scream/FirePowerSeek/636280339bfea5cde531b530aa797c3c1861a7b2/pics/fastAssign1.png" width="100%"></td><td>&nbsp;&nbsp;</td>
+        <td><img src="https://rawcdn.githack.com/wolf-scream/FirePowerSeek/636280339bfea5cde531b530aa797c3c1861a7b2/pics/fastAssign2.png" width="100%"></td>
    </tr></table>
    <li>新增极速签到功能，帮助大家抢签到手气王榜首，本方法是直接调用签到API接口，延迟为ms级别。在未开播房间循环检测到主播开播后极速签到，使用此功能记住一定要将主播加入特别关注，否则无法签到，由于此功能对服务器压力较大，建议最好在主播开播前几分钟使用，签到后会自动关闭。签到成功会自动弹窗提示；在此十分感谢斗鱼资深水友<strong style="color: red">PuddingPanda</strong>对本功能协同测试开发做出的突出贡献；</li>
     <table>
@@ -77,8 +79,8 @@
     <li>新增<a href="https://popzoo.github.io/barrage" style=" color:red; text-decoration:none;font-weight:bold;" target="_blank">云弹幕词库</a>功能，大家可以从这里查看云弹幕的一些常用普通弹幕和部分精选弹幕，脚本自动从云端抽取符合房间类别的热门弹幕，不用再为发啥子弹幕而愁了，就是这么牛，奏是这么的方便，奏是这么滴憨憨~；</li>
     <li>幻神弹幕特效实现，含泪呀，拖了二个多月，别人家都做出来，博主一直懒得搞，这回好了，直接抓特效就好了，以后人人都是幻神了，有牌面，有气场，有神范，有木有……</li>
     <table><tr>
-        <td><img src="https://raw.githubusercontent.com/wolf-scream/FirePowerSeek/master/pics/yubaAssign.jpg" width="100%"></td><td>&nbsp;&nbsp;</td>
-        <td><img src="https://raw.githubusercontent.com/wolf-scream/FirePowerSeek/master/pics/carAssign.jpg" width="100%"></td>
+        <td><img src="https://rawcdn.githack.com/wolf-scream/FirePowerSeek/9fdabab520a3fd9143a015872a00208e7908ef23/pics/yubaAssign.jpg" width="100%"></td><td>&nbsp;&nbsp;</td>
+        <td><img src="https://rawcdn.githack.com/wolf-scream/FirePowerSeek/9fdabab520a3fd9143a015872a00208e7908ef23/pics/carAssign.jpg" width="100%"></td>
    </tr></table>
     <li>新增鱼吧自动签到，自动签到鱼吧收藏列表的所有鱼吧，没有签到数量的上限，只要是你收藏的鱼吧就都签到，每天执行一次；</li>
     <li>新增车队一键签到，每天首次打开自动跳转车队页面签到，由于需要新打开窗口，所以不要拦截窗口弹窗，也可以从🚖图标进入车队页面，脚本自动检测签到；</li>
@@ -92,19 +94,26 @@
 <ul>
     <li>问题No.1 当弹幕速度过快的时候(一般发送弹幕间隔时间<2s)，会出现皇帝弹幕特效出现在屏幕左侧移动缓慢的情况，请降低弹幕发送速度即可;</li>
     <li>问题No.2 浏览器经常崩溃，这种情况是最为常见的，基本上是由于浏览器内存不足造成的，即用户打开的页面太多了，所以建议您用多个不同浏览器满足多个页面打开的需求，不建议用一个浏览器打开过多的页面，只要是chrome内核的浏览器就可以，如360、搜狗，也都能装油猴的;</li>
+    <table><tr>
+    <td><img src="https://rawcdn.githack.com/wolf-scream/FirePowerSeek/9fdabab520a3fd9143a015872a00208e7908ef23/pics/updateScript.jpg" width="100%"></td><td>&nbsp;&nbsp;</td>
+    <td><a href="https://github.com/wolf-scream/FirePowerSeek/issues/2" target="_blank"><img src="https://rawcdn.githack.com/wolf-scream/FirePowerSeek/9fdabab520a3fd9143a015872a00208e7908ef23/pics/banSpeak.png" width="100%"></a></td>
+    </tr></table>
     <li>问题No.3 如何快速更新脚本？ 由于tamperMonkey自带的脚本更新功能很low，所以建议大家抽空手动更新下脚本，方法特别简单，如下图，方法一，适用所有脚本更细，先勾选所有，然后选择触发一次更新，再点击开始即可；方法二适合单个脚本更新，即直接点击“最后更新”栏下对应脚本的时间,前提是此脚本在greaseFork发布过(即那个叉子图标)；当然还有方法三，直接来greaseFork重新安装脚本便可；</li>
     <li>问题No.4 屏幕滚屏弹幕区和聊天弹幕区都不显示自己发送的弹幕，尝试用手机app端发送弹幕也没显示，这时可以用浏览器F12找console区域，然后发送一条弹幕出现右下图的报错，说明您已经被斗鱼系统给屏蔽发言了，如果出现这种情况，请移步博主的github,参考如何解封账号异常状态，里面有详细的封禁场景和解封办法，<a style="color:red;text-decoration:none;font-weight:bold;" href="https://github.com/wolf-scream/FirePowerSeek/issues/2" target="_blank">点击这里</a>；</li>
-</ul><table><tr><td><img src="https://raw.githubusercontent.com/wolf-scream/FirePowerSeek/master/pics/updateScript.jpg" width="100%"></td><td>&nbsp;&nbsp;</td>
-    <td><a href="https://github.com/wolf-scream/FirePowerSeek/issues/2" target="_blank"><img src="https://raw.githubusercontent.com/wolf-scream/FirePowerSeek/master/pics/banSpeak.png" width="100%"></a></td>
-</tr></table>
+    <table><tr>
+    <td><img src="https://rawcdn.githack.com/wolf-scream/FirePowerSeek/567152d5a660e937e786743748affd65fa537296/pics/thankAdmin.png" width="100%"></td><td>&nbsp;&nbsp;</td>
+    <td><img src="https://rawcdn.githack.com/wolf-scream/FirePowerSeek/567152d5a660e937e786743748affd65fa537296/pics/thankDonator.png" width="100%"></a></td>
+    </tr></table>
+    <li>问题No.5 如何开启隐藏功能？ 目前隐藏功能包含的内容有：自动答谢礼物弹幕+感谢房管开火弹幕。隐藏功能暂时仅供QQ群内(650178547)内部群友使用，如果您想使用隐藏功能，请申请加入我们的QQ群，来获取隐藏功能开启密码和使用方法，在此感谢斗鱼铁杆水友<strong>溜小溜丶</strong>对此功能开发的大力协助；</li>
+</ul>
 <hr>    
 <h2><a href="https://popzoo.github.io/pop/giftshow.html" style=" color:red; text-decoration:none" target="_blank" >礼物车队</a></h2>
 <ul>
    <li>开设了查看斗鱼定制礼物的图谱展示功能（主要是定制火箭最多），由于是统一加载所有礼物图片，网速不好的用户请耐心等待一下哈，大家可以涨涨见识撒，土豪的可以找找自己喜欢的礼物模板记住id，然后去斗鱼定制私人火箭，相当有牌面！用浏览器的搜索功能ctrl+F，能搜到自己熟悉的礼物图片，来个团团的“母猪冲撞”有木有撒；<a style="color:red;text-decoration:none;font-weight:bold;" href="https://popzoo.github.io/pop/giftshow.html" target="_blank">【传送门】</a></li>
    <li>新增<a style="color:red;text-decoration:none;font-weight:bold;" href="https://popzoo.github.io/pop/giftshow.html" target="_blank">斗鱼全部车队</a>条件筛选功能，这里涵盖的斗鱼的已建立的全部车队，包括车队标致，车队logo图片，车队号码，车队名称；已经加上车队筛选条件分类，包括加入车队无限制，需要等级限制或贵族限制（粉丝牌限制暂不开发，因为斗鱼优化了对RMB水友的搜索服务）；</li>
 </ul><table><tr>
-        <td><a href="https://popzoo.github.io/pop/giftshow.html" target="_blank"><img src="https://raw.githubusercontent.com/popzoo/pop/master/images/giftShow.jpg" width="100%"></a></td><td>&nbsp;&nbsp;</td>
-        <td><a href="https://popzoo.github.io/pop/motorcade.html" target="_blank"><img src="https://raw.githubusercontent.com/popzoo/pop/master/images/motorcadeShow.jpg" width="100%"></a></td>
+        <td><a href="https://popzoo.github.io/pop/giftshow.html" target="_blank"><img src="https://rawcdn.githack.com/popzoo/pop/1a207d2854edaf1a434a8dfe1402b936d4ce6239/images/giftShow.jpg" width="100%"></a></td><td>&nbsp;&nbsp;</td>
+        <td><a href="https://popzoo.github.io/pop/motorcade.html" target="_blank"><img src="https://rawcdn.githack.com/popzoo/pop/1a207d2854edaf1a434a8dfe1402b936d4ce6239/images/motorcadeShow.jpg" width="100%"></a></td>
    </tr></table><hr>    
 <h2><a style=" color:red; text-decoration:none; background-color:yellow">作者声明</a></h2>
 <p><strong>本脚本仅供编程爱好者参考、学习和交流使用，请勿做商业用途，如有侵犯了您的权益，请立马联系作者进行处理；本脚本的二次分发代码需经作者同意，谢谢理解；</strong></p>
