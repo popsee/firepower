@@ -2394,6 +2394,17 @@ function roomScript() {
 function yubaScript(){
     var page = 1;//default page
     var assignStr = "";
+
+    function getCookie(name) {
+        var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg))
+            return unescape(arr[2]);
+        else
+            return null;
+    }
+    
+    let uid = getCookie('acf_yb_uid');
+    let localStorageName = `yubaAssigned💧${uid}💧${(new Date()).toLocaleDateString()}`
     // yuba assign
     function yubaAssign(groupId,groupName){
         let postData = "group_id="+groupId;//+"&cur_exp=15"; //ignore curent exp parameter to send here
@@ -2443,7 +2454,7 @@ function yubaScript(){
                 }
                 loopit();
             }else{
-                localStorage.setItem("yubaAssigned💧☔💧"+(new Date()).toLocaleDateString(),"true");
+                localStorage.setItem(localStorageName,"true");
                 assignStr = assignStr.substr(0,assignStr.length-1);
                 storageClear();
                 popupToast(assignStr+"的鱼吧(位于鱼吧收藏列表里)，今日签到完毕！",4);
@@ -2458,13 +2469,13 @@ function yubaScript(){
         var storage = window.localStorage;
         storage.removeItem("game_recode_listdata_h5p_room");
         for(let i = 0; i< storage.length; i++ ){
-            if( storage.key(i).indexOf("yubaAssigned💧☔💧") != -1 && storage.key(i).indexOf("yubaAssigned💧☔💧"+(new Date()).toLocaleDateString()) == -1 ){
+            if( storage.key(i).indexOf(`yubaAssigned💧${uid}💧`) != -1 && storage.key(i).indexOf(localStorageName) == -1 ){
                 storage.removeItem(storage.key(i));
             }
         }
     }
 
-    let yubaStatus = localStorage.getItem("yubaAssigned💧☔💧"+(new Date()).toLocaleDateString());
+    let yubaStatus = localStorage.getItem(localStorageName);
     if(yubaStatus=="true"){//redupliction checked
         console.info("鱼吧已签到,不再重复执行！");
     }else{
