@@ -1,13 +1,12 @@
 // ==UserScript==
-// @name         斗鱼自动搜火力+发AI弹幕+极速签到=抢鱼丸红包沙发神器(日进2W丸子，有图为证)
+// @name         斗鱼薅羊毛神器(日进万丸+概率红包)
 // @namespace    https://github.com/wolf-scream
-// @version      0.7.1
-// @description  这里有斗鱼真正全自动搜索🧐火力全开+自动发AI智能弹幕的抢鱼丸红包二合一的神级😇脚本，您安装脚本后，需要做的只需要两步，一是功能选择💥弹幕轰炸，二是打开鱼吧右侧的二合一开关，然后就不需要您的任何操作了，自动参与火力全开发弹幕抢丸子红包的事情都交给脚本帮你搞定。进来体验下土豪玩家💰😎💰的感脚吧，让您做一个真正有牌面的斗鱼白嫖看客，幻神弹幕特效-有撒，满级粉丝牌子-有撒，顶级车队logo-有撒，极速签到手速王-还是有撒，茫茫人海一眼就相中这个主播，大手🖐一挥，鱼丸万两——💲赏💲！睥睨水友、笑傲鱼塘、彪炳平台全都有撒🐷~！
+// @version      0.8.1
+// @description  这里有斗鱼真正全自动搜索🧐火力全开+自动发AI智能弹幕=抢鱼丸红包二合一的神级😇脚本，您安装脚本后，需要做的只需要两步，一是功能选择💥弹幕轰炸，二是打开鱼吧右侧的二合一开关，然后就不需要您的任何操作了，自动参与火力全开发弹幕抢丸子红包的事情都交给脚本帮你搞定。进来体验下土豪玩家💰😎💰的感脚吧，让您做一个真正有牌面的斗鱼白嫖看客，幻神弹幕特效-有撒，满级粉丝牌子-有撒，顶级车队logo-有撒，极速签到手速王-还是有撒，茫茫人海一眼就相中这个主播，大手🖐一挥，鱼丸万两——💲赏💲！睥睨水友、笑傲鱼塘、彪炳平台全都有撒🐷~！
 // @author       lvlanxing
 // @supportURL   https://github.com/wolf-scream/FirePowerSeek
 // @icon         https://rawcdn.githack.com/popzoo/pop/9d4121eed5cbb035e55203b8a9e56a73dcf2e6bf/images/favicon.ico
 // @icon64URL    https://rawcdn.githack.com/popzoo/pop/9d4121eed5cbb035e55203b8a9e56a73dcf2e6bf/images/favicon-64.ico
-// @require      https://greasyfork.org/scripts/392183-cloudobjectstorage-sdk/code/CloudObjectStorage-SDK.js?version=748094
 // @include      https://www.douyu.com/0*
 // @include      https://www.douyu.com/1*
 // @include      https://www.douyu.com/2*
@@ -28,15 +27,15 @@
 // @grant        GM_openInTab
 // @grant        GM_xmlhttpRequest
 // @connect      coding.net
-// @note         本脚本包含主要功能：本脚所包含的所有功能：自动搜索火力全开房间+自动随机发送云端弹幕+极速签到手速王+皇帝弹幕特效+不绑定手机发弹幕+房间自动签到+房间已签到排行+房间在线人数+当日跳转次数+平台礼物数量+主播信用值+主播开播时长+是否自动播放(记忆上次操作)+关闭滚屏弹幕(记忆上次操作)+画质调整(自行开启)+抓取幻神弹幕特效(自行开启)等功能 && Main Function of Script：Auto Fire Power Seek + Auto Barrage Bombing + Royal Barrage Effect + Sent Barrage Without Binding Phone + Room Assign + Online People Number + Jumping Page Times + Anchor Credit + Anchor Living Time and so forth;
-// @note         本脚本完全由原生的JS写成，且好多函数代码模块可以独立使用（比如非绑定手机发弹幕函数），用户完全可以不装tampermokey或violentmonkey,直接复制代码在控制台执行；
-// @note         欢迎大家使用、参考、研究和引用本脚本，但在引用脚本的时候，希望您能标注出处，这也是对博主的认可和尊重，也是自我修养的体现，如果有什么意见欢迎给博主发邮件留言；
+// @note         本脚本包含主要功能：自动搜索火力全开房间+自动随机发送AI与云端弹幕+极速签到手速王+幻神弹幕特效+不绑定手机发弹幕+房间自动签到+房间在线人数+当日跳转次数+主播信用值+主播开播时长+是否自动播放(记忆上次操作)+关闭滚屏弹幕(记忆上次操作)等功能 && Main Function of Script：Auto Fire Power Seek + Auto Barrage Bombing + Royal Barrage Effect + Sent Barrage Without Binding Phone + Room Assign + Online People Number + Jumping Page Times + Anchor Credit + Anchor Living Time and so forth;
+// @note         本脚本完全由原生的JS写成，且好多函数代码模块可以独立使用（比如非绑定手机发弹幕函数），用户完全可以不装tampermokey或violentmonkey,直接复制代码在控制台执行,但部分功能会受限或异常；
+// @note         欢迎大家使用、参考、研究和引用本脚本，但在引用脚本的时候，希望您能标注出处，这也是对博主的认可和尊重，也是自我修养的体现，如果有什么意见欢迎加入我们的薅羊毛大军的QQ交流群；
 // @note         需要警惕😱的是，当自动搜素🌐跳转房间超过100次时，您处于高危状态，随时会被斗鱼系统屏蔽🚫弹幕发言，不过不要紧哈，当自动跳转超100次会限制自动跳转页面功能，用户可以自行手动跳转；
 // @note         V0.1.0 根据斗鱼鱼塘任务的接口，实现手动按钮火力房间搜索并跳转;
 // @note         V0.1.1 火力搜寻的网址跳转计数，按日期形式序列化到localStorage中，方便用户统计查看;
 // @note         V0.1.2 清理localStorage中无用的信息，同时也防止斗鱼收集用户行为信息;
 // @note         V0.1.3 增加火力全开房间的筛选，热度筛选，当房间热度太高>50W 弹幕中奖几率低则跳过;
-// @note         V0.1.4 奖品种类筛选，只有符合鱼丸和红包奖励才参与，鱼丸奖品份数要大于2，每个不低于100丸子，红包过滤常见无效的金额数目（0.01,0.1,0.5元）
+// @note         V0.1.4 奖品种类筛选，只有符合鱼丸和红包奖励才参与，鱼丸奖品份数要大于2，每个不低于100丸子，红包过滤常见无效的金额数目（0.01,0.1,0.2,0.5元）
 // @note         V0.1.5 参与条件筛选，是否需要成为粉丝才可以参与，如需要粉丝，则跳过;
 // @note         V0.1.6 禁言判断，如果之前被正浏览的房间禁言，则自动跳转;
 // @note         V0.1.7 增加画质调整，因为是抢丸子，所以默认为最低画质，函数中也带了最高画质的代码，可自行注掉更换，该方法参考greaseFork中wah0713大神的方法实现，在此拜谢！
@@ -91,7 +90,12 @@
 // @note         V0.6.9 新增自定义云弹幕功能，用户可到 https://popzoo.github.io/barrage/ 上传自己专属的云弹幕，文件名称要与自己的斗鱼昵称一致，格式为json，上传成功后刷新脚本页面自动采用自制弹幕内容；
 // @note         V0.7.0 增加自动取关功能，白嫖抢丸子跑路不关注功能优化了，带牌粉丝牌的房间默认不取关，特殊关注的房间默认不取关，其他房间如果是脚本自动跳转到的房间会默认取消，该功设置为默认功能，取消了隐藏功能；
 // @note         V0.7.1 修复因斗鱼更改页面元素导致车队无法自动签到的问题,优化用户更换昵称名的session更新,增加国内公用云弹幕和filter访问加速节点，更改更新机制，优化清除locastorage清除延迟机制；
-// @note         V0.7.2 去除了自定义弹幕配置中需要设置AI过滤的配置列表参数，；
+// @note         V0.7.2 去除了自定义弹幕配置中需要设置AI过滤的配置列表参数，修复二合一开关关闭时，停留在弹幕轰炸无法自动发送弹幕的bug,优化tip提示同行，更新并增加云弹幕文案；
+// @note         V0.7.3 新增隐藏功能-关闭幻神特效功能，新增隐藏功能-不符合筛选房间的跳转延迟设置，优化公有弹幕缓存到浏览器，优化绑定状态缓存到浏览器，减少网络接口请求压力，优化火力节点，新增GF版本号对比信息提示；
+// @note         V0.7.4 去除@require依赖库，增加了异地账号登陆弹幕连接失败则自动跳转的功能，修复感谢主播弹幕时候出现[求pick，undefined]的bug,增加了可以直接链接到第三方小葫芦的统计平台的按钮图标；
+// @note         V0.7.5 修改未开启礼物致谢功能，就发送感谢礼物弹幕的bug；
+// @note         V0.8.0 脚本改造升级，由原有单一的火力系统升级为火力系统+粉丝福利社两套系统，两套系统可以通过单选按钮无缝切换。原有开火搜索选框，更改为粉丝福利社抽奖，使用方式与弹幕轰炸和二合一开火+弹幕轰炸方式一样，跳转内容只搜索粉丝福利房间；
+// @note         V0.8.1 修复私有弹幕缓存后无法解析的问题，修复二合一开关开启后无限跳转的bug；
 // ==/UserScript==
 
 //=============================================================================
@@ -101,16 +105,17 @@ function roomScript() {
     //=============================================================================
     //++++++++++Common barrage，user can change your own barrage++++++++++++++++
     //=============================================================================
-    var arrCommon = ["主播加油💪","好奈斯","点击关注，不会迷路","弹幕冲鸭冲鸭","我来冒个泡","火力全开暴躁起来","小礼物刷起来","一发入魂","支持主播，来办卡吧",
+    var arrCommon = ["主播加油💪","好奈斯","点击关注，不会迷路","弹幕冲鸭冲鸭","我来冒个泡","火力全开暴躁起来","小礼物刷起来","一发入魂","支持主播，办卡走一波",
                      "主播彪悍的人生，么得解释","嘤嘤嘤","水军来捧，主播威猛","铁粉驾到，热度必爆","自家人，别误伤","主播贼6！","กิิิิิ荧กิิิิิิิิิิิ光กิิิิิิิิิิิ棒กิิิิิ"]; //common barrage, used with clould common barrage
     var arrPoetry =["山重水复疑无路，关注主播不迷路！","大风起兮云飞扬，弹幕冲兮人满房！","海阔凭鱼跃，弹幕满屏飞！","这是一位神奇的主播，这是一条优质的弹幕"];//refined barrage,used with clould refined barrage;
     const royalTime = 300;//adapt royal effect, don't suggest value less than 100 (ms);
-    var fireWait = 50;//if fire power is over,script will wait this value(unit:second) to check whether fire appeared again or redirect；
-    var jumpCount = 100;//auto jump times, don't advise the value larger than 120; this may conduct your account to be forbidden by douyu
-    var tmGap = 10000;//default send barrage time gap (ms)
-    var msgTxt, msgBtn, firePowerTime, fireJumpTime, popLoopTime, roomAssignTime;//delay task object
-    var uid = "-", uname="-", shareTM="-", roomId="99999", banRoom=[], banName=[], giftDonatorStr="";//user id，name，roomid, room filter
-    var fireFlag=true, thankFlag=false,selfDanmuFlag=false,mixedFlag=false;
+    var fireWait = 60;//if fire power is over,script will wait this value(second) to check whether fire appeared again or redirect；
+    var jumpCount = 100;//auto jump times, don't advise the value larger than 120; this may conduct your account to be forbidden by douyu;
+    var jumpDelay = 3;//default jump delay setup, (second);
+    var tmGap = 10000;//default send barrage time gap (ms);
+    var msgTxt, msgBtn, firePowerTime, fireJumpTime, popLoopTime, roomAssignTime;//delay task object;
+    var uid = "-", uname="-", shareTM="-", roomId="99999", banRoom=[], banName=[], giftInfoStr="-";//user id，name，roomid, room filter;
+    var fireFlag=true,deityFlag=true,welfareFlag=true,thankFlag=false,selfDanmuFlag=false,mixedFlag=false;
     var sbts = (new Date()).getTime();//globle present timestamp
     var tkAdTM = (new Date()).getTime();//thank admin timestamp
     var radioStorage = localStorage.getItem("radioTagStatus🌼🍄🌼")!=null ? localStorage.getItem("radioTagStatus🌼🍄🌼") : "ceaseFire";
@@ -120,14 +125,21 @@ function roomScript() {
     function userConfig(){
         let configInfo = localStorage.getItem("collectUserBarrage");
         if(configInfo!=null && uid !="-"){
-            if(configInfo.indexOf("🀄礼物致谢🀄")>-1){// thankFlag = collectArr.indexOf("🀄礼物致谢🀄")>-1?true:false;
+            if(configInfo.indexOf("🀄礼物答谢🀄")>-1){// thankFlag = collectArr.indexOf("🀄礼物致谢🀄")>-1?true:false;
                 thankFlag=true;
-                console.info("获取用户配置-->【开启礼物致谢功能】");
+                console.info("获取用户配置-->【开启礼物答谢功能】");
             }
             if(configInfo.indexOf("🀄弹幕混用🀄")>-1){
                 mixedFlag=true;
-                console.info("获取用户配置-->【开启弹幕混用功能】");
-            }            
+                console.info("获取用户配置-->【AI与私有弹幕混用】");
+            }
+            if(configInfo.indexOf("🀄关闭幻神🀄")>-1){
+                deityFlag = false;
+                console.info("获取用户配置-->【关闭幻神特效功能】");
+            }else{
+                msgBtn.addEventListener("mouseup",clickBtnEvent);//binding mouse event
+                document.onkeydown = function(e){e.keyCode==13?clickBtnEvent():false}//binding keybord event
+            }
             configInfo = JSON.parse(configInfo);
             configInfo = JSON.parse(configInfo.v);
             var collectArr = [].concat(configInfo[uid]);
@@ -141,50 +153,82 @@ function roomScript() {
                     }else{
                         alert("🀄跳转上限🀄▶数值错误，请重新配置或删除此值");
                     }
-                }else if(collectArr[i].indexOf("🀄火力等待🀄▶")>-1){
+                }else if(collectArr[i].indexOf("🀄结束等待🀄▶")>-1){
                     let fireWaitObj = collectArr[i].substring(collectArr[i].indexOf("▶")+1).replace(/\s/g, '');
                     if(fireWaitObj>0){
                         fireWait = fireWaitObj;
-                        console.info("获取用户配置-->【火力等待时间:"+fireWaitObj+"秒】");
+                        console.info("获取用户配置-->【结束等待时间:"+fireWaitObj+"秒】");
                     }else{
-                        alert("🀄火力等待🀄▶数值错误，请重新配置或删除此值");
+                        alert("🀄结束等待🀄▶数值错误，请重新配置或删除此值");
+                    }
+                }else if(collectArr[i].indexOf("🀄跳转延迟🀄▶")>-1){
+                    let jumpDelayObj = collectArr[i].substring(collectArr[i].indexOf("▶")+1).replace(/\s/g, '');
+                    if(jumpDelayObj>0){
+                        jumpDelay = jumpDelayObj;
+                        console.info("获取用户配置-->【跳转延迟时间:"+jumpDelayObj+"秒】");
+                    }else{
+                        alert("🀄跳转延迟🀄▶数值错误，请重新配置或删除此值");
                     }
                 }
             }
         }
     }
-    //cloud barrage
+    //cloud barrage, public danmu cache, self danmu directly visit
     function cloudBarrage(){
-        var categoryName = document.getElementsByClassName("Title-categoryItem")[1];
-        categoryName = categoryName.innerText;
-        getSelfDanmu();
+        var roomCategory = document.getElementsByClassName("Title-categoryItem")[1];
+        roomCategory = roomCategory.innerText;
+        let publicDanmuCache = sessionStorage.getItem("publicDanmuCache🍥💾🍥");
+        let selfDanmuCache = sessionStorage.getItem("selfDanmuCache🍥💾🍥");
+        if(selfDanmuCache!=null){
+            let json = JSON.parse(selfDanmuCache);
+            arrCommon = json.通用!=undefined ? [].concat(json.通用) : arrCommon;
+            arrCommon = json[roomCategory]!=undefined ? arrCommon.concat(json[roomCategory]) : arrCommon;
+            arrPoetry = json.精选!=undefined ? [].concat(json.精选) : arrPoetry;
+            donatorThank = json.giftThank!=undefined ? donatorThank.concat(json.giftThank) : donatorThank;
+            arrWinning = json.winning!=undefined ? arrWinning.concat(json.winning) : arrWinning;
+            arrNoPrize = json.noprize!=undefined ? arrNoPrize.concat(json.noprize) : arrNoPrize;
+            console.info("采用缓存私有云弹幕，如您上传或更改了私有弹幕，需要重启浏览器更新缓存！");
+            selfDanmuFlag = true;
+        }else if(publicDanmuCache!=null){
+            let json = JSON.parse(publicDanmuCache);
+            arrCommon = json.通用!=undefined ? [].concat(json.通用) : arrCommon;
+            arrCommon = json[roomCategory]!=undefined ? arrCommon.concat(json[roomCategory]) : arrCommon;
+            arrPoetry = json.精选!=undefined ? [].concat(json.精选) : arrPoetry;
+            donatorThank = json.giftThank!=undefined ? donatorThank.concat(json.giftThank) : donatorThank;
+            arrWinning = json.winning!=undefined ? arrWinning.concat(json.winning) : arrWinning;
+            arrNoPrize = json.noprize!=undefined ? arrNoPrize.concat(json.noprize) : arrNoPrize;
+            console.info("采用缓存公用云弹幕，如您上传或更改了私有弹幕，需要重启浏览器更新缓存！");            
+        }else{
+            getSelfDanmu();
+        }
         // personal danmu
         function getSelfDanmu(){
-            cos.getObject({//get one object
-                Bucket: 'danmu-1253626683',
-                Region: 'ap-beijing',
-                Key: 'userDanmu/'+uname+".json",
-            }, function (err, data) {
-                if(err){//create a new Array
-                    console.info("没有找到此昵称匹配云弹幕，使用公有弹幕！");
-                    getpublicDanmuCoding();
-                }else{//get old Array and add new item of fire room
-                    let json = data.Body;
-                    json = JSON.parse(json);
-                    json = json.data;
-                    arrCommon = json.通用!=undefined ? [].concat(json.通用) : arrCommon;
-                    arrCommon = json[categoryName]!=undefined ? arrCommon.concat(json[categoryName]) : arrCommon;
-                    arrPoetry = json.精选!=undefined ? [].concat(json.精选) : arrPoetry;
-                    donatorThank = json.giftThank!=undefined ? [].concat(json.giftThank) : donatorThank;
-                    arrWinning = json.winning!=undefined ? [].concat(json.winning) : arrWinning;
-                    arrNoPrize = json.noprize!=undefined ? [].concat(json.noprize) : arrNoPrize;
-                    console.info("已获取到您的专属云弹幕，弹幕初始化完毕！");
-                    selfDanmuFlag = true;
-                }
-            });
+            fetch('https://danmu-1253626683.cos.ap-beijing.myqcloud.com/userDanmu/'+uname+'.json',{
+                method: 'GET',
+                mode: 'cors',
+                cache: 'default',
+                credentials: 'omit'
+            }).then(res => {
+                return res.json();
+            }).then(jsonData => {
+                let json = jsonData.data;
+                arrCommon = json.通用!=undefined ? [].concat(json.通用) : arrCommon;
+                arrCommon = json[roomCategory]!=undefined ? arrCommon.concat(json[roomCategory]) : arrCommon;
+                arrPoetry = json.精选!=undefined ? [].concat(json.精选) : arrPoetry;
+                donatorThank = json.giftThank!=undefined ? donatorThank.concat(json.giftThank) : donatorThank;
+                arrWinning = json.winning!=undefined ? arrWinning.concat(json.winning) : arrWinning;
+                arrNoPrize = json.noprize!=undefined ? arrNoPrize.concat(json.noprize) : arrNoPrize;
+                console.info("已获取到您的专属云弹幕，弹幕初始化完毕！");
+                sessionStorage.setItem("selfDanmuCache🍥💾🍥",JSON.stringify(json));//cache danmu
+                selfDanmuFlag = true;
+            }).catch(err => {
+                console.info("没有找到您的专属云弹幕，使用公用云弹幕！");
+                getpublicDanmuCoding();
+                // console.error('REQUEST ERROR', err);
+            })
         }
-        // get public cloud danmu domestic  
-        function getpublicDanmuCoding(){        
+        // get public cloud danmu domestic
+        function getpublicDanmuCoding(){
             GM_xmlhttpRequest({
                 method: "GET",
                 url: "https://coding.net/u/lvlanxing/p/popzoo/git/raw/master/json/cloudDanmu.json",
@@ -193,20 +237,25 @@ function roomScript() {
                         let json = JSON.parse(response.responseText);
                         json = json.data;
                         arrCommon = json.通用!=undefined ? arrCommon.concat(json.通用) : arrCommon;
-                        arrCommon = json[categoryName]!=undefined ? arrCommon.concat(json[categoryName]) : arrCommon;
+                        arrCommon = json[roomCategory]!=undefined ? arrCommon.concat(json[roomCategory]) : arrCommon;
                         arrPoetry = json.精选!=undefined ? arrPoetry.concat(json.精选) : arrPoetry;
-                        donatorThank = json.giftThank!=undefined ? [].concat(json.giftThank) : donatorThank;
-                        arrWinning = json.winning!=undefined ? [].concat(json.winning) : arrWinning;
-                        arrNoPrize = json.noprize!=undefined ? [].concat(json.noprize) : arrNoPrize;
-                        console.info("已获取到公有云弹幕，弹幕初始化完毕！");                    
+                        donatorThank = json.giftThank!=undefined ? donatorThank.concat(json.giftThank) : donatorThank;
+                        arrWinning = json.winning!=undefined ? arrWinning.concat(json.winning) : arrWinning;
+                        arrNoPrize = json.noprize!=undefined ? arrNoPrize.concat(json.noprize) : arrNoPrize;
+                        console.info("已获取到公有云弹幕，弹幕初始化完毕！");
+                        sessionStorage.setItem("publicDanmuCache🍥💾🍥",JSON.stringify(json));//cache danmu
                     }else{
-                        getPublicDanmuCDN();
+                        getPublicDanmuAbroad();
                     }
+                },
+                onerror: function(err){
+                    // console.error(err);
+                    getPublicDanmuAbroad();
                 }
-            });        
-        }         
+            });
+        }
         // public public cloud danmu abroad
-        function getPublicDanmuCDN(){//origin json https://raw.githubusercontent.com/popzoo/barrage/master/danmu.json
+        function getPublicDanmuAbroad(){//origin json https://raw.githubusercontent.com/popzoo/barrage/master/danmu.json
             fetch('https://cdn.statically.io/gh/popzoo/barrage/master/danmu.json',{
                 method: 'GET',
                 mode: 'cors',
@@ -217,15 +266,16 @@ function roomScript() {
             }).then(json => {
                 json = json.data;
                 arrCommon = json.通用!=undefined ? arrCommon.concat(json.通用) : arrCommon;
-                arrCommon = json[categoryName]!=undefined ? arrCommon.concat(json[categoryName]) : arrCommon;
+                arrCommon = json[roomCategory]!=undefined ? arrCommon.concat(json[roomCategory]) : arrCommon;
                 arrPoetry = json.精选!=undefined ? arrPoetry.concat(json.精选) : arrPoetry;
-                donatorThank = json.giftThank!=undefined ? [].concat(json.giftThank) : donatorThank;
-                arrWinning = json.winning!=undefined ? [].concat(json.winning) : arrWinning;
-                arrNoPrize = json.noprize!=undefined ? [].concat(json.noprize) : arrNoPrize;
+                donatorThank = json.giftThank!=undefined ? donatorThank.concat(json.giftThank) : donatorThank;
+                arrWinning = json.winning!=undefined ? arrWinning.concat(json.winning) : arrWinning;
+                arrNoPrize = json.noprize!=undefined ? arrNoPrize.concat(json.noprize) : arrNoPrize;
                 console.info("已获取到公有云弹幕，弹幕初始化完毕！");
+                sessionStorage.setItem("danmuCache🍥💾🍥",JSON.stringify(json));//cache danmu
             }).catch(err => {
                 console.error('REQUEST ERROR', err);
-            })            
+            })
         }
     }
     //Capture Barrage to give AI question
@@ -239,7 +289,7 @@ function roomScript() {
                 if(danmuMsg!=undefined && escape(danmuMsg.innerText).indexOf( "%u" )!=-1 && danmuMsg.innerText.length>3 ){//judge str is chinese
                     robotAIChat(danmuMsg.innerText.trim());
                 }else{
-                    if(danmuCount<= Math.min(20, danmuLength)){//capture lastest 20 danmu
+                    if(danmuCount<= Math.min(20, danmuLength)){//capture lastest 20 items danmu
                         danmuCount++;
                         loopSeek();
                     }else{
@@ -253,19 +303,6 @@ function roomScript() {
             bombBarrage();
         }
     }
-    //String length chinese is 2，english is 1
-    // function getRealStrLength(str){
-    //     var realLength = 0, len = str.length, charCode = -1;
-    //     for (var i = 0; i < len; i++) {
-    //         charCode = str.charCodeAt(i);
-    //         if (charCode >= 0 && charCode <= 128){
-    //             realLength += 1;
-    //         }else{
-    //             realLength += 2;
-    //         }
-    //     }
-    //     return realLength;
-    // }
     //AI chat function，140 million relations entity
     function robotAIChat(question){
         let appid = "&appid=e231f81cd82f994e2843c870f391ac7c";
@@ -298,7 +335,7 @@ function roomScript() {
             }
         }).catch(err => {
             bombBarrage();//protect running from AI robot death
-            console.error('REQUEST ERROR', err);
+            console.warn('REQUEST ERROR', err);
         })
     }
     //Send Barrage
@@ -310,7 +347,7 @@ function roomScript() {
                 let reg = new RegExp(" 发起了火力全开");//remove word
                 let makerName = fireMaker.innerText.replace(reg,"");
                 if((new Date()).getTime() - tkAdTM >160 *1000 && makerName.indexOf(uname) ==-1){//filter myself admin
-                    msgTxt.value = "感谢房管【"+makerName+"】的火力丸子，"+ donatorThank[parseInt(Math.random()*donatorThank.length)];
+                    msgTxt.value = "感谢房管@"+makerName+"的火力丸子，"+ donatorThank[parseInt(Math.random()*donatorThank.length)];
                     console.info("感谢房管,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + msgTxt.value);
                     tkAdTM = (new Date()).getTime();
                 }else{
@@ -318,8 +355,9 @@ function roomScript() {
                     console.info("普通弹幕,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + msgTxt.value);
                 }
             }else{
-                msgTxt.value = "求PICK，"+arrPoetry[parseInt(Math.random() * arrCommon.length)];
-                console.info("感谢主播,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + msgTxt.value);
+                msgTxt.value = arrPoetry[parseInt(Math.random() * arrPoetry.length)];
+                console.info("精选弹幕,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + msgTxt.value);
+                // console.info("求主播pick,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + msgTxt.value);
             }
         }else if(probNum == 1){
             msgTxt.value = arrPoetry[parseInt(Math.random() * arrPoetry.length)];
@@ -334,24 +372,24 @@ function roomScript() {
     // gift thank barrage
     function giftTankBarrage(isFire){
         let giftBannerList = document.querySelector(".BarrageBanner").children;//include Banner4gift and Banner4noble
-        if(giftBannerList.length>0 && radioStorage === "bombFire"){
+        if(thankFlag && giftBannerList.length>0 && radioStorage === "bombFire"){
             for(let i=0;i<giftBannerList.length;i++){
                 let giftBanner = giftBannerList.item(i);
                 if(giftBanner!=undefined){
                     // &&(giftBanner.innerText.indexOf("飞机")>-1 || giftBanner.innerText.indexOf("火箭")>-1 || giftBanner.innerText.indexOf("超级火箭")>-1 || giftBanner.innerText.indexOf("办卡")>-1)
                     let giftWords = "感谢"+giftBanner.innerText.replace(/\s/g, '')+"，";//remove blank and tab
-                    if(giftDonatorStr.indexOf(giftWords)==-1 && giftWords.indexOf(uname)==-1){//remove redupication and filter myself donate gift situation
+                    if(giftInfoStr.indexOf(giftWords)==-1 && giftWords.indexOf(uname)==-1){//remove redupication and filter myself donate gift situation
                         giftWords += donatorThank[parseInt(Math.random()* donatorThank.length)];
                         msgTxt.value = giftWords;
-                        msgBtn.click(); 
+                        msgBtn.click();
                         jsonAnalytics(0);
-                        giftDonatorStr = (giftWords + giftDonatorStr).substr(0,120);
+                        giftInfoStr = (giftWords + giftInfoStr).substr(0,120);
                         if(isFire!=undefined){
                             console.info("谢礼弹幕,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + giftWords);
                             clickBtnEvent();
                         }else{
                             console.info("谢礼弹幕,停止累计<"+((new Date()).getTime() - sbts)/1000+"s>" + giftWords);
-                            setTimeout(function(){royalChatEffect(1)}, royalTime);
+                            setTimeout(function(){royalChatEffect()}, royalTime);
                             setTimeout(function(){screenEmpireBarrage()}, royalTime);
                         }
                         return false;//only thanks to nearest one piece of donator
@@ -379,8 +417,13 @@ function roomScript() {
     //Get last own barrage position Gap
     function countBarrageGap(num){
         var gapFlag = true;
+        var count = 0;
         var chatList = document.getElementsByClassName("Barrage-listItem");
         for(let i= chatList.length-1; i>-1;i--){
+            if(chatList[i].innerText.indexOf("您的账号在另一地点登录，弹幕连接已断开")>-1){
+                jumpDelayConfig();//jump to another room
+                break;
+            }
             let lastGap = chatList.length - i -1;
             if(chatList[i].innerHTML.indexOf("is-self")!=-1 ){
                 if(lastGap>= num){
@@ -391,6 +434,11 @@ function roomScript() {
                     console.info("弹幕等候,距自己上条弹幕间隔数:" + lastGap+"/"+num );
                     break;
                 }
+            }
+            if(count===5){//at most loop 5 times
+                break;
+            }else{
+                count++;
             }
         }
         return gapFlag;
@@ -408,30 +456,27 @@ function roomScript() {
                         captureBarrage();
                     }
                     jsonAnalytics(0);
-                }else if(radioStorage === "openFire"){
-                    console.info("火力监测,时间间隔："+ ((new Date()).getTime() - sbts)/1000 + "s");
-                    sbts = (new Date()).getTime();
                 }
-                if(!fireFlag){
+                if(fireFlag){
                     shareFirePowerInfo();
-                    fireFlag=true;
+                    fireFlag=false;
                 }
             } else {
-                if(fireFlag){
+                if(!fireFlag){
                     sbts = (new Date()).getTime();
-                    fireFlag=false;
+                    fireFlag=true;
                 }
                 if( (new Date()).getTime() - sbts < 1000*30 ){
                     awardBarrage();//winning barrage
                 }
-                console.info("火力停止,时间累计："+ ((new Date()).getTime() - sbts)/1000 + "s" );
-                if((radioStorage === "openFire" || (radioStorage === "bombFire" && switchStatus==="on"))
-                   && ((new Date()).getTime() - sbts) > 1000 * fireWait && getDailyRedirect() < parseInt(jumpCount)){//如果超过*分钟没有开火，则跳转！
-                    popupToast("《火力搜寻跳转》<br>该房间已经超过"+fireWait+"s没重开火力<br>3秒后自动跳转！", 3);
+                console.info("火力弹幕停止,时间累计："+ ((new Date()).getTime() - sbts)/1000 + "s" );
+                if( (radioStorage === "bombFire" && switchStatus==="on") && ((new Date()).getTime() - sbts) > 1000 * fireWait && getDailyRedirect() < parseInt(jumpCount)){//如果超过*分钟没有开火，则跳转！
                     if(cancelFollowRoom()){
-                        popupToast("《火力搜寻跳转》<br>该房间已经超过"+fireWait+"s没重开火力<br>跳转前将自动取关<br>3秒后自动跳转！", 3)
+                        popupToast("《火力搜寻跳转》<br>已超过"+fireWait+"s没重开火力<br>跳转前将取关<br>浮窗关闭后跳转！", 3)
                         msgTxt.value = "#取关";
                         msgBtn.click();
+                    }else{
+                        popupToast("《火力搜寻跳转》<br>已超过"+fireWait+"s没重开火力<br>浮窗关闭后跳转！", 3);
                     }
                     fireJumpTime = setTimeout(randomFireRequest,3500);
                 }
@@ -442,16 +487,20 @@ function roomScript() {
     //random barrage time
     function randomTime(){
         let tmRandom = tmGap + parseInt(Math.random()*1500);
-        firePowerTime = setTimeout(firePowerController, tmRandom);
+        if(radioStorage==="openFire"){
+            firePowerTime = setTimeout(welfareController, tmRandom);
+        }else{
+            firePowerTime = setTimeout(firePowerController, tmRandom);
+        }
     }
     //Seek Fire Power Room
     function randomFireRequest() {
         if(switchStatus==="on" && getDailyRedirect()>=parseInt(jumpCount)){
-            popupToast("《二合一功能受限》<br>今日二合一全自动跳转已达上限("+jumpCount+"次)<br>如仍需要跳转请参考二合一开关的提示", 3);
+            popupToast("《二合一功能受限》<br>今日自动跳转已达上限("+jumpCount+"次)<br>若要继续跳转请开启隐藏功能", 3);
         }else{
             fetch('https://www.douyu.com/japi/firepower/apinc/activeTask/getRecRid', {
                 method: 'POST',
-                mode: 'cors',
+                mode: 'no-cors',
                 credentials: 'include',
                 headers: {"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
                 body: "token="+getEffectCookie("acf_ccn")
@@ -493,7 +542,7 @@ function roomScript() {
                             }
                         }).catch(err => {
                             console.error('REQUEST ERROR', err);
-                        })                        
+                        })
                     } else {
                         randomFireRequest();
                     }
@@ -503,20 +552,148 @@ function roomScript() {
             randomFireRequest();
         }
     }
+    //===============================================================
+    //====================== welfare lottory ========================
+    //===============================================================
+    var pageNum = sessionStorage.getItem("pageNum🎗📑🎗")!=null ? sessionStorage.getItem("pageNum🎗📑🎗") : 1;
+    function randomWelfareRequest(){
+        if(switchStatus==="on" && getDailyRedirect()>=parseInt(jumpCount)){
+            popupToast("《二合一功能受限》<br>今日自动跳转已达上限("+jumpCount+"次)<br>若要继续跳转请开启隐藏功能", 3);
+        }else{
+            fetch('https://www.douyu.com/japi/weblist/apinc/rec/lottery?num=1&page='+pageNum,{
+                method: 'GET',
+                mode: 'cors',
+                cache: 'default',
+                credentials: 'include'
+            }).then(res => {
+                return res.json();
+            }).then(json => {
+                var welFareList = json.data;
+                if(welFareList[0]!=undefined && pageNum<50){
+                    pageNum = parseInt(pageNum)+1;
+                    sessionStorage.setItem("pageNum🎗📑🎗",pageNum);
+                    if((welFareList[0].roomName.indexOf("鱼翅")>-1||welFareList[0].roomName.indexOf("元")>-1) && !roomFilter(welFareList[0].roomId)){//include cash and red pack
+                        console.info(welFareList[0]);
+                        let dailyJumpTimes = getDailyRedirect();
+                        dailyJumpTimes!=-1 ? localStorage.setItem((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]", 1+dailyJumpTimes):false;                    
+                        window.location.href = "https://www.douyu.com/"+welFareList[0].roomId;
+                    }else{
+                        randomWelfareRequest();//callback itself
+                    }
+                }else{
+                    pageNum = 1;
+                    sessionStorage.setItem("pageNum🎗📑🎗",pageNum);
+                    randomWelfareRequest();//uneffective and recycle from beginning
+                }
+            }).catch(err => {
+                // console.error('REQUEST ERROR', err);
+                pageNum = 1;
+                sessionStorage.setItem("pageNum🎗📑🎗",pageNum);
+                randomWelfareRequest();//uneffective and recycle from beginning
+            })
+        }
+    }
+
+    function welfareFilter(){
+        let welfareEntrance = document.getElementsByClassName("LotteryDrawEnter-enter")[0];
+        if(welfareEntrance!=undefined && document.getElementsByClassName("ULotteryStart-topMain")[0]==undefined){
+            welfareEntrance.click();//get Lottery window info
+        }
+        let welfareObj = document.getElementsByClassName("ULotteryStart-topMain")[0];//need delay?
+        welfareObj!=undefined ? console.info(welfareObj.innerText.replace(/\s/g, '|')):false;
+        if(welfareObj !=undefined && welfareObj.innerText.indexOf("参与条件：发弹幕+关注主播")>-1){
+            console.info("符合参与🎰条件！");
+            welfareController();
+        }else{
+            if(switchStatus==="on"){ // console.info("无福利社🎰活动");
+                jumpDelayConfig();//directly jump
+            }else{
+                welfareController();
+            }
+        }
+        let closeObj = document.getElementsByClassName("LotteryContainer-close")[0];
+        closeObj != undefined ? closeObj.click() : false;
+
+    }
+    // welfare controller
+    function welfareController(){
+        let welfareEntrance = document.getElementsByClassName("LotteryDrawEnter-enter")[0];
+        if(welfareEntrance!=undefined && document.getElementsByClassName("ULotteryStart-topMain")[0]==undefined){
+            welfareEntrance.click();//get Lottery window info
+        }
+        let welfareObj = document.getElementsByClassName("ULotteryStart-topMain")[0];
+        // document.getElementsByClassName("LotteryContainer")[0].style.display = "none";
+        if(welfareObj !=undefined && welfareObj.innerText.indexOf("参与条件：发弹幕+关注主播")>-1){
+            welfareObj = welfareObj.innerText.replace(/\s/g, '|');
+            let remainTime = welfareEntrance.innerText.split(":");
+            remainTime = parseInt(remainTime[0]) * 60 + parseInt(remainTime[1]);
+            let joinBtn = document.getElementsByClassName("ULotteryStart-joinBtn is-disabled")[0];//join in activity
+            if(joinBtn!=undefined){
+                let danmuContent = document.getElementsByClassName("ULotteryStart-demandDanmu")[0].innerText;
+                danmuContent = danmuContent.substring(danmuContent.indexOf("弹幕：")+3, danmuContent.indexOf("复制"));
+                let num = parseInt(Math.random()*5) + 2; // send danmu, random to wait 2~6 barrage gap
+                if(countBarrageGap(num) && !banSpeak() && !nameFilter()){
+                    msgTxt.value = danmuContent;
+                    msgBtn.click();
+                    console.info("福利抽奖,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + danmuContent);
+                    clickBtnEvent();
+                    jsonAnalytics(0);
+                }                
+            }else{
+                document.getElementsByClassName("ULotteryStart-joinBtn")[0].click();//primary time to join in activity
+            }
+            if(welfareFlag){//put info
+                let avatar = document.getElementsByClassName("Title-anchorPicBack")[0].getElementsByTagName("img")[0].getAttribute("src");
+                let sendMsg = {"roomId":roomId,"donator":uname,"avatar":avatar,"sendTime":new Date().getTime(),"remainTime":remainTime,"content":welfareObj};
+                getFireCOS(sendMsg);
+                welfareFlag = false;
+            }
+        }else{
+            if(!welfareFlag){
+                welfareFlag = true;
+            }
+            console.info("福利弹幕停止,时间累计："+((new Date()).getTime() - sbts)/1000+"s");
+            if(radioStorage==="openFire" && switchStatus==="on" && ((new Date()).getTime() - sbts) > 1000 * fireWait && getDailyRedirect() < parseInt(jumpCount)){
+                if(cancelFollowRoom()){
+                    popupToast("《粉丝福利跳转》<br>已超过"+fireWait+"s没重开福利<br>跳转前将取关<br>浮窗关闭后跳转！", 3)
+                    msgTxt.value = "#取关";
+                    msgBtn.click();
+                }else{
+                    popupToast("《粉丝福利跳转》<br>已超过"+fireWait+"s没重开福利<br>3秒后自动跳转！", 3);
+                }
+                fireJumpTime = setTimeout(randomWelfareRequest,3500);
+            }
+        }
+        // close Lottery
+        let closeObj = document.getElementsByClassName("LotteryContainer-close")[0];
+        closeObj != undefined ? closeObj.click() : false;
+        randomTime(); 
+    }
+    //============================================ 
+    // binding fire btn event
+    function fireBtnBinding(){
+        if(radioStorage ==="openFire"){
+            randomWelfareRequest();
+        }else{
+            randomFireRequest();
+        }
+    }
     //Binding God Barrage
     function clickBtnEvent(){
         sbts = (new Date()).getTime();
-        setTimeout(function(){royalChatEffect(1)}, royalTime);
-        setTimeout(function(){screenEmpireBarrage()}, royalTime);
-    }
+        if(deityFlag){
+            setTimeout(function(){royalChatEffect()}, royalTime);
+            setTimeout(function(){screenEmpireBarrage()}, royalTime);
+        }
+    }    
     //===============================================================
-    //++++++++++++++++++++++God Chat Effect+++++++++++++++++++++++
+    //++++++++++++++++++++++ God Chat Effect +++++++++++++++++++++++
     //===============================================================
-    function royalChatEffect(roles) {//roles:1:god，other：empire
+    function royalChatEffect() {
         let barrageArr = document.getElementsByClassName('Barrage-listItem');
         if (barrageArr.length > 1) {
             for (let i = barrageArr.length - 1; i >-1; i--) {
-                if (barrageArr[i].lastElementChild != null && barrageArr[i].lastElementChild.innerHTML.indexOf("Barrage-nobleImg") == -1 && barrageArr[i].lastElementChild.innerHTML.indexOf("is-self") != -1) { //not null，remove reduplicttion，find self
+                if (barrageArr[i].lastElementChild != null && barrageArr[i].lastElementChild.innerHTML.indexOf("Barrage-nobleImg") == -1 && barrageArr[i].lastElementChild.innerHTML.indexOf("is-self") != -1) {//not null，remove reduplicttion，find self
                     // revise father element class
                     barrageArr[i].className = "Barrage-listItem js-noblefloating-barrage";
                     let chatArea = barrageArr[i].lastElementChild;
@@ -631,9 +808,8 @@ function roomScript() {
                         let royalImg = document.createElement("img");
                         royalTag.className = "Barrage-icon Barrage-noble";
                         royalImg.className = "Barrage-nobleImg";
-                        let nobleImgUrl = roles == 1 ? "//res.douyucdn.cn/resource/2019/08/15/common/4e85776071ffbae2867bb9d116e9a43c.gif" : "//res.douyucdn.cn/resource/2019/08/09/common/3d994a081e5384de14e6893d1d8b94c5.gif";
-                        royalImg.setAttribute("src", nobleImgUrl);
-                        royalImg.setAttribute("title", roles == 1?"幻神":"超级皇帝");
+                        royalImg.setAttribute("src", "//res.douyucdn.cn/resource/2019/08/15/common/4e85776071ffbae2867bb9d116e9a43c.gif");
+                        royalImg.setAttribute("title", "幻神");
                         royalTag.appendChild(royalImg);
                         chatArea.insertBefore(royalTag, chatArea.firstElementChild);
                     }
@@ -724,9 +900,9 @@ function roomScript() {
         var radioStyle = document.createElement('style');
         radioStyle.type = 'text/css';
         radioStyle.innerHTML = (function(){/*
-        .radio{display:inline-block;position: relative;line-height: 18px;margin-right: 10px;cursor: pointer;}
+        .radio{display:inline-block;position: relative;line-height: 18px;margin-right: 8px;cursor: pointer;}
         .radio input{display: none;}
-        .radio .radio-bg{display: inline-block;height: 18px;width: 18px;margin-right: 5px;padding:;background-color: #45bcb8;border-radius: 100%;vertical-align: top;box-shadow: 0 1px 15px rgba(0, 0, 0, 0.1) inset, 0 1px 4px rgba(0, 0, 0, 0.1) inset, 1px -1px 2px rgba(0, 0, 0, 0.1);cursor: pointer;transition: all 0.2s ease;}
+        .radio .radio-bg{display: inline-block;height: 18px;width: 18px;margin-right: 0px;padding:;background-color: #45bcb8;border-radius: 100%;vertical-align: top;box-shadow: 0 1px 15px rgba(0, 0, 0, 0.1) inset, 0 1px 4px rgba(0, 0, 0, 0.1) inset, 1px -1px 2px rgba(0, 0, 0, 0.1);cursor: pointer;transition: all 0.2s ease;}
         .radio .radio-on{display: true;}
         .radio input:checked + span.radio-on{width: 10px;height: 10px;position: absolute;border-radius: 100%;background: #FFFFFF;top: 4px;left: 4px;box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.3), 0 0 1px rgba(255, 255, 255, 0.4) inset;background-image: linear-gradient(#ffffff 0, #e7e7e7 100%);transform: scale(0, 0);transition: all 0.2s ease;transform: scale(1, 1);display: inline-block;}
         dfn {padding: 0 0.4em;cursor: help;font-style: normal;position: relative;}
@@ -752,7 +928,7 @@ function roomScript() {
 
         // create radio after css runing
         var radioBtnTag = (function(){/*
-        <dfn data-info="🧐-手动火力全开房间搜索，用户可以手动点击跳转；⛔-火力停止状态，初始化组件展示数据或停止弹幕；🔥-火力搜寻状态，自动搜索火力全开筛选的房间，火力停止>50s重新搜寻，隐藏功能可配置此等候时间；💥-自动发送弹幕，满足🔥筛选的房间，切到💥会自动智能计算时间发弹幕，根据火力有无自动发停，弹幕内容为AI+云弹幕库混用，用户可配置私有弹幕库； ⚡-极速签到功能，助抢签到手速王，将房间加入“特别关注”，未开播时停留此处，开播瞬间极速签到！">
+        <dfn style="font-size:16px;" data-info="🧐-手动火力全开房间搜索，用户可以手动点击跳转；⛔-火力停止状态，初始化组件展示数据或停止弹幕；🎰-粉丝福利抽奖，自动参与当前房间粉丝福利社抽奖活动，如果没有活动则保持静默状态，根据抽奖有无自动发停，若开启二合一开关，则全自动搜寻参与；💥-发送火力弹幕，自动参与当前房间火力全开活动，如没有火力或不满足条件则保持静默状态，根据火力有无自动发停，弹幕内容为AI+云弹幕库或私有弹幕库，若开启二合一开关，则全自动搜寻并参与活动；⚡-极速签到功能，助抢签到手速王，将房间加入[特别关注]，未开播时停留此处，开播瞬间极速签到！">
         <label for="ceaseFire" class="radio" id="label_cease_fire">
             <span class="radio-bg"></span>
             <input type="radio" name="radio_fire" id="ceaseFire"  value="⛔" />⛔
@@ -760,7 +936,7 @@ function roomScript() {
         </label>
         <label for="openFire" class="radio" id="label_open_fire">
             <span class="radio-bg"></span>
-            <input type="radio" name="radio_fire" id="openFire"  value="🔥" />🔥
+            <input type="radio" name="radio_fire" id="openFire"  value="🎰" />🎰
             <span class="radio-on"></span>
         </label>
         <label for="bombFire" class="radio" id="label_bomb_fire" >
@@ -781,7 +957,7 @@ function roomScript() {
         var outLiTag = document.createElement("li");
         outLiTag.className="Header-menu-link";
         // let checkedStatus = localStorage.getItem("switchStatus🏮🎎🏮");
-        var switchContent = "<dfn data-info='二合一功能(火力搜寻+自动弹幕)的控制开关，开启此开关+停留💥弹幕轰炸，会自动搜索火力全开+自动发送弹幕，每天跳转超过100次后，则停止自动跳转；开启隐藏功能用户可以自定义跳转上限。温馨提示:频繁跳转+频发弹幕=关小黑屋哦!'>";
+        var switchContent = "<dfn data-info='二合一功能(福利社搜寻/火力全开搜寻+自动发弹幕)开关，开启此开关+停留🎰/💥处，会自动搜索福利社抽奖/火力全开+发送抽奖弹幕，每天跳转超过100次后，则停止自动跳转；开启隐藏功能用户可以自定义跳转上限。温馨提示:频繁跳转+频发弹幕=关小黑屋哦!'>";
         if(switchStatus==="on"){
             switchContent+="<input class='mui-switch mui-switch-anim' type='checkbox' checked></dfn>";
         }else{
@@ -799,7 +975,7 @@ function roomScript() {
         outSpan.className = "Title-blockInline";
         fireSeekBtn.innerHTML = "🧐开火";
         fireSeekBtn.className = "Wallet-content-recharge"; //btn style, like Category-item, BackpackButton,PlayerToolbar-getYCBtn
-        fireSeekBtn.addEventListener("click", randomFireRequest);
+        fireSeekBtn.addEventListener("click", fireBtnBinding);
         var blankTag = document.createElement("span");
         blankTag.innerHTML = "&nbsp;&nbsp;&nbsp;";
         var reportNode = document.querySelector(".Title-headline");//get node
@@ -829,7 +1005,6 @@ function roomScript() {
             var anchor4 = document.getElementById("thunderAssign");
             anchor4.addEventListener("change",(function(){radioChange('thunderAssign');}));
             if(switchStatus==="on"){
-                document.getElementById("label_open_fire").style.display="none";
                 document.getElementById("label_thunder").style.display="none";
             }
         }else{
@@ -891,6 +1066,15 @@ function roomScript() {
             };
         };
         return fmt;
+    }
+    //uncompile string util
+    function uncompileStr(code) {
+        code = unescape(code);
+        var c = String.fromCharCode(code.charCodeAt(0) + 1);
+        for (var i = 1; i < code.length; i++) {
+            c += String.fromCharCode(code.charCodeAt(i) + 1);
+        }
+        return c;
     }
     // localStorage clear trash
     function storageOperate(){
@@ -979,16 +1163,16 @@ function roomScript() {
                        (prizeObj.substring(prizeObj.indexOf("鱼丸")-3, prizeObj.indexOf("鱼丸")) >=100 || prizeObj.substring(prizeObj.indexOf("鱼丸")-4, prizeObj.indexOf("鱼丸")) >=100) ){
                         awardFlag = true;
                     }else{
-                        console.info("鱼丸奖励不达标-->内");
+                        console.info("鱼丸奖励不达标");
                     }
                 }else if (prizeObj.indexOf("红包") != -1 || prizeObj.indexOf("现金") != -1) {
                     if(prizeObj.indexOf("0.01元") == -1 && prizeObj.indexOf("0.1元") == -1 && prizeObj.indexOf("0.2元") == -1 && prizeObj.indexOf("0.5元") == -1 ){
                         awardFlag = true;
                     }else{
-                        console.info("红包奖励不达标-->内");
+                        console.info("红包奖励不达标");
                     }
                 }else{
-                    console.info("非实质性奖励-->中");
+                    console.info("非实质性奖品");
                 }
                 // }else{
                 // console.info( prizeObj == document.querySelector(".FirePowerChatModal-award") ? "无奖品锚点-->外":"无详情锚点-->外");
@@ -997,9 +1181,8 @@ function roomScript() {
         }
         return awardConditionFilter(awardStr) || awardConditionFilter(awardDet) ;
     }
-
     // ===================================================================
-    // ================= remember and restore scroll barrage =============
+    // ================= remember and restore last operate ===============
     // ===================================================================
     function screenBarrageMemory(){
         var closeBarrageObj = document.getElementsByClassName("showdanmu-42b0ac")[0];
@@ -1075,7 +1258,7 @@ function roomScript() {
                 sessionStorage.setItem(uid+"🌴🔮🌴", uname);
                 localStorage.setItem(uid+"🌴🔮🌴", uname);
             }
-        }        
+        }
     }
     //get daily jump times
     function getDailyRedirect(){
@@ -1094,15 +1277,40 @@ function roomScript() {
         }
         return dailyRedirect;
     }
-    // get Phone status, daily once to update
+    //jump delay config
+    function jumpDelayConfig(){
+        let roomStayTime = localStorage.getItem("__BEACON_opentime")/1000;
+        if(radioStorage ==="openFire"){
+            if(roomStayTime < jumpDelay){
+                let lastTime = (jumpDelay - roomStayTime + Math.random()*1.5).toFixed(1);
+                console.info("已停留时间:"+roomStayTime+"s;设置停留时间："+jumpDelay+"s;剩余停留时间："+lastTime)+"s;";
+                popupToast("《粉丝福利搜寻》<br>不符合参与条件<br>浮窗关闭后跳转！", parseInt(lastTime));
+                fireJumpTime = setTimeout(randomWelfareRequest,lastTime*1000);
+            }else{
+                popupToast("《粉丝福利搜寻》<br>不符合参与条件<br>浮窗关闭后跳转！", 3);
+                fireJumpTime = setTimeout(randomWelfareRequest,3000);
+            }
+        }else if(radioStorage==="bombFire"){
+            if(roomStayTime < jumpDelay){
+                let lastTime = (jumpDelay - roomStayTime + Math.random()*1.5).toFixed(1);
+                console.info("已停留时间:"+roomStayTime+"s;设置停留时间："+jumpDelay+"s;剩余停留时间："+lastTime)+"s;";
+                popupToast("《火力全开搜寻》<br>不符合开火条件<br>浮窗关闭后跳转！", parseInt(lastTime));
+                fireJumpTime = setTimeout(randomFireRequest,lastTime*1000);
+            }else{
+                popupToast("《火力全开搜寻》<br>不符合开火条件<br>浮窗关闭后跳转！", 3);
+                fireJumpTime = setTimeout(randomFireRequest,3000);
+            }
+        }
+    }
+    // get Phone status, session update
     function getPhoneStatus(){
         var phonestatus = sessionStorage.getItem("phoneStatus📞⏳📞");
         if(phonestatus!=null){
-            if(phonestatus == 1){//binding phone
+            if(phonestatus == "1"){//binding phone
                 checkDelayCallback(7);//auto get fish food
-            }else if(phonestatus == 0){
+            }else if(phonestatus == "0"){
                 checkDelayCallback(6);//send barrage without binding phone and auto get fish food
-            }            
+            }
         }else{
             fetch('https://www.douyu.com/member/cp/cp_rpc_ajax',{
                 method: 'GET',
@@ -1121,7 +1329,18 @@ function roomScript() {
                 }
             }).catch(err => {
                 console.error('REQUEST ERROR', err);
-            })            
+            })
+        }
+    }
+    //send barrage without phone
+    function releasePhoneLimit(){
+        var chatLogin = document.getElementsByClassName("MuteStatus is-noLogin")[0];
+        if(chatLogin!=undefined){
+            chatLogin.remove();
+            let btnGray = document.getElementsByClassName("ChatSend-button is-gray")[0];
+            btnGray!=undefined ? btnGray.className = "ChatSend-button":"";
+        }else{
+            checkDelayCallback(6);
         }
     }
     // mainly to check danmu API frequent and adapt CDN to accelerate
@@ -1135,6 +1354,46 @@ function roomScript() {
         var rootJs = document.getElementsByTagName('script')[0];
         rootJs.parentNode.insertBefore(statJs, rootJs);
     }
+    // get lastest version number
+    function getGFVersionNumber(){
+        let newVersion = sessionStorage.getItem("versionNumber🔥😡🔥");
+        let userVersion = GM_info.script.version;
+        if(newVersion!=null){
+            versionTipInfo(newVersion,userVersion);
+        }else{
+            fetch('https://greasyfork.org/zh-CN/scripts/389379',{
+                method: 'GET',
+                mode: 'cors',
+                cache: 'default',
+                credentials: 'omit',
+            }).then(res => {
+                return res.text();
+            }).then(txt => {
+                txt = (new DOMParser()).parseFromString(txt, 'text/html');
+                let versionNumber = txt.getElementsByClassName("script-show-version")[1];
+                if(versionNumber!=undefined){
+                    versionNumber = versionNumber.innerText;
+                    sessionStorage.setItem("versionNumber🔥😡🔥", versionNumber);
+                    versionTipInfo(versionNumber,userVersion);
+                }
+            }).catch(err => {
+                console.error('REQUEST ERROR', err);
+            })
+        }
+    }
+    function versionTipInfo(newVersion,userVersion){
+        let newList = newVersion.slice(".");
+        newList = parseInt(newList[newList.length-1]) + 100*newList[1] + 10000*newList[0];
+        let userList = userVersion.slice(".");
+        userList = parseInt(userList[userList.length-1]) + 100*userList[1] + 10000*userList[0];
+        if(newList>userList){
+            GM_info.scriptWillUpdate = true;
+            console.info("脚本最新版为["+newVersion+"],您当前的版本为["+GM_info.script.version+"],旧版本功能将不再维护,推荐您升级到最新版！");
+        }
+    }
+    // ===================================================================
+    // ========================= Filter Config ===========================
+    // ===================================================================
     //room filter ; true-contain; false-not include
     function roomFilter(roomNB){
         var roomFlag = false;
@@ -1161,6 +1420,24 @@ function roomScript() {
         }
         return nameFlag;
     }
+    function getFilterConfigCoding(){
+        GM_xmlhttpRequest({
+            method: "GET",
+            url: "https://coding.net/u/lvlanxing/p/popzoo/git/raw/master/json/filterConfig.json",
+            onload: function(response) {
+                if(response.responseText.indexOf("404")==-1){
+                    let jsonData = JSON.parse(response.responseText);
+                    // console.info("GM"+response.responseText);
+                    banRoom = jsonData.roomFilter!=undefined ? [].concat(jsonData.roomFilter):banRoom;
+                    banName = jsonData.nameFilter!=undefined ? [].concat(jsonData.nameFilter):banName;
+                    AIwordFilter = jsonData.AIFilter!=undefined ? [].concat(jsonData.AIFilter):AIwordFilter;
+                }else{
+                    getFilterConfigCOS();
+                }
+            }
+        });
+    }
+
     // get real roomId
     function getRoomId(){
         roomId = document.getElementsByClassName("Title-anchorName")[0];
@@ -1171,13 +1448,16 @@ function roomScript() {
             console.warn("无法获取当前房间号,请刷新页面重试！");
         }
     }
+    // ===================================================================
+    // ====================== Real Person Number =========================
+    // ===================================================================
     // show anchor credit, online people, accumulative living time
     function realPersonNum(){
         let divTag = document.createElement("div");
         divTag.setAttribute('style','margin-left:-18px;');
         divTag.setAttribute('class','Title-anchorName');
         divTag.setAttribute('id','anchor_info_tag');
-        divTag.innerHTML = "<dfn id = 'anchor_detail_info' data-info='🎅-当前房间在线人数(未开播和新主播数据不准)；💲-今日主播的总收益(点击这里刷新此行六组数据)；💭-今日房间弹幕总数(以上数据约延迟30s左右)；'> 🎅- 💲- 💭- </dfn>";//🍪-主播今日收到鱼丸数目总量(鱼丸单位:×1个)
+        divTag.innerHTML = "<dfn id = 'anchor_detail_info' data-info='🎅-当前房间在线人数(前三组数据均来源于播酱网)；💲-今日主播的总收益(点击任意图标即可刷新数据)；💭-今日房间弹幕总数(以上数据大约延迟30s左右)；'> 🎅- 💲- 💭- </dfn>";//🍪-主播今日收到鱼丸数目总量(鱼丸单位:×1个)
         divTag.innerHTML += "<dfn id = 'real_person_num' data-info='🌐-今日跳转次数(仅统计用此脚本自动或手动跳转)；💎-主播当前信用值(若小于4则不能送礼物,满值12)；🎬-主播本次开播时间(若长时间开播则显示日期);'> 🌐- 💎- 🎬- </dfn>";
         let showPosition = document.querySelector(".Title-anchorHot");
         if(showPosition!=null){
@@ -1239,26 +1519,16 @@ function roomScript() {
             let fishballNum = json.data.anchorVo.yw_gift_gx;//fish ball
             let anchorObj = document.getElementById("anchor_detail_info");
             if(anchorObj!=undefined && switchStatus ==="off"){//🎅- 💰- 🍥- 🍪-
+                anchorObj.setAttribute("data-info","🎅-当前房间在线人数(前三组数据均来源于播酱网)；💲-今日主播的总收益(点击这里刷新此行六组数据)；💭-今日房间弹幕总数(以上数据大约延迟30s左右)；");
                 anchorObj.innerHTML = "🎅"+peopleNum +"人&nbsp;💲"+giftValue +"元&nbsp;💭"+ danmuCount + "条";//&nbsp;🍪" + 100*fishballNum + "丸";
             }else{
                 let dfnTagObj = document.getElementById("anchor_detail_info");
-                dfnTagObj.setAttribute("data-info","🎅-当前房间在线人数(未开播和新主播数据会不准)；💲-主播今日的总收益(点击这里刷新此行六组数据)；🌐-今日跳转次数(仅统计用此脚本自动或手动跳转)；");
+                dfnTagObj.setAttribute("data-info","🎅-当前房间在线人数(前三组数据均来源于播酱网)；💲-主播今日的总收益(点击这里刷新此行六组数据)；🌐-今日跳转次数(仅统计用此脚本自动或手动跳转)；");
                 anchorObj.innerHTML = "🎅"+peopleNum +"人&nbsp;💲"+giftValue +"元&nbsp;🌐"+ getDailyRedirect() +"次";
             }
         }).catch(err => {
             console.error('REQUEST ERROR', err);
         })
-    }
-    //send barrage without phone
-    function releasePhoneLimit(){
-        var chatLogin = document.getElementsByClassName("MuteStatus is-noLogin")[0];
-        if(chatLogin!=undefined){
-            chatLogin.remove();
-            let btnGray = document.getElementsByClassName("ChatSend-button is-gray")[0];
-            btnGray!=undefined ? btnGray.className = "ChatSend-button":"";
-        }else{
-            checkDelayCallback(6);
-        }
     }
     // ===================================================================
     // ====================== auto cancel follow room ====================
@@ -1303,7 +1573,7 @@ function roomScript() {
         }).catch(err => {
             console.error('REQUEST ERROR', err);
         })
-    }                        
+    }
     function getSpecialFollowList(roomSet){
         fetch('https://www.douyu.com/wgapi/livenc/liveweb/follow/special',{
             method: 'GET',
@@ -1314,7 +1584,7 @@ function roomScript() {
             return res.text();
         }).then(json => {
             var followList = JSON.parse(json);
-            followList = followList.data;           
+            followList = followList.data;
             for(let i=0; i<followList.length; i++){
                 // console.info(followList[i].room_id.toString());
                 roomSet.add(followList[i].room_id.toString());
@@ -1325,13 +1595,13 @@ function roomScript() {
             console.error('REQUEST ERROR', err);
         })
     }
-    // follow anchor (#关注  #取关)   
+    // follow anchor (#关注  #取关)
     function followRoom() {
         var subObj = document.getElementsByClassName("Title-followBtn")[0];
         var followCheck = document.getElementsByClassName("Title-followBtnBox is-followed")[0];//check followed status
         if (subObj != undefined && followCheck==undefined) {
             subObj.click();
-            console.info("已经关注💓主播");
+            console.info("已经关注💓主播！");
             roomAssignTime = setTimeout(autoAssign, 3000);//wait for assign
         }
     }
@@ -1376,101 +1646,88 @@ function roomScript() {
     // ===================================================================
     // ============================= COS Operate =========================
     // ===================================================================
-    const region = 'ap-beijing', bucket = 'fire-room-1253626683';// eslint-disable-next-line
-    var cos = new COS({SecretId: window.atob("QUtJRENBeFZ6RUp3VnNLY2VSZ05US3dNZGVRd0RHTkp3UGFw"),
-                       SecretKey: window.atob("VW95c1h2MXhlQ2FwdGQ4dVd1QkN5YTBEQXROaGxhOVI=")});
+    const firePrefix = 'https://fire-room-1253626683.cos.ap-beijing.myqcloud.com/';//eslint-disable-next-line
+    const jumpPrefix = 'https://jump-count-1253626683.cos.ap-beijing.myqcloud.com/';//eslint-disable-next-line
+    const welfarePrefix = 'https://welfare-1253626683.cos.ap-beijing.myqcloud.com/';//eslint-disable-next-line
     function putJumpInfo(){
-        let file = {"uname":uname,"uid":uid,"jumpCount":getDailyRedirect()};
-        file = JSON.stringify(file);
-        cos.putObject({//add one object
-            Bucket: bucket,
-            Region: region,
-            Key: 'JumpCount/'+dateFormat("YYYY-mm-dd",new Date()) +'/'+uname+'.json',
-            Body: file,
-        }, function (err, data) {
-            if(err){
-                // console.error(err);
-            }else{
-                console.info("JumpCount:Success");
+        let url = jumpPrefix+'JumpCount/'+dateFormat("YYYY-mm-dd",new Date()) +'/'+uname+'.json';
+        fetch(url,{
+            method: 'PUT',
+            headers: {'Content-Type':'application/json; charset=utf-8'},
+            body: JSON.stringify({"uname":uname,"uid":uid,"jumpCount":getDailyRedirect()}),
+            credentials: "omit",
+        }).then(response => {
+            if(response.headers.get('ETag')!=undefined){
+                console.log("JumpCountPut:success");
             }
-        });
+        }).catch(err => {
+            console.error('JumpCountPut:failure');
+        })
     }
-    function getFilterConfigCOS(){
-        let resPath = 'filterConfig.json';
-        cos.getObject({//get one object
-            Bucket: bucket,
-            Region: region,
-            Key: resPath,
-        }, function (err, data) {
-            if(err){//create a new Array
-                // console.error(err || data.Body);
-            }else{//get old Array and add new item of fire room
-                // console.info("COS"+data.Body);
-                let jsonData = JSON.parse(data.Body);
-                banRoom = [].concat(jsonData.roomFilter);
-                banName = [].concat(jsonData.nameFilter);
-            }
-        });
-    }        
-    function getFilterConfigCoding(){
-        GM_xmlhttpRequest({
-            method: "GET",
-            url: "https://coding.net/u/lvlanxing/p/popzoo/git/raw/master/json/filterConfig.json",
-            onload: function(response) {
-                if(response.responseText.indexOf("404")==-1){
-                    let jsonData = JSON.parse(response.responseText);
-                    // console.info("GM"+response.responseText);
-                    banRoom = jsonData.roomFilter!=undefined ? [].concat(jsonData.roomFilter):banRoom;
-                    banName = jsonData.nameFilter!=undefined ? [].concat(jsonData.nameFilter):banName;
-                    AIwordFilter = jsonData.AIFilter!=undefined ? [].concat(jsonData.AIFilter):AIwordFilter;
-                    let newVersion = jsonData.currentVersion;
-                    if(newVersion != GM_info.script.version){
-                        GM_info.scriptWillUpdate = true;
-                        console.info("脚本最新版本为["+newVersion+"],您当前的版本为["+GM_info.script.version+"],建议您升级后使用！");
-                    }
-                }else{
-                    getFilterConfigCOS();
-                }
-            }
-        });        
+    function getFilterConfigCOS(){//second plan
+        fetch(firePrefix+'filterConfig.json',{
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-store',
+            credentials: 'omit'
+        }).then(res => {
+            return res.json();
+        }).then(jsonData => {
+            banRoom = jsonData.roomFilter!=undefined ? [].concat(jsonData.roomFilter):banRoom;
+            banName = jsonData.nameFilter!=undefined ? [].concat(jsonData.nameFilter):banName;
+            AIwordFilter = jsonData.AIFilter!=undefined ? [].concat(jsonData.AIFilter):AIwordFilter;
+        }).catch(err => {
+            console.error('REQUEST ERROR', err);
+        })
     }
     function putFireInfo(file,fireUrl){
-        cos.putObject({//add one object
-            Bucket: bucket,
-            Region: region,
-            Key: fireUrl,
-            Body: file,
-        }, function (err, data) {
-            if(err){
-                // console.error(err);
-            }else{
-                console.info("FireRoomPut:Success");
+        fetch(fireUrl,{
+            method: 'PUT',
+            headers: {'Content-Type':'application/json; charset=utf-8'},
+            body: file,
+            credentials: "omit",
+        }).then(response => {
+            if(response.headers.get('ETag')!=undefined){
+                radioStorage==="openFire" ? console.info("WelfarePut:Success") : console.info("FireRoomPut:Success");
+                
             }
-        });
+        }).catch(err => {
+            console.error('FireRoomPut:failure');
+        })
     }
     function getFireCOS(sendMsg){
         let date = new Date();
-        let fireUrl = 'FireRoom/'+dateFormat("YYYY-mm-dd",date) +'/'+dateFormat('HH',date)+'-fireInfo.json';
-        cos.getObject({//get one object
-            Bucket: bucket,
-            Region: region,
-            Key: fireUrl,
-        }, function (err, data) {
-            if(err){//create a new Array
-                // console.error(err || data.Body);
-                putFireInfo(JSON.stringify([sendMsg]),fireUrl);
-            }else{//get old Array and add new item of fire room
-                var jsonData = JSON.parse(data.Body);
-                for(let i=0; i<jsonData.length;i++){
-                    if(jsonData[i].roomId == sendMsg.roomId){
-                        jsonData.splice(i,1);
+        let reqUrl = firePrefix +'FireNode/'+dateFormat("YYYY-mm-dd",date) +'/'+dateFormat('HH',date)+'-fireInfo.json';
+        if(radioStorage==="openFire"){
+            reqUrl = welfarePrefix +'WelfareNode/'+dateFormat("YYYY-mm-dd",date) +'/'+dateFormat('HH',date)+'-welfareInfo.json';
+        }
+        fetch(reqUrl,{
+            method: 'GET',
+            mode: 'cors',
+            cache: 'no-store',
+            credentials: 'omit'
+        }).then(res => {
+            return res.json();
+        }).then(jsonData => {
+            var addFlag = true;
+            for(let i=0; i<jsonData.length;i++){//remove reduplication
+                if(jsonData[i].roomId == sendMsg.roomId){
+                    let endTimeStamp = jsonData[i].remainTime*1000 + parseInt(jsonData[i].sendTime);
+                    if(endTimeStamp >= (new Date()).getTime()){
+                        addFlag = false;//if one fire activity endtime longer than current time,this fire node will be omit
                     }
                 }
-                jsonData.unshift(sendMsg);
-                putFireInfo(JSON.stringify(jsonData),fireUrl);
-                console.info("FireRoomGet:Success");
             }
-        });
+            radioStorage==="openFire" ? console.info("WelfareGet:Success") : console.info("FireRoomGet:Success");
+            if(addFlag){
+                jsonData.unshift(sendMsg);
+                putFireInfo(JSON.stringify(jsonData),reqUrl);
+            }
+        }).catch(err => {
+            var arr = new Array();
+            putFireInfo(JSON.stringify([sendMsg]),reqUrl);
+            // console.error('REQUEST ERROR', err);
+        })
     }
     function shareFirePowerInfo(){
         if(shareTM=="-" || (new Date().getTime() - shareTM) >60 * 1000){//to avoid frequently transform onchange radio
@@ -1533,12 +1790,12 @@ function roomScript() {
                 if(anchorLevel>=30 ){
                     let acfCookie = getEffectCookie('acf_ccn');
                     getAnchorStatus();
-                    popupToast("《极速房间签到》<br>极速签到功能已开启<br>请F12查看控制台，监测输出是否疯狂！", 4);
+                    popupToast("《极速房间签到》<br>极速签到功能已开启<br>请F12控制台查看功能是否正常！", 4);
                 }else{
                     console.info("主播等级<Lv.30，无房间可签到！");
                 }
             }else{
-                popupToast("《极速房间签到》<br>当前房间未添加到【特别关注】<br>请添加后并重新切换到⚡才能开启！", 4);
+                popupToast("《极速房间签到》<br>当前房间未添加到【特别关注】<br>请添加并重切到⚡才能开启！", 4);
                 // console.info("当前房间未添加到“特别关注”，添加后重新切到⚡才能开启极速签到！");
             }
         }).catch(err => {
@@ -1593,7 +1850,7 @@ function roomScript() {
                 checkDelayCallback(5);
             }
         }
-    }    
+    }
     // ===================================================================
     // ========================== cookie operate =========================
     // ===================================================================
@@ -1647,7 +1904,7 @@ function roomScript() {
             giftTag.setAttribute("id","gift_view_door");
             giftTag.setAttribute("style","text-align:left;margin-right:6px;");
             giftTag.setAttribute("data-info","🎁-斗鱼礼物图鉴，点击可查看动态、静态、欢迎、牌子、成就、广播等图片集锦，统计数据已放入跳转网页底部，这里只做跳转入口;");
-            showPlace.parentNode.insertBefore(giftTag, showPlace);            
+            showPlace.parentNode.insertBefore(giftTag, showPlace);
         }else{
             checkDelayCallback(10);
         }
@@ -1663,17 +1920,17 @@ function roomScript() {
             carTag.setAttribute("style","text-align:left;margin-right:0;");
             carTag.setAttribute("data-info","🚖-斗鱼车队入口，点击可进入车队界面，每天首次启动脚本后自动跳转页面执行签到和领取车队加油卡，白嫖车队请点击【🎁礼物】进入【车队展】中查看;");
             showPlace.parentNode.insertBefore(carTag, showPlace);
+            //check whether is duplicate assign
+            let carStatus = localStorage.getItem("carAssigned🚦🚍🚦"+(new Date()).toLocaleDateString());
+            if(carStatus!="true"){//car no assignment
+                setTimeout(function(){
+                    localStorage.setItem("carAssigned🚦🚍🚦"+(new Date()).toLocaleDateString(),"true");
+                    // openNewTab("https://msg.douyu.com/motorcade/");//method focus new tab
+                    GM_openInTab('https://msg.douyu.com/motorcade/',{active: false});//unfocus new tab
+                },4000);
+            }            
         }else{
-            console.warn("无法获取车队显示位置");
-        }
-        //check whether is duplicate assign
-        let carStatus = localStorage.getItem("carAssigned🚦🚍🚦"+(new Date()).toLocaleDateString());
-        if(carStatus!="true"){//car no assignment
-            setTimeout(function(){
-                localStorage.setItem("carAssigned🚦🚍🚦"+(new Date()).toLocaleDateString(),"true");
-                // openNewTab("https://msg.douyu.com/motorcade/");//method focus new tab
-                GM_openInTab('https://msg.douyu.com/motorcade/',{active: false});//unfocus new tab
-            },4000);
+            checkDelayCallback(11);
         }
     }
     //avoid to forbid jump
@@ -1687,6 +1944,20 @@ function roomScript() {
         }
         a.click();
     }
+    // third statistics jump
+    function thirdStatEntrance(){
+        let showPlace = document.getElementsByClassName("PlayerToolbar-ywInfo")[0];
+        if(showPlace!=undefined){
+            let thirdTag = document.createElement("dfn");
+            thirdTag.innerHTML = "<a href='https://www.xiaohulu.com/liveParticularsIndex/2/"+roomId+"' target='_blank'>📊葫芦</a>";
+            thirdTag.setAttribute("class","PlayerToolbar-ywInfo");
+            thirdTag.setAttribute("style","text-align:left;margin-right:0;");            
+            thirdTag.setAttribute("data-info","📊-小葫芦数据统计页面，点击可查看主播排行、收益、弹幕数、开播时常、礼物数等详细数据，也可更改为播酱链接入口，看大家需求来定;");
+            showPlace.parentNode.insertBefore(thirdTag, showPlace);
+        }else{
+            checkDelayCallback(14);
+        }
+    }    
     // ===================================================================
     // ======================auto donate fans bar=========================
     // ===================================================================
@@ -1701,7 +1972,7 @@ function roomScript() {
             dfnTag.addEventListener("click",getFansMedalList);
             fishballBtn.parentNode.insertBefore(dfnTag,fishballBtn);
         }else{
-            console.warn("无法获取打卡显示位置");
+            checkDelayCallback(12);
         }
     }
     // get fans Badge roomId
@@ -1769,7 +2040,7 @@ function roomScript() {
         }).catch(err => {
             console.error('REQUEST ERROR', err);
         })
-    }    
+    }
     // ===================================================================
     // =========================fetch all fish food=======================
     // ===================================================================
@@ -1786,9 +2057,9 @@ function roomScript() {
             divTag.addEventListener("click",function(){getAllFishFood(100)});
             fishballBtn.parentNode.insertBefore(divTag,fishballBtn);
         }else{
-            console.warn("无法获取鱼粮显示位置");
+            checkDelayCallback(13);
         }
-    }    
+    }
     function getAllFishFood(sign){
         if(sign === 100){popupToast("《领取鱼粮》<br>正在领取鱼粮中...", 3);}
         let fishPond = document.querySelector(".FishpondTreasure-icon");
@@ -1812,7 +2083,7 @@ function roomScript() {
                         let bubbleBox = document.getElementsByClassName("FTP-bubbleBox is-complete")[0];
                         if(bubbleBox!=undefined){
                             bubbleBox.click();
-                            setTimeout(loopBubbleBox,100);
+                            setTimeout(loopBubbleBox,500);
                         }else{
                             console.info("泡泡区域鱼粮领取完毕！");
                             loopSingTask(1);
@@ -1826,14 +2097,14 @@ function roomScript() {
                     let fishFoodTask = document.getElementsByClassName("FTP-singleTask-btn is-finished")[0];
                     if(fishFoodTask!=undefined){
                         fishFoodTask.click();
-                        setTimeout(function(){loopSingTask(code)},100);
+                        setTimeout(function(){loopSingTask(code)},500);
                     }else{
                         if(code === 1){
                             let btnBox = document.getElementsByClassName("FTP-btnBox")[1];
                             if(btnBox!=undefined){
                                 btnBox.click();
                                 console.info("每日任务鱼粮领取完毕！");
-                                setTimeout(function(){loopSingTask(2)},200);
+                                setTimeout(function(){loopSingTask(2)},500);
                             }
                         }else if(code === 2){
                             console.info("每周任务鱼粮领取完毕！");
@@ -1876,32 +2147,30 @@ function roomScript() {
     }
     // ===================================================================
     // ======================== event listener ===========================
-    // ===================================================================            
+    // ===================================================================
     // handle openfire onchange radio
-    function openFireFilter(){
-        let fireCheck = document.getElementsByClassName("FirePowerChatModal-Notice")[0];
-        if( fireCheck != undefined && awardJudge() && !joinCondition() && !banSpeak() ){
-            console.info("房间符合开火🔥条件");
-            followRoom();
-            firePowerController();
-            shareFirePowerInfo();
-        }else{
-            popupToast("《火力全开搜寻》<br>当前房间不符合开火🔥条件<br>3秒后自动跳转新🏠！", 3);
-            fireJumpTime = setTimeout(randomFireRequest,3000);
-        }
-    }
+    // function openFireFilter(){
+    //     let fireCheck = document.getElementsByClassName("FirePowerChatModal-Notice")[0];
+    //     if( fireCheck != undefined && awardJudge() && !joinCondition() && !banSpeak() ){
+    //         console.info("符合开火🔥条件！");
+    //         followRoom();
+    //         firePowerController();
+    //     }else{
+    //         jumpDelayConfig();
+    //         popupToast("《火力全开搜寻》<br>当前房间不符合开火🔥条件<br>3秒后自动跳转新🏠！", 3);
+    //         fireJumpTime = setTimeout(randomFireRequest,3000);
+    //     }
+    // }
     //  handle bombfire onchange radio
     function bombFireFilter(){
         let fireCheck = document.getElementsByClassName("FirePowerChatModal-Notice")[0];
         if( fireCheck != undefined && !joinCondition() && awardJudge() && !banSpeak() ){
-            console.info("房间符合弹幕💥发送");
+            console.info("符合弹幕💥发送！");
             followRoom();
             firePowerController();
-            shareFirePowerInfo();
         }else{
             if(switchStatus==="on"){
-                popupToast("《二合一功能开启》<br>当前房间不符合开火🔥条件<br>3秒后自动跳转！", 3);
-                fireJumpTime = setTimeout(randomFireRequest,3000);
+                jumpDelayConfig();
             }else{
                 firePowerController();
             }
@@ -1913,30 +2182,30 @@ function roomScript() {
         clearTimeout(firePowerTime);//avoid controller run twice at same time
         // let switchStatus = localStorage.getItem("switchStatus🏮🎎🏮");
         if(switchStatus==="on"){//close siwtch
-            document.getElementById("label_open_fire").removeAttribute("style");
             document.getElementById("label_thunder").removeAttribute("style");
             // document.querySelector(".Title-roomOtherBottom").removeAttribute("style");
             // document.querySelector(".Title-roomOtherTop").removeAttribute("style");
             switchStatus = "off";
             localStorage.setItem("switchStatus🏮🎎🏮","off");
-            if(radioStorage == "openFire"){
-                openFireFilter();
+            if(radioStorage === "openFire"){
+                welfareFilter();
+            }else if(radioStorage === "bombFire"){
+                bombFireFilter();
             }
         }else{//open switch
-            document.getElementById("label_open_fire").style.display="none";
             document.getElementById("label_thunder").style.display="none";
             // document.querySelector(".Title-roomOtherBottom").style.display="none";
             // document.querySelector(".Title-roomOtherTop").style.display="none";
             switchStatus = "on";
             localStorage.setItem("switchStatus🏮🎎🏮","on");
-            if(radioStorage=="bombFire"){
+            if(radioStorage === "openFire"){
+                welfareFilter();
+            }else if(radioStorage === "bombFire"){
                 bombFireFilter();
-            }else if(radioStorage=="openFire"){
-                openFireFilter();
             }
         }
-        titleAreaRefresh();
-        console.info("二合一开关状态:"+switchStatus);
+        titleAreaRefresh();//refresh title
+        console.info("开关状态:"+switchStatus);
     }
     // remove ads
     function removeSomeAds(){
@@ -1948,34 +2217,33 @@ function roomScript() {
         titleAd!=null ?titleAd.remove():false;
         checkDelayCallback(9);
     }
-
     // radio onchange listener
     function radioChange(msg){
         if(msg === "ceaseFire"){
             radioStorage = "ceaseFire";
             clearTimeout(firePowerTime);
             clearTimeout(fireJumpTime);
-            console.info("⛔停止开火");
+            console.info("⛔-停止开火");
             localStorage.setItem("radioTagStatus🌼🍄🌼",msg);
         }else if(msg === "openFire"){
             radioStorage = "openFire";
             clearTimeout(firePowerTime);
             clearTimeout(fireJumpTime);
-            console.info("🔥火力全开");
+            console.info("🎰-粉丝抽奖");
             localStorage.setItem("radioTagStatus🌼🍄🌼",msg);
-            openFireFilter();
+            welfareFilter();
         }else if(msg === "bombFire"){
             radioStorage = "bombFire";
             clearTimeout(firePowerTime);
             clearTimeout(fireJumpTime);
-            console.info("💥弹幕轰炸");
+            console.info("💥-弹幕轰炸");
             localStorage.setItem("radioTagStatus🌼🍄🌼",msg);
             bombFireFilter();
         }else if(msg === "thunderAssign"){
             radioStorage = "thunderAssign";
             clearTimeout(firePowerTime);
             clearTimeout(fireJumpTime);
-            console.info("⚡极速签到");
+            console.info("⚡-极速签到");
             localStorage.setItem("radioTagStatus🌼🍄🌼",msg);
             prepareThunderAssign();
         }
@@ -1991,8 +2259,6 @@ function roomScript() {
             sbts = (new Date()).getTime();//record start timestamp
             msgTxt = document.querySelector(".ChatSend-txt");
             msgBtn = document.querySelector(".ChatSend-button");
-            msgBtn.addEventListener("mouseup",clickBtnEvent);//binding mouse event
-            document.onkeydown = function(e){e.keyCode==13?clickBtnEvent():false}//binding keybord event
             createUIElement();//create css and btn
             jsonAnalytics(1);//barrage analytics
             screenBarrageMemory();//restore scroll barrage status
@@ -2005,44 +2271,40 @@ function roomScript() {
             // setTimeout(assignRank, 1000);//room assign rank
             giftShowEntrance();//platform total gift sort number
             motorcadeEntrance();//motorcade total number and car assign
+            thirdStatEntrance();//third statistic entrance
             addFansClickBtn();//fans donate bars btn
             addFishFoodClickBtn();//add fish food btn
             removeSomeAds();//remove some boring ADs
-            getPhoneStatus();//get phone status + get fishfood / send danmu no phone
+            getPhoneStatus();//get phone status --> get fishfood || send danmu no phone
             getFilterConfigCoding();//get filter config
             cloudBarrage();//get cloud barrge
             autoAssign();//room auto assign
             putJumpInfo();//jump Counts
             cancelFollowRoom();//init careList session storage
+            getGFVersionNumber();//get lastest version info
             sbts = (new Date()).getTime();//reset timestamp
             checkDelayCallback(1);//go to barrageInitCheck
         }
     }
     //===============================================================
-    //+++++++++++++++++++ Wait Element or Object Loading +++++++++++
+    //+++++++++++++++++++ Wait Element or Object Loading ++++++++++++
     //===============================================================
     function checkDelayCallback(code){
         if(code===0){
             setTimeout(programInitCheck,1000);
         }else if(code===1){
-            setTimeout(barrageInitCheck,1000);
+            setTimeout(barrageInitCheck,1000); 
         }else if(code===2){//wait to check fire power
-            if(((new Date()).getTime() - sbts)/1000 < 11){//jump performed unless it's more than 12s to check none of fire power activity
+            if(((new Date()).getTime() - sbts)/1000 < 25){//jump unless it's more than *s to check none of activity
                 setTimeout(barrageInitCheck,1000);
             }else{
-                popupToast("《火力全开搜寻》<br>当前房间不符合开火🔥条件<br>3秒后自动跳转新🏠！", 3);
-                fireJumpTime = setTimeout(randomFireRequest,3000);
+                switchStatus==="on" ? jumpDelayConfig() : welfareController();
             }
         }else if(code===3){
-            if(((new Date()).getTime() - sbts)/1000 < 12){
+            if(((new Date()).getTime() - sbts)/1000 < 15){
                 setTimeout(barrageInitCheck,1000);//wait 12s for element loading
             }else{
-                if(switchStatus==="on"){
-                    popupToast("《二合一功能开启》<br>当前房间不符合开火🔥条件<br>3秒后自动跳转！", 3);
-                    fireJumpTime = setTimeout(randomFireRequest,3000);
-                }else{
-                    firePowerController();
-                }
+                switchStatus==="on" ? jumpDelayConfig() : firePowerController();
             }
         }else if(code===4){
             if(((new Date()).getTime() - sbts)/1000 < 15){
@@ -2068,8 +2330,32 @@ function roomScript() {
             if(((new Date()).getTime() - sbts)/1000 < 10){
                 setTimeout(giftShowEntrance,1000);//wait 15s for element loading
             }else{
-                console.warn("无法获取礼物显示位置");
-            }            
+                console.warn("无礼物显示位置");
+            }
+        }else if(code===11){
+            if(((new Date()).getTime() - sbts)/1000 < 10){
+                setTimeout(motorcadeEntrance,1000);//wait 15s for element loading
+            }else{
+                console.warn("无车队显示位置");
+            }
+        }else if(code===12){
+            if(((new Date()).getTime() - sbts)/1000 < 10){
+                setTimeout(addFansClickBtn,1000);//wait 15s for element loading
+            }else{
+                console.warn("无打卡显示位置");
+            }
+        }else if(code===13){
+            if(((new Date()).getTime() - sbts)/1000 < 10){
+                setTimeout(addFishFoodClickBtn,1000);//wait 15s for element loading
+            }else{
+                console.warn("无鱼粮显示位置");
+            }
+        }else if(code===14){
+            if(((new Date()).getTime() - sbts)/1000 < 10){
+                setTimeout(thirdStatEntrance,1000);//wait 15s for element loading
+            }else{
+                console.warn("无统计显示位置");
+            }
         }
     }
 
@@ -2077,23 +2363,24 @@ function roomScript() {
     //++++++++++++++ Fire Power Check and Barrage Init ++++++++++++++
     //===============================================================
     function barrageInitCheck(){
-        let fireCheck = document.getElementsByClassName("FirePowerChatModal-Notice")[0];
-        if(radioStorage == "openFire"){
-            if(fireCheck!=undefined){//exist fire power
-                openFireFilter();
+        if(radioStorage === "openFire"){
+            let fansCheck = document.getElementsByClassName("LotteryDrawEnter-enter")[0];
+            if(fansCheck!=undefined){//exist fans welfare
+                setTimeout(welfareFilter,3000);
             }else{
                 checkDelayCallback(2);
             }
-        }else if(radioStorage == "bombFire"){
+        }else if(radioStorage === "bombFire"){
+            let fireCheck = document.getElementsByClassName("FirePowerChatModal-Notice")[0];
             if(fireCheck!=undefined){//exist fire power
                 bombFireFilter();
             }else{
                 checkDelayCallback(3);
             }
-        }else if(radioStorage == "thunderAssign"){
+        }else if(radioStorage === "thunderAssign"){
             prepareThunderAssign();
         }else{//ceaseFire or undefined
-            console.info("初始化火力停止⛔");
+            console.info("初始化停止⛔");
             storageOperate();//clear localStorage
         }
     }
@@ -2259,6 +2546,9 @@ function motorcadeScript(){
             }else{
                 popupToast("《车队签到失败》<br>车队签到失败，请手动签到！", 4);
                 console.info("没有加入车队或无法获取车队号！");
+                setTimeout(function(){
+                    window.location.href = "https://popzoo.github.io/barrage/";
+                },4000);
             }
         }
     }
