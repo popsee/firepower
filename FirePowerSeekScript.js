@@ -2446,7 +2446,7 @@ function yubaScript(){
                 localStorage.setItem("yubaAssigned💧☔💧"+(new Date()).toLocaleDateString(),"true");
                 assignStr = assignStr.substr(0,assignStr.length-1);
                 storageClear();
-                alert(assignStr+"的鱼吧(位于鱼吧收藏列表里)，今日签到完毕！");
+                popupToast(assignStr+"的鱼吧(位于鱼吧收藏列表里)，今日签到完毕！",4);
             }
         }).catch(err => {
             console.error('REQUEST ERROR', err);
