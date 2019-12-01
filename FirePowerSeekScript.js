@@ -2394,6 +2394,43 @@ function roomScript() {
 function yubaScript(){
     var page = 1;//default page
     var assignStr = "";
+
+    // create style
+    function createCSS(){
+        var style = document.createElement('style');
+        style.type = 'text/css';
+        let styleStr=" .model_toast {width: 452px;background: rgba(0,0,0,.5);border-radius: 8px;text-align: center;position: fixed;top: 50%;left: 50%;margin-top: -120px;margin-left: -226px;} ";
+        styleStr += " .model_toast .popup-toast {padding: 38px 40px;text-align: center;font-size: 16px;color: #fff;z-index: 300;} ";
+        style.innerHTML=styleStr;
+        document.head.appendChild(style); // document.getElementsByTagName('head').item(0).appendChild(style);
+    }
+    // * weak tip toast
+    function popupToast(text,time) {
+        let editText = text + "<br><br>("+time+"s后自动关闭此页面)";
+        var creatediv = document.createElement('div');
+        creatediv.className = 'model_toast';
+        creatediv.setAttribute('id','toast-popup');
+        var contentHtml = '<div class="popup-toast" id="toast-content">'+editText+'</div>'
+        creatediv.innerHTML = contentHtml;
+        document.body.appendChild(creatediv);
+        time==undefined?3:time;//default 3s
+        var loopRefresh = function(){
+            let modelObj = document.getElementById('toast-popup');
+            if(time==0){
+                modelObj.style.display = 'none';
+                return;
+            }else{
+                let editText = text + "<br><br>("+time+"s后自动关闭此页面)";
+                var content = document.getElementById('toast-content');
+                content.innerHTML = editText;
+                modelObj.style.display = 'block';
+                time--;
+                setTimeout(loopRefresh,1000);
+            }
+        }
+        loopRefresh();
+    }
+
     // yuba assign
     function yubaAssign(groupId,groupName){
         let postData = "group_id="+groupId;//+"&cur_exp=15"; //ignore curent exp parameter to send here
@@ -2408,7 +2445,7 @@ function yubaScript(){
             },
             body: postData
         }).then(json => {
-            if(json.data.level!=undefined){
+            if(json.data.level!=undefined || json.data.length == 0){
                 console.info("【"+groupName+"】的鱼吧已签到，鱼吧等级为Lv."+json.data.level);
                 assignStr += "【"+ groupName +"】、";
             }
@@ -2468,6 +2505,7 @@ function yubaScript(){
     if(yubaStatus=="true"){//redupliction checked
         console.info("鱼吧已签到,不再重复执行！");
     }else{
+        setTimeout(createCSS,1000);
         setTimeout(yubaFollowList,2000);
     }
 }
