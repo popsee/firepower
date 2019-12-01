@@ -2455,8 +2455,11 @@ function yubaScript(){
             },
             body: postData
         }).then(json => {
-            if(json.data.level!=undefined || json.data.length == 0){
+            if(json.data.level!=undefined){
                 console.info("【"+groupName+"】的鱼吧已签到，鱼吧等级为Lv."+json.data.level);
+                assignStr += "【"+ groupName +"】、";
+            }else if(json.data.length == 0){
+                console.info("【"+groupName+"】的鱼吧已签到，鱼吧等级未知");
                 assignStr += "【"+ groupName +"】、";
             }
         }).catch(err => {
