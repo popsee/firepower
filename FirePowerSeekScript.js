@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         斗鱼薅羊毛神器(日进万丸+概率红包)
 // @namespace    https://github.com/wolf-scream
-// @version      0.8.1
+// @version      0.8.2
 // @description  这里有斗鱼真正全自动搜索🧐火力全开+自动发AI智能弹幕=抢鱼丸红包二合一的神级😇脚本，您安装脚本后，需要做的只需要两步，一是功能选择💥弹幕轰炸，二是打开鱼吧右侧的二合一开关，然后就不需要您的任何操作了，自动参与火力全开发弹幕抢丸子红包的事情都交给脚本帮你搞定。进来体验下土豪玩家💰😎💰的感脚吧，让您做一个真正有牌面的斗鱼白嫖看客，幻神弹幕特效-有撒，满级粉丝牌子-有撒，顶级车队logo-有撒，极速签到手速王-还是有撒，茫茫人海一眼就相中这个主播，大手🖐一挥，鱼丸万两——💲赏💲！睥睨水友、笑傲鱼塘、彪炳平台全都有撒🐷~！
-// @author       lvlanxing
+// @author       lvlanxing+xiaoyao+obrua
 // @supportURL   https://github.com/wolf-scream/FirePowerSeek
 // @icon         https://rawcdn.githack.com/popzoo/pop/9d4121eed5cbb035e55203b8a9e56a73dcf2e6bf/images/favicon.ico
 // @icon64URL    https://rawcdn.githack.com/popzoo/pop/9d4121eed5cbb035e55203b8a9e56a73dcf2e6bf/images/favicon-64.ico
@@ -30,7 +30,6 @@
 // @note         本脚本包含主要功能：自动搜索火力全开房间+自动随机发送AI与云端弹幕+极速签到手速王+幻神弹幕特效+不绑定手机发弹幕+房间自动签到+房间在线人数+当日跳转次数+主播信用值+主播开播时长+是否自动播放(记忆上次操作)+关闭滚屏弹幕(记忆上次操作)等功能 && Main Function of Script：Auto Fire Power Seek + Auto Barrage Bombing + Royal Barrage Effect + Sent Barrage Without Binding Phone + Room Assign + Online People Number + Jumping Page Times + Anchor Credit + Anchor Living Time and so forth;
 // @note         本脚本完全由原生的JS写成，且好多函数代码模块可以独立使用（比如非绑定手机发弹幕函数），用户完全可以不装tampermokey或violentmonkey,直接复制代码在控制台执行,但部分功能会受限或异常；
 // @note         欢迎大家使用、参考、研究和引用本脚本，但在引用脚本的时候，希望您能标注出处，这也是对博主的认可和尊重，也是自我修养的体现，如果有什么意见欢迎加入我们的薅羊毛大军的QQ交流群；
-// @note         需要警惕😱的是，当自动搜素🌐跳转房间超过100次时，您处于高危状态，随时会被斗鱼系统屏蔽🚫弹幕发言，不过不要紧哈，当自动跳转超100次会限制自动跳转页面功能，用户可以自行手动跳转；
 // @note         V0.1.0 根据斗鱼鱼塘任务的接口，实现手动按钮火力房间搜索并跳转;
 // @note         V0.1.1 火力搜寻的网址跳转计数，按日期形式序列化到localStorage中，方便用户统计查看;
 // @note         V0.1.2 清理localStorage中无用的信息，同时也防止斗鱼收集用户行为信息;
@@ -96,6 +95,7 @@
 // @note         V0.7.5 修改未开启礼物致谢功能，就发送感谢礼物弹幕的bug；
 // @note         V0.8.0 脚本改造升级，由原有单一的火力系统升级为火力系统+粉丝福利社两套系统，两套系统可以通过单选按钮无缝切换。原有开火搜索选框，更改为粉丝福利社抽奖，使用方式与弹幕轰炸和二合一开火+弹幕轰炸方式一样，跳转内容只搜索粉丝福利房间；
 // @note         V0.8.1 修复私有弹幕缓存后无法解析的问题，修复二合一开关开启后无限跳转的bug；
+// @note         V0.8.2 感谢胖头鱼大佬修复切换账号鱼吧不签到的bug，感谢坑尼酱修改鱼吧样式提示去除alert阻断，修复版本号无法对比的bug,修复火力节点的err覆盖问题；
 // ==/UserScript==
 
 //=============================================================================
@@ -120,7 +120,7 @@ function roomScript() {
     var tkAdTM = (new Date()).getTime();//thank admin timestamp
     var radioStorage = localStorage.getItem("radioTagStatus🌼🍄🌼")!=null ? localStorage.getItem("radioTagStatus🌼🍄🌼") : "ceaseFire";
     var switchStatus = localStorage.getItem("switchStatus🏮🎎🏮")!=null ? localStorage.getItem("switchStatus🏮🎎🏮") : "off";
-    var AIwordFilter = ["机器人"], donatorThank = ["老板大气"], arrWinning = ["哈哈，中奖了"], arrNoPrize = ["又么得中，蓝瘦"];
+    var AIwordFilter = ["机器人"], donatorThank = ["老板大气"], arrWinning = ["哈哈，中奖了"], arrNoPrize = ["又没中，蓝瘦"];
     //=================================================================================================================================================
     function userConfig(){
         let configInfo = localStorage.getItem("collectUserBarrage");
@@ -197,7 +197,7 @@ function roomScript() {
             donatorThank = json.giftThank!=undefined ? donatorThank.concat(json.giftThank) : donatorThank;
             arrWinning = json.winning!=undefined ? arrWinning.concat(json.winning) : arrWinning;
             arrNoPrize = json.noprize!=undefined ? arrNoPrize.concat(json.noprize) : arrNoPrize;
-            console.info("采用缓存公用云弹幕，如您上传或更改了私有弹幕，需要重启浏览器更新缓存！");            
+            console.info("采用缓存公用云弹幕，如您上传或更改了私有弹幕，需要重启浏览器更新缓存！");
         }else{
             getSelfDanmu();
         }
@@ -575,7 +575,7 @@ function roomScript() {
                     if((welFareList[0].roomName.indexOf("鱼翅")>-1||welFareList[0].roomName.indexOf("元")>-1) && !roomFilter(welFareList[0].roomId)){//include cash and red pack
                         console.info(welFareList[0]);
                         let dailyJumpTimes = getDailyRedirect();
-                        dailyJumpTimes!=-1 ? localStorage.setItem((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]", 1+dailyJumpTimes):false;                    
+                        dailyJumpTimes!=-1 ? localStorage.setItem((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]", 1+dailyJumpTimes):false;
                         window.location.href = "https://www.douyu.com/"+welFareList[0].roomId;
                     }else{
                         randomWelfareRequest();//callback itself
@@ -638,14 +638,14 @@ function roomScript() {
                     console.info("福利抽奖,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + danmuContent);
                     clickBtnEvent();
                     jsonAnalytics(0);
-                }                
+                }
             }else{
                 document.getElementsByClassName("ULotteryStart-joinBtn")[0].click();//primary time to join in activity
             }
             if(welfareFlag){//put info
                 let avatar = document.getElementsByClassName("Title-anchorPicBack")[0].getElementsByTagName("img")[0].getAttribute("src");
                 let sendMsg = {"roomId":roomId,"donator":uname,"avatar":avatar,"sendTime":new Date().getTime(),"remainTime":remainTime,"content":welfareObj};
-                getFireCOS(sendMsg);
+                getFireCOS(sendMsg,true);
                 welfareFlag = false;
             }
         }else{
@@ -667,9 +667,9 @@ function roomScript() {
         // close Lottery
         let closeObj = document.getElementsByClassName("LotteryContainer-close")[0];
         closeObj != undefined ? closeObj.click() : false;
-        randomTime(); 
+        randomTime();
     }
-    //============================================ 
+    //============================================
     // binding fire btn event
     function fireBtnBinding(){
         if(radioStorage ==="openFire"){
@@ -685,7 +685,7 @@ function roomScript() {
             setTimeout(function(){royalChatEffect()}, royalTime);
             setTimeout(function(){screenEmpireBarrage()}, royalTime);
         }
-    }    
+    }
     //===============================================================
     //++++++++++++++++++++++ God Chat Effect +++++++++++++++++++++++
     //===============================================================
@@ -1382,13 +1382,14 @@ function roomScript() {
         }
     }
     function versionTipInfo(newVersion,userVersion){
-        let newList = newVersion.slice(".");
+        console.info(userVersion+"<用户---网络>"+newVersion);
+        let newList = newVersion.split(".");
         newList = parseInt(newList[newList.length-1]) + 100*newList[1] + 10000*newList[0];
-        let userList = userVersion.slice(".");
+        let userList = userVersion.split(".");
         userList = parseInt(userList[userList.length-1]) + 100*userList[1] + 10000*userList[0];
         if(newList>userList){
             GM_info.scriptWillUpdate = true;
-            console.info("脚本最新版为["+newVersion+"],您当前的版本为["+GM_info.script.version+"],旧版本功能将不再维护,推荐您升级到最新版！");
+            console.info("脚本最新版为["+newVersion+"],您当前的版本为["+GM_info.script.version+"],旧版本某些功能不再维护,推荐您升级到最新版！");
         }
     }
     // ===================================================================
@@ -1689,13 +1690,12 @@ function roomScript() {
         }).then(response => {
             if(response.headers.get('ETag')!=undefined){
                 radioStorage==="openFire" ? console.info("WelfarePut:Success") : console.info("FireRoomPut:Success");
-                
             }
         }).catch(err => {
-            console.error('FireRoomPut:failure');
+            radioStorage==="openFire" ? console.error("WelfarePut:failure") : console.error("FireRoomPut:failure");
         })
     }
-    function getFireCOS(sendMsg){
+    function getFireCOS(sendMsg,isFirst){
         let date = new Date();
         let reqUrl = firePrefix +'FireNode/'+dateFormat("YYYY-mm-dd",date) +'/'+dateFormat('HH',date)+'-fireInfo.json';
         if(radioStorage==="openFire"){
@@ -1724,8 +1724,9 @@ function roomScript() {
                 putFireInfo(JSON.stringify(jsonData),reqUrl);
             }
         }).catch(err => {
-            var arr = new Array();
-            putFireInfo(JSON.stringify([sendMsg]),reqUrl);
+            isFirst ? setTimeout(function(){getFireCOS(sendMsg,false)},3000) : 0;//if error try again later;
+            // var arr = new Array();
+            // putFireInfo(JSON.stringify([sendMsg]),reqUrl);
             // console.error('REQUEST ERROR', err);
         })
     }
@@ -1739,7 +1740,7 @@ function roomScript() {
                 let fireInfo = fireBox.innerText.replace(/\s/g, '|');
                 let avatar = document.getElementsByClassName("Title-anchorPicBack")[0].getElementsByTagName("img")[0].getAttribute("src");
                 let sendMsg = {"roomId":roomId,"donator":uname,"avatar":avatar,"sendTime":new Date().getTime(),"remainTime":remainTime,"content":fireInfo};
-                getFireCOS(sendMsg);
+                getFireCOS(sendMsg,true);
             }
             shareTM = new Date().getTime();//get curtime
         }
@@ -1928,7 +1929,7 @@ function roomScript() {
                     // openNewTab("https://msg.douyu.com/motorcade/");//method focus new tab
                     GM_openInTab('https://msg.douyu.com/motorcade/',{active: false});//unfocus new tab
                 },4000);
-            }            
+            }
         }else{
             checkDelayCallback(11);
         }
@@ -1951,13 +1952,13 @@ function roomScript() {
             let thirdTag = document.createElement("dfn");
             thirdTag.innerHTML = "<a href='https://www.xiaohulu.com/liveParticularsIndex/2/"+roomId+"' target='_blank'>📊葫芦</a>";
             thirdTag.setAttribute("class","PlayerToolbar-ywInfo");
-            thirdTag.setAttribute("style","text-align:left;margin-right:0;");            
+            thirdTag.setAttribute("style","text-align:left;margin-right:0;");
             thirdTag.setAttribute("data-info","📊-小葫芦数据统计页面，点击可查看主播排行、收益、弹幕数、开播时常、礼物数等详细数据，也可更改为播酱链接入口，看大家需求来定;");
             showPlace.parentNode.insertBefore(thirdTag, showPlace);
         }else{
             checkDelayCallback(14);
         }
-    }    
+    }
     // ===================================================================
     // ======================auto donate fans bar=========================
     // ===================================================================
@@ -2293,7 +2294,7 @@ function roomScript() {
         if(code===0){
             setTimeout(programInitCheck,1000);
         }else if(code===1){
-            setTimeout(barrageInitCheck,1000); 
+            setTimeout(barrageInitCheck,1000);
         }else if(code===2){//wait to check fire power
             if(((new Date()).getTime() - sbts)/1000 < 25){//jump unless it's more than *s to check none of activity
                 setTimeout(barrageInitCheck,1000);
@@ -2433,12 +2434,13 @@ function yubaScript(){
 
     function getCookie(name) {
         var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-        if (arr = document.cookie.match(reg))
+        if (arr = document.cookie.match(reg)){
             return unescape(arr[2]);
-        else
+        }else{
             return null;
+        }
     }
-    
+
     let uid = getCookie('acf_yb_uid');
     let localStorageName = `yubaAssigned💧${uid}💧${(new Date()).toLocaleDateString()}`
     // yuba assign
@@ -2497,6 +2499,7 @@ function yubaScript(){
                 assignStr = assignStr.substr(0,assignStr.length-1);
                 storageClear();
                 popupToast(assignStr+"的鱼吧(位于鱼吧收藏列表里)，今日签到完毕！",4);
+                console.info(assignStr+"的鱼吧(位于鱼吧收藏列表里)，今日签到完毕！");//avoid no alert assign yuba in living room
             }
         }).catch(err => {
             console.error('REQUEST ERROR', err);
