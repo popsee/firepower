@@ -928,7 +928,7 @@ function roomScript() {
 
         // create radio after css runing
         var radioBtnTag = (function(){/*
-        <dfn style="font-size:16px;" data-info="🧐-手动火力全开房间搜索，用户可以手动点击跳转；⛔-火力停止状态，初始化组件展示数据或停止弹幕；🎰-粉丝福利抽奖，自动参与当前房间粉丝福利社抽奖活动，如果没有活动则保持静默状态，根据抽奖有无自动发停，若开启二合一开关，则全自动搜寻参与；💥-发送火力弹幕，自动参与当前房间火力全开活动，如没有火力或不满足条件则保持静默状态，根据火力有无自动发停，弹幕内容为AI+云弹幕库或私有弹幕库，若开启二合一开关，则全自动搜寻并参与活动；⚡-极速签到功能，助抢签到手速王，将房间加入[特别关注]，未开播时停留此处，开播瞬间极速签到！">
+        <dfn style="font-size:16px;" data-info="🧐-手动火力全开房间搜索，用户可以手动点击跳转；⛔-火力停止状态，初始化组件展示数据或停止弹幕；🎰-粉丝福利抽奖，自动参与当前房间粉丝福利社抽奖活动，如果没有活动则保持静默状态，根据抽奖有无自动发停，若开启二合一开关，则全自动搜寻参与；💥-火力全开弹幕，自动参与当前房间火力全开活动，如没有火力或不满足条件则保持静默状态，根据火力有无自动发停，弹幕内容为AI+云弹幕库或私有弹幕库，若开启二合一开关，则全自动搜寻并参与活动；⚡-极速签到功能，助抢签到手速王，将房间加入[特别关注]，未开播时停留此处，开播瞬间极速签到，此功能对服务器鸭梨山大，不建议长时间开启！">
         <label for="ceaseFire" class="radio" id="label_cease_fire">
             <span class="radio-bg"></span>
             <input type="radio" name="radio_fire" id="ceaseFire"  value="⛔" />⛔
@@ -1382,7 +1382,7 @@ function roomScript() {
         }
     }
     function versionTipInfo(newVersion,userVersion){
-        console.info(userVersion+"<用户---网络>"+newVersion);
+        // console.info(userVersion+"<用户---网络>"+newVersion);
         let newList = newVersion.split(".");
         newList = parseInt(newList[newList.length-1]) + 100*newList[1] + 10000*newList[0];
         let userList = userVersion.split(".");
@@ -1724,7 +1724,7 @@ function roomScript() {
                 putFireInfo(JSON.stringify(jsonData),reqUrl);
             }
         }).catch(err => {
-            isFirst ? setTimeout(function(){getFireCOS(sendMsg,false)},3000) : 0;//if error try again later;
+            isFirst ? setTimeout(function(){getFireCOS(sendMsg,false)},4000) : 0;//if error try again later;
             // var arr = new Array();
             // putFireInfo(JSON.stringify([sendMsg]),reqUrl);
             // console.error('REQUEST ERROR', err);
@@ -1953,7 +1953,7 @@ function roomScript() {
             thirdTag.innerHTML = "<a href='https://www.xiaohulu.com/liveParticularsIndex/2/"+roomId+"' target='_blank'>📊葫芦</a>";
             thirdTag.setAttribute("class","PlayerToolbar-ywInfo");
             thirdTag.setAttribute("style","text-align:left;margin-right:0;");
-            thirdTag.setAttribute("data-info","📊-小葫芦数据统计页面，点击可查看主播排行、收益、弹幕数、开播时常、礼物数等详细数据，也可更改为播酱链接入口，看大家需求来定;");
+            thirdTag.setAttribute("data-info","📊-小葫芦数据统计页面，点击可查看主播排行、收益、弹幕数、开播时常、礼物数等详细数据，由于播酱数据对部分小直播间不统计，所以建议大家数据参考百家之言，不可偏信一家之说;");
             showPlace.parentNode.insertBefore(thirdTag, showPlace);
         }else{
             checkDelayCallback(14);
@@ -2499,7 +2499,7 @@ function yubaScript(){
                 assignStr = assignStr.substr(0,assignStr.length-1);
                 storageClear();
                 popupToast(assignStr+"的鱼吧(位于鱼吧收藏列表里)，今日签到完毕！",4);
-                console.info(assignStr+"的鱼吧(位于鱼吧收藏列表里)，今日签到完毕！");//avoid no alert assign yuba in living room
+                console.info("今日鱼吧签到完毕！");//avoid no alert assign yuba in living room
             }
         }).catch(err => {
             console.error('REQUEST ERROR', err);
