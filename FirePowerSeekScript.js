@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         斗鱼薅羊毛神器(日进万丸+概率红包)
 // @namespace    https://github.com/wolf-scream
-// @version      0.8.2
+// @version      0.8.3
 // @description  这里有斗鱼真正全自动搜索🧐火力全开+自动发AI智能弹幕=抢鱼丸红包二合一的神级😇脚本，您安装脚本后，需要做的只需要两步，一是功能选择💥弹幕轰炸，二是打开鱼吧右侧的二合一开关，然后就不需要您的任何操作了，自动参与火力全开发弹幕抢丸子红包的事情都交给脚本帮你搞定。进来体验下土豪玩家💰😎💰的感脚吧，让您做一个真正有牌面的斗鱼白嫖看客，幻神弹幕特效-有撒，满级粉丝牌子-有撒，顶级车队logo-有撒，极速签到手速王-还是有撒，茫茫人海一眼就相中这个主播，大手🖐一挥，鱼丸万两——💲赏💲！睥睨水友、笑傲鱼塘、彪炳平台全都有撒🐷~！
 // @author       lvlanxing+xiaoyao+obrua
 // @supportURL   https://github.com/wolf-scream/FirePowerSeek
@@ -96,6 +96,7 @@
 // @note         V0.8.0 脚本改造升级，由原有单一的火力系统升级为火力系统+粉丝福利社两套系统，两套系统可以通过单选按钮无缝切换。原有开火搜索选框，更改为粉丝福利社抽奖，使用方式与弹幕轰炸和二合一开火+弹幕轰炸方式一样，跳转内容只搜索粉丝福利房间；
 // @note         V0.8.1 修复私有弹幕缓存后无法解析的问题，修复二合一开关开启后无限跳转的bug；
 // @note         V0.8.2 感谢胖头鱼大佬修复切换账号鱼吧不签到的bug，感谢坑尼酱修改鱼吧样式提示去除alert阻断，修复版本号无法对比的bug,修复火力节点的err覆盖问题；
+// @note         V0.8.3 增加过滤器的onerror的处理机制，增加标题栏播酱数据失效为0则与小葫芦数据自动切换，更改put请求为post优化加速请求速度；
 // ==/UserScript==
 
 //=============================================================================
@@ -187,7 +188,7 @@ function roomScript() {
             donatorThank = json.giftThank!=undefined ? donatorThank.concat(json.giftThank) : donatorThank;
             arrWinning = json.winning!=undefined ? arrWinning.concat(json.winning) : arrWinning;
             arrNoPrize = json.noprize!=undefined ? arrNoPrize.concat(json.noprize) : arrNoPrize;
-            console.info("采用缓存私有云弹幕，如您上传或更改了私有弹幕，需要重启浏览器更新缓存！");
+            console.info("采用缓存私有云弹幕，如您上传/更新了私有弹幕，需要重启浏览器哦！");
             selfDanmuFlag = true;
         }else if(publicDanmuCache!=null){
             let json = JSON.parse(publicDanmuCache);
@@ -197,7 +198,7 @@ function roomScript() {
             donatorThank = json.giftThank!=undefined ? donatorThank.concat(json.giftThank) : donatorThank;
             arrWinning = json.winning!=undefined ? arrWinning.concat(json.winning) : arrWinning;
             arrNoPrize = json.noprize!=undefined ? arrNoPrize.concat(json.noprize) : arrNoPrize;
-            console.info("采用缓存公用云弹幕，如您上传或更改了私有弹幕，需要重启浏览器更新缓存！");
+            console.info("采用缓存公用云弹幕，如您上传/更新了私有弹幕，需要重启浏览器哦！");
         }else{
             getSelfDanmu();
         }
@@ -532,7 +533,7 @@ function roomScript() {
                         }).then(txt => {
                             let json = JSON.parse(txt);
                             let peopleNum = json.data.anchorVo.audience_count;
-                            if(peopleNum<5000){//if room people is larger than * and then redirect new one
+                            if(peopleNum<4000){//if room people is larger than * and then redirect new one
                                 fireUrl = "https://www.douyu.com/" + fireUrl;
                                 let dailyJumpTimes = getDailyRedirect();
                                 dailyJumpTimes!=-1 ? localStorage.setItem((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]", 1+dailyJumpTimes):false;
@@ -645,7 +646,7 @@ function roomScript() {
             if(welfareFlag){//put info
                 let avatar = document.getElementsByClassName("Title-anchorPicBack")[0].getElementsByTagName("img")[0].getAttribute("src");
                 let sendMsg = {"roomId":roomId,"donator":uname,"avatar":avatar,"sendTime":new Date().getTime(),"remainTime":remainTime,"content":welfareObj};
-                getFireCOS(sendMsg,true);
+                getNodeCOS(sendMsg,true);
                 welfareFlag = false;
             }
         }else{
@@ -1252,7 +1253,7 @@ function roomScript() {
         ajax.open('get', 'https://www.douyu.com/member/cp',true);
         ajax.send();
         ajax.onreadystatechange = function() {
-            if (ajax.readyState == 4 && ajax.status == 200) {
+            if (ajax.readyState == 4 && Math.floor(ajax.status/100) == 2) {
                 var htmlDoc = ajax.responseXML;
                 uname = htmlDoc.querySelector(".uname_con").innerText.trim();
                 sessionStorage.setItem(uid+"🌴🔮🌴", uname);
@@ -1435,10 +1436,12 @@ function roomScript() {
                 }else{
                     getFilterConfigCOS();
                 }
+            },
+            onerror:function(err){
+                getFilterConfigCOS();
             }
         });
     }
-
     // get real roomId
     function getRoomId(){
         roomId = document.getElementsByClassName("Title-anchorName")[0];
@@ -1516,15 +1519,46 @@ function roomScript() {
             // console.info(json.data.anchorVo);
             let peopleNum = json.data.anchorVo.audience_count;
             let danmuCount = json.data.anchorVo.danmu_count;
+            if(peopleNum==0){// auto switch to hulu stat
+                anchorInfoFromHulu();
+                return 0;
+            }
             let giftValue = json.data.anchorVo.yc_gift_value;//fish wing
-            let fishballNum = json.data.anchorVo.yw_gift_gx;//fish ball
+            // let fishballNum = json.data.anchorVo.yw_gift_gx;//fish ball
             let anchorObj = document.getElementById("anchor_detail_info");
             if(anchorObj!=undefined && switchStatus ==="off"){//🎅- 💰- 🍥- 🍪-
                 anchorObj.setAttribute("data-info","🎅-当前房间在线人数(前三组数据均来源于播酱网)；💲-今日主播的总收益(点击这里刷新此行六组数据)；💭-今日房间弹幕总数(以上数据大约延迟30s左右)；");
                 anchorObj.innerHTML = "🎅"+peopleNum +"人&nbsp;💲"+giftValue +"元&nbsp;💭"+ danmuCount + "条";//&nbsp;🍪" + 100*fishballNum + "丸";
             }else{
                 let dfnTagObj = document.getElementById("anchor_detail_info");
-                dfnTagObj.setAttribute("data-info","🎅-当前房间在线人数(前三组数据均来源于播酱网)；💲-主播今日的总收益(点击这里刷新此行六组数据)；🌐-今日跳转次数(仅统计用此脚本自动或手动跳转)；");
+                dfnTagObj.setAttribute("data-info","🎅-当前房间在线人数(前两组数据均来源于播酱网)；💲-主播今日的总收益(点击这里刷新此行六组数据)；🌐-今日跳转次数(仅统计用此脚本自动或手动跳转)；");
+                anchorObj.innerHTML = "🎅"+peopleNum +"人&nbsp;💲"+giftValue +"元&nbsp;🌐"+ getDailyRedirect() +"次";
+            }
+        }).catch(err => {
+            console.error('REQUEST ERROR', err);
+        })
+    }
+    function anchorInfoFromHulu(){
+        fetch('https://www.xiaohulu.com/apis/bd/index/anchor/anchorLiveComprehensiveData?platId=2&roomId='+roomId+'&type=1&dateId=', {
+            method: 'GET',
+            mode: 'cors',
+            cache: 'default',
+            credentials: 'omit'
+        }).then(result => {
+            return result.json();
+        }).then(json => {
+            json = json.data;
+            // console.info(json.data.anchorVo);
+            let peopleNum = json.active_sender;
+            let danmuCount = json.msg_count;
+            let giftValue = json.all_gift_price;//fish wing
+            let anchorObj = document.getElementById("anchor_detail_info");
+            if(anchorObj!=undefined && switchStatus ==="off"){//🎅- 💰- 🍥- 🍪-
+                anchorObj.setAttribute("data-info","🎅-当前房间在线人数(前三组数据均来源于小葫芦)；💲-今日主播的总收益(点击这里刷新此行六组数据)；💭-今日房间弹幕总数(以上数据大约延迟30s左右)；");
+                anchorObj.innerHTML = "🎅"+peopleNum +"人&nbsp;💲"+giftValue +"元&nbsp;💭"+ danmuCount + "条";//&nbsp;🍪" + 100*fishballNum + "丸";
+            }else{
+                let dfnTagObj = document.getElementById("anchor_detail_info");
+                dfnTagObj.setAttribute("data-info","🎅-当前房间在线人数(前两组数据均来源于小葫芦)；💲-主播今日的总收益(点击这里刷新此行六组数据)；🌐-今日跳转次数(仅统计用此脚本自动或手动跳转)；");
                 anchorObj.innerHTML = "🎅"+peopleNum +"人&nbsp;💲"+giftValue +"元&nbsp;🌐"+ getDailyRedirect() +"次";
             }
         }).catch(err => {
@@ -1606,65 +1640,32 @@ function roomScript() {
             roomAssignTime = setTimeout(autoAssign, 3000);//wait for assign
         }
     }
-    // adjust clarity (1.highest clarity； other.lowest clarity）
-    // function adjustClarity(code){
-    //     var videoClarity = document.querySelector(".panelFill-d95ee8");
-    //     if(videoClarity != undefined && videoClarity != null){
-    //         code===1 ? videoClarity.previousSibling.firstElementChild.click() : videoClarity.previousSibling.lastElementChild.click();
-    //     }else{
-    //         console.info("没有画质📺选项！");
-    //     }
-    // }
-    // show room assign rank
-    // function assignRank(){
-    //     var anchorLevel = (document.getElementsByClassName("AnchorLevel")[0]).getAttribute("class").substring(24);
-    //     var showPlace = document.querySelector(".Title-anchorHot");
-    //     if(anchorLevel>=30){//不排除已签到，因为还需要手动刷新
-    //         var refreshTag = document.createElement("dfn");
-    //         refreshTag.setAttribute("id","assign_Rank");
-    //         refreshTag.setAttribute("class","Title-anchorName");
-    //         refreshTag.setAttribute("data-info","📝-表示当前房间已签到人数，点击可以刷新，方便大家来抢签到手气王，如果主播等级<Lv30无房间签到，则无此图标，可统计前100的排名，需要注意当处于⛔停火状态才能手动签到，其他状态仍是自动签到;");
-    //         refreshTag.innerHTML= "📝-";
-    //         showPlace.parentNode.insertBefore(refreshTag, showPlace);
-    //         assignRefresh();
-    //         refreshTag.addEventListener("click",assignRefresh);
-    //     }
-    // }
-    // refresh assign rank
-    // function assignRefresh(){
-    //     fetch('https://www.douyu.com/japi/roomuserlevel/apinc/getSignInRankInfoList?rid='+roomId).then(res => {
-    //         return res.json();
-    //     }).then(json => {
-    //         var jsonData = json.data;
-    //         var assignId = document.getElementById("assign_Rank");
-    //         assignId.innerHTML = jsonData.length <100? "📝"+jsonData.length:"📝100+";
-    //         // console.info("📝房间签到人数:"+jsonData.length);
-    //     }).catch(err => {
-    //         console.error('REQUEST ERROR', err);
-    //     })
-    // }
-
     // ===================================================================
     // ============================= COS Operate =========================
     // ===================================================================
-    const firePrefix = 'https://fire-room-1253626683.cos.ap-beijing.myqcloud.com/';//eslint-disable-next-line
-    const jumpPrefix = 'https://jump-count-1253626683.cos.ap-beijing.myqcloud.com/';//eslint-disable-next-line
-    const welfarePrefix = 'https://welfare-1253626683.cos.ap-beijing.myqcloud.com/';//eslint-disable-next-line
+    const firePrefix = 'https://fire-room-1253626683.cos.ap-beijing.myqcloud.com/';
+    const jumpPrefix = 'https://jump-count-1253626683.cos.ap-beijing.myqcloud.com/';
+    const welfarePrefix = 'https://welfare-1253626683.cos.ap-beijing.myqcloud.com/';
     function putJumpInfo(){
-        let url = jumpPrefix+'JumpCount/'+dateFormat("YYYY-mm-dd",new Date()) +'/'+uname+'.json';
-        fetch(url,{
-            method: 'PUT',
-            headers: {'Content-Type':'application/json; charset=utf-8'},
-            body: JSON.stringify({"uname":uname,"uid":uid,"jumpCount":getDailyRedirect()}),
+        var key = 'JumpCount/'+dateFormat("YYYY-mm-dd",new Date()) +'/'+uname+'.json';// 这里指定上传目录和文件名
+        var fd = new FormData();
+        fd.append('key', key);
+        fd.append('Content-Type','');
+        fd.append('file', JSON.stringify({"uname":uname,"uid":uid,"jumpCount":getDailyRedirect()}));
+        fetch(jumpPrefix,{
+            method: 'POST',
+            mode: 'cors',
+            body: fd,
             credentials: "omit",
         }).then(response => {
-            if(response.headers.get('ETag')!=undefined){
+            // console.info(response);
+            if(response.headers.get('ETag')!=null){
                 console.log("JumpCountPut:success");
             }
         }).catch(err => {
             console.error('JumpCountPut:failure');
         })
-    }
+    }    
     function getFilterConfigCOS(){//second plan
         fetch(firePrefix+'filterConfig.json',{
             method: 'GET',
@@ -1681,21 +1682,32 @@ function roomScript() {
             console.error('REQUEST ERROR', err);
         })
     }
-    function putFireInfo(file,fireUrl){
-        fetch(fireUrl,{
-            method: 'PUT',
-            headers: {'Content-Type':'application/json; charset=utf-8'},
-            body: file,
+    function putFireInfo(file,date){
+        var prefixUrl = firePrefix;
+        var key = 'FireNode/'+dateFormat("YYYY-mm-dd",date) +'/'+dateFormat('HH',date)+'-fireInfo.json';
+        if(radioStorage==="openFire"){
+            key = 'WelfareNode/'+dateFormat("YYYY-mm-dd",date) +'/'+dateFormat('HH',date)+'-welfareInfo.json';
+            prefixUrl = welfarePrefix;
+        }
+        var fd = new FormData();
+        fd.append('key', key);
+        fd.append('Content-Type','');
+        fd.append('file', file);
+        fetch(prefixUrl,{
+            method: 'POST',
+            mode: 'cors',
+            body: fd,
             credentials: "omit",
         }).then(response => {
-            if(response.headers.get('ETag')!=undefined){
+            console.info(response);
+            if(response.headers.get('ETag')!=null){
                 radioStorage==="openFire" ? console.info("WelfarePut:Success") : console.info("FireRoomPut:Success");
             }
         }).catch(err => {
             radioStorage==="openFire" ? console.error("WelfarePut:failure") : console.error("FireRoomPut:failure");
         })
-    }
-    function getFireCOS(sendMsg,isFirst){
+    }        
+    function getNodeCOS(sendMsg,isFirst){
         let date = new Date();
         let reqUrl = firePrefix +'FireNode/'+dateFormat("YYYY-mm-dd",date) +'/'+dateFormat('HH',date)+'-fireInfo.json';
         if(radioStorage==="openFire"){
@@ -1721,13 +1733,10 @@ function roomScript() {
             radioStorage==="openFire" ? console.info("WelfareGet:Success") : console.info("FireRoomGet:Success");
             if(addFlag){
                 jsonData.unshift(sendMsg);
-                putFireInfo(JSON.stringify(jsonData),reqUrl);
+                putFireInfo(JSON.stringify(jsonData),date);//putFireInfo(JSON.stringify(jsonData),reqUrl);
             }
         }).catch(err => {
-            isFirst ? setTimeout(function(){getFireCOS(sendMsg,false)},4000) : 0;//if error try again later;
-            // var arr = new Array();
-            // putFireInfo(JSON.stringify([sendMsg]),reqUrl);
-            // console.error('REQUEST ERROR', err);
+            isFirst ? setTimeout(function(){getNodeCOS(sendMsg,false)},5000) : false;//if error try again later;
         })
     }
     function shareFirePowerInfo(){
@@ -1740,7 +1749,7 @@ function roomScript() {
                 let fireInfo = fireBox.innerText.replace(/\s/g, '|');
                 let avatar = document.getElementsByClassName("Title-anchorPicBack")[0].getElementsByTagName("img")[0].getAttribute("src");
                 let sendMsg = {"roomId":roomId,"donator":uname,"avatar":avatar,"sendTime":new Date().getTime(),"remainTime":remainTime,"content":fireInfo};
-                getFireCOS(sendMsg,true);
+                getNodeCOS(sendMsg,true);
             }
             shareTM = new Date().getTime();//get curtime
         }
@@ -1756,7 +1765,7 @@ function roomScript() {
         let paramStr = "rid="+ roomId + "&ctn=" + getEffectCookie('acf_ccn');
         ajax.send(paramStr);
         ajax.onreadystatechange = function() {
-            if (ajax.readyState == 4 && ajax.status == 200) {
+            if (ajax.readyState == 4 && Math.floor(ajax.status/100) == 2) {
                 var json = ajax.response;
                 if(json.data.rank !=-1){
                     let expireTime = (new Date()).setHours(0, 0, 0, 0) + 3600*24*1000 ;//set expire time is tomorrow 00:00:00:000ms。
@@ -2264,12 +2273,10 @@ function roomScript() {
             jsonAnalytics(1);//barrage analytics
             screenBarrageMemory();//restore scroll barrage status
             autoPlayMemory();//restore autoplay status
-            // adjustClarity(0);//adjust clarity (1.highest;other.lowest)
             getUserInfo();//get uid,uname
             getRoomId();//get real room_id
             userConfig();//user personal config
             realPersonNum();//real person number
-            // setTimeout(assignRank, 1000);//room assign rank
             giftShowEntrance();//platform total gift sort number
             motorcadeEntrance();//motorcade total number and car assign
             thirdStatEntrance();//third statistic entrance
@@ -2662,7 +2669,7 @@ function motorcadeScript(){
             },
             body: postData
         }).then(result => {
-            if(result.status_code=="200"){
+            if(Math.floor(result.status_code/100) == 2){
                 popupToast("《车队签到成功》<br>今日车队自动签到完毕！", 4);
                 setTimeout(function(){
                     // window.opener=null;
