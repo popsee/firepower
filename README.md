@@ -139,24 +139,24 @@
 <p><strong>对于小白用户我们也相当的友好，这里公开透明的描述了使用大家的哪些个人信息，下面是详细说明，如果使用此脚本，则默认您同意下面的条款；</strong></p>
 <ul>
    <li>使用收集了用户的昵称信息，主要用途是区别自己已发弹幕的幻神图标去重，判断火力全开中奖列表是否含有自己，礼物致谢去重感谢自己的礼物，区分不同用户的每日跳转次数等；</li>
-   <li>使用收集了用户的UID信息，主要是通过用户的uid区别用户自定义的配置参数（隐藏功能可配置），以及通过uid方便获取用户的昵称；</li>
+   <li>使用收集了用户的UID信息，主要是通过用户的uid区别用户自定义的配置参数（隐藏功能可配置），以及通过uid获取用户的昵称；</li>
    <li>使用了用户的手机绑定状态信息(非手机号码)，主要用途是如果用户没有绑定手机号，则实现非绑定手机发弹幕的功能(但不参与鱼粮领取)，如果绑定手机则直接参与鱼粮自动领取；</li>
    <li>使用了用户的cookie中的acf_ccn，此cookie的用途是极速签到抢签到手速王需要发送的参数，火力全开房间跳转也用的此cookie作为参数向服务器发送；</li>
    <li>使用了用户的cookie中的post-csrfToken的值，此cookie的用途是用于车队自动签到，领取车队加油卡所需要发送的参数；</li>
-   <li>采用了站长统计，主要统计云弹幕接口的访问频次（日均约5000+次），目前已经放弃了采用Github的接口(因为在特殊时期不稳定)，通过使用CDN流量加速包，满足大家的速度需求，目前捐助维持，还请大家多多援手；</li>
-   <li>收集了火力房间节点信息，方便寻找匹配的火力房间，并统计直播间的火力频率，然后再回馈大家，功能已经开发完毕，快去尝鲜吧，少年！</li>
-   <li>收集了用户的每日跳转次数，统计用户每日的跳转量，探索斗鱼对跳转规则的限制规律，希望能找到一种每天超量跳转(N次)还不被关小黑屋的方法，目前正在制作中；</li>
+   <li>采用了站长统计，主要统计云弹幕接口的访问频次（目前日均约10000+次），目前已经放弃了采用Github的接口(因为在特殊时期不稳定)，通过使用国外CDN加速+国内云存储加速访问，满足大家的对速度需求，目前靠捐助维持，还请大家中了红包的，分一丢儿支持下可怜的斑竹吧；</li>
+   <li>收集了火力/抽奖房间节点信息，方便寻找匹配的火力房间，并统计直播间的火力频率，然后再回馈大家，功能已经开发完毕，快去尝鲜吧，少年！</li>
+   <li>收集了用户的每日跳转次数，统计用户每日的跳转量，探索斗鱼对跳转规则的限制规律，希望能找到一种每天超量跳转(N次)还不被关小黑屋的方法，目前已有一定规律，咨询请入群；</li>
    <li>真的木有了……；</li>
 </ul>
-<p><strong>本着职业道德的精神，本脚本从不恶意获取用户的敏感信息，诸如鱼丸、鱼翅数目、关注列表、账号token等，如一经发现作者侵犯了您的这些权益，请立马举报作者！或派遣一大波儿正义的美少女战士，把作者大大埋没在波涛胸涌的浪潮中吧😍！</strong></p>
+<p><strong>本着职业道德的精神，本脚本从不恶意收集用户的敏感信息，诸如鱼丸、鱼翅数目、绑定手机、账号token等个人隐私，如一经发现作者侵犯了您的这些权益，请立马举报作者！或派遣一大波儿正义的美少女战士，把作者大大埋没在波涛胸涌的浪潮中吧😍！</strong></p>
 <hr>
 <h2>特别推荐</h2>
 <ul>
     <li><a style="color:red;text-decoration:none;font-weight:bold;" href="https://greasyfork.org/zh-CN/scripts/380546">Greasy丶H2P</a>的自定义弹幕脚本(可自定义弹幕内容、抄袭循环弹幕、关键词回复、自动参与火力等）配合本脚本的火力🔥搜寻功能，可以无缝对接，并实现个性定制自己弹幕功能，这样可以避免大家用类似的弹幕而暴露；</li>
     <li><a style="color:red;text-decoration:none;font-weight:bold;" href ="https://www.obrua.com" target="_blank">小丑签到工具</a>，斗鱼批量签到关注列表的phyton脚本工具，主要功能是自动批量签到关注列表的房间和抢占签到手速王，一直在精心维护，这里特别推荐下，小丑大神对使用webSocket连接斗鱼弹幕系统进行收发弹幕造诣很深，有需求的朋友可以加入我们Q群与之交流探讨；</li>    
     <li><a style="color:red;text-decoration:none;font-weight:bold;" href ="https://www.obrua.com" target="_blank">胖头鱼的机器人</a>，斗鱼机器人界的元老级大神，QQ群(158267839)很活跃，群内高人辈出，开发的程序是谷歌浏览器插件，主要功能是自动抢宝箱和鱼吧自动签到，一直在精心维护，这里特别推荐下；</li>
-    <li><a style="color:red;text-decoration:none;font-weight:bold;" href ="http://www.obsapp.com/apps/danmupro/" target="_blank">小葫芦弹幕助手</a>，直播弹幕插件的开山大神，引领插件从夹缝求生走向风光前台程序的带头大哥，目前已经实现自己域名平台化和专业化，想使用正规化、高质量弹幕服务（一堆功能）的小伙伴，快去尝鲜吧；</li>
-    <li><a style="color:red;text-decoration:none;font-weight:bold;" href="https://bojianger.com/" target="_blank">播酱</a>这个斗鱼数据统计的平台是Github的liutianyu老兄向我推荐的，可以看到斗鱼特别详细的统计数据，包括真实活跃观众和历史所有的弹幕记录等，对数据感兴趣的童鞋可以去看看，这里的数据分析做的是相当的nice，每天幻神大大宠幸谁的直播间，什么时间发的啥子弹幕，送了啥子礼物都能一目了然，话说没有隐私了，牛批的一塌糊涂；</li>
+    <li><a style="color:red;text-decoration:none;font-weight:bold;" href ="http://www.obsapp.com/apps/danmupro/" target="_blank">小葫芦弹幕助手</a>，直播弹幕插件的开山大神，与许多直播平台有正规的合作，而且平台统计对小直播间也很友好(这点比播酱好)，想使用安全可靠的弹幕服务（一堆功能）的小伙伴，快去尝鲜吧；</li>
+    <li><a style="color:red;text-decoration:none;font-weight:bold;" href="https://bojianger.com/" target="_blank">播酱</a>这个斗鱼数据统计的平台是Github的liutianyu老兄向我推荐的，可以看到斗鱼特别详细的统计数据，包括真实活跃观众和历史所有的弹幕记录等，对用户数据抓取的很翔实，对数据感兴趣的童鞋可以去看看，每天幻神大大宠幸谁的直播间，什么时间发的啥子弹幕，送了啥子礼物都能一目了然，话说没有隐私了，牛批的一塌糊涂；</li>
     <li><a style="color:red;text-decoration:none;font-weight:bold;" href = "https://github.com/youbao88/douyuquiz">自动记录竞猜数据Python脚本</a>是博主在Github看到的，已验证可用，包括竞猜封盘的赔率，竞猜标题，输赢，鱼丸数量等，数据保存到本地并可以浏览器列表形式展示数据。这个功能还挺棒的，喜欢梭哈的朋友可以试试，需要安装python 环境；</li>
     <li>欢迎大家使用、研究和引用本脚本，但在引用脚本的时候，希望您能标注出处，这也是对作者付出的认可与尊重，也是对您自我修养的体现，如意见欢迎给博主<a href="mailto:lvlanxing@gmail.com?subject=邮件主题&body=邮件内容" rel="nofollow" style="color:red;text-decoration:none;font-weight:bold;">发送邮件</a>，或在博主的<a style="color:red;text-decoration:none;font-weight:bold;" href="https://github.com/wolf-scream/FirePowerSeek">GitHub</a>上留言，或加入我们薅羊毛大军的QQ交流群：650178547 发留言；</li>
 </ul>
