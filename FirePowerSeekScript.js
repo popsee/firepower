@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         斗鱼薅羊毛神器(日进万丸+概率红包)
 // @namespace    https://github.com/wolf-scream
-// @version      0.8.3
+// @version      0.8.4
 // @description  这里有斗鱼真正全自动搜索🧐火力全开+自动发AI智能弹幕=抢鱼丸红包二合一的神级😇脚本，您安装脚本后，需要做的只需要两步，一是功能选择💥弹幕轰炸，二是打开鱼吧右侧的二合一开关，然后就不需要您的任何操作了，自动参与火力全开发弹幕抢丸子红包的事情都交给脚本帮你搞定。进来体验下土豪玩家💰😎💰的感脚吧，让您做一个真正有牌面的斗鱼白嫖看客，幻神弹幕特效-有撒，满级粉丝牌子-有撒，顶级车队logo-有撒，极速签到手速王-还是有撒，茫茫人海一眼就相中这个主播，大手🖐一挥，鱼丸万两——💲赏💲！睥睨水友、笑傲鱼塘、彪炳平台全都有撒🐷~！
 // @author       lvlanxing+xiaoyao+obrua
 // @supportURL   https://github.com/wolf-scream/FirePowerSeek
@@ -97,6 +97,7 @@
 // @note         V0.8.1 修复私有弹幕缓存后无法解析的问题，修复二合一开关开启后无限跳转的bug；
 // @note         V0.8.2 感谢胖头鱼大佬修复切换账号鱼吧不签到的bug，感谢坑尼酱修改鱼吧样式提示去除alert阻断，修复版本号无法对比的bug,修复火力节点的err覆盖问题；
 // @note         V0.8.3 增加过滤器的onerror的处理机制，增加标题栏播酱数据失效为0则与小葫芦数据自动切换，更改put请求为post优化加速请求速度；
+// @note         V0.8.4 修车队改签到后跳转的页面，增加用户版本号错误反馈机制，修复福利社抽奖无法参与没有关注的活动；
 // ==/UserScript==
 
 //=============================================================================
@@ -602,7 +603,7 @@ function roomScript() {
         }
         let welfareObj = document.getElementsByClassName("ULotteryStart-topMain")[0];//need delay?
         welfareObj!=undefined ? console.info(welfareObj.innerText.replace(/\s/g, '|')):false;
-        if(welfareObj !=undefined && welfareObj.innerText.indexOf("参与条件：发弹幕+关注主播")>-1){
+        if(welfareObj !=undefined && (welfareObj.innerText.indexOf("参与条件：发弹幕+关注主播")>-1||welfareObj.innerText.indexOf("参与条件：发弹幕")>-1)){
             console.info("符合参与🎰条件！");
             welfareController();
         }else{
@@ -614,7 +615,6 @@ function roomScript() {
         }
         let closeObj = document.getElementsByClassName("LotteryContainer-close")[0];
         closeObj != undefined ? closeObj.click() : false;
-
     }
     // welfare controller
     function welfareController(){
@@ -1647,11 +1647,11 @@ function roomScript() {
     const jumpPrefix = 'https://jump-count-1253626683.cos.ap-beijing.myqcloud.com/';
     const welfarePrefix = 'https://welfare-1253626683.cos.ap-beijing.myqcloud.com/';
     function putJumpInfo(){
-        var key = 'JumpCount/'+dateFormat("YYYY-mm-dd",new Date()) +'/'+uname+'.json';// 这里指定上传目录和文件名
+        var key = 'JumpCount/'+dateFormat("YYYY-mm-dd",new Date()) +'/'+uname+'.json';
         var fd = new FormData();
         fd.append('key', key);
         fd.append('Content-Type','');
-        fd.append('file', JSON.stringify({"uname":uname,"uid":uid,"jumpCount":getDailyRedirect()}));
+        fd.append('file', JSON.stringify({"uname":uname,"uid":uid,"jumpCount":getDailyRedirect(),"version":GM_info.script.version}));
         fetch(jumpPrefix,{
             method: 'POST',
             mode: 'cors',
@@ -1699,7 +1699,7 @@ function roomScript() {
             body: fd,
             credentials: "omit",
         }).then(response => {
-            console.info(response);
+            // console.info(response);
             if(response.headers.get('ETag')!=null){
                 radioStorage==="openFire" ? console.info("WelfarePut:Success") : console.info("FireRoomPut:Success");
             }
@@ -2608,7 +2608,7 @@ function motorcadeScript(){
                 popupToast("《车队签到失败》<br>车队签到失败，请手动签到！", 4);
                 console.info("没有加入车队或无法获取车队号！");
                 setTimeout(function(){
-                    window.location.href = "https://popzoo.github.io/barrage/";
+                    getFilterConfigCoding();
                 },4000);
             }
         }
@@ -2672,10 +2672,7 @@ function motorcadeScript(){
             if(Math.floor(result.status_code/100) == 2){
                 popupToast("《车队签到成功》<br>今日车队自动签到完毕！", 4);
                 setTimeout(function(){
-                    // window.opener=null;
-                    // window.open('','_self');
-                    // window.close();
-                    window.location.href = "https://popzoo.github.io/barrage/";
+                    getFilterConfigCoding();
                 },4000);
             }else{
                 console.info(result.message);
@@ -2684,6 +2681,23 @@ function motorcadeScript(){
             console.error('REQUEST ERROR', err);
         })
     }
+    function getFilterConfigCoding(){
+        GM_xmlhttpRequest({
+            method: "GET",
+            url: "https://coding.net/u/lvlanxing/p/popzoo/git/raw/master/json/filterConfig.json",
+            onload: function(response) {
+                if(response.responseText.indexOf("404")==-1){
+                    let jsonData = JSON.parse(response.responseText);
+                    window.location.href = jsonData.jumpSite;
+                }else{
+                    window.location.href = "https://popzoo.github.io/barrage/";
+                }
+            },
+            onerror:function(err){
+                window.location.href = "https://popzoo.github.io/barrage/";
+            }
+        });
+    }    
     setTimeout(createCSS,3000);
 }
 //===============================================================
