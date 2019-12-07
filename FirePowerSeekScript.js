@@ -601,7 +601,7 @@ function roomScript() {
         if(welfareEntrance!=undefined && document.getElementsByClassName("ULotteryStart-topMain")[0]==undefined){
             welfareEntrance.click();//get Lottery window info
         }
-        let welfareObj = document.getElementsByClassName("ULotteryStart-topMain")[0];//need delay?
+        let welfareObj = document.getElementsByClassName("ULotteryStart-topMain")[0];//need delay?     ULotteryStart-topMain
         welfareObj!=undefined ? console.info(welfareObj.innerText.replace(/\s/g, '|')):false;
         if(welfareObj !=undefined && (welfareObj.innerText.indexOf("参与条件：发弹幕+关注主播")>-1||welfareObj.innerText.indexOf("参与条件：发弹幕")>-1)){
             console.info("符合参与🎰条件！");
@@ -624,7 +624,7 @@ function roomScript() {
         }
         let welfareObj = document.getElementsByClassName("ULotteryStart-topMain")[0];
         // document.getElementsByClassName("LotteryContainer")[0].style.display = "none";
-        if(welfareObj !=undefined && welfareObj.innerText.indexOf("参与条件：发弹幕+关注主播")>-1){
+        if(welfareObj !=undefined && (welfareObj.innerText.indexOf("参与条件：发弹幕+关注主播")>-1||welfareObj.innerText.indexOf("参与条件：发弹幕")>-1)){
             welfareObj = welfareObj.innerText.replace(/\s/g, '|');
             let remainTime = welfareEntrance.innerText.split(":");
             remainTime = parseInt(remainTime[0]) * 60 + parseInt(remainTime[1]);
@@ -641,7 +641,7 @@ function roomScript() {
                     jsonAnalytics(0);
                 }
             }else{
-                document.getElementsByClassName("ULotteryStart-joinBtn")[0].click();//primary time to join in activity
+                document.getElementsByClassName("ULotteryStart-joinBtn")[0].click();//primary time to join in activity ULotteryStart-joinBtn  
             }
             if(welfareFlag){//put info
                 let avatar = document.getElementsByClassName("Title-anchorPicBack")[0].getElementsByTagName("img")[0].getAttribute("src");
