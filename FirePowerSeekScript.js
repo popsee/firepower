@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         斗鱼薅羊毛神器(日进万丸+概率红包)
 // @namespace    https://github.com/wolf-scream
-// @version      0.8.4
+// @version      0.8.7
 // @description  这里有斗鱼真正全自动搜索🧐火力全开+自动发AI智能弹幕=抢鱼丸红包二合一的神级😇脚本，您安装脚本后，需要做的只需要两步，一是功能选择💥弹幕轰炸，二是打开鱼吧右侧的二合一开关，然后就不需要您的任何操作了，自动参与火力全开发弹幕抢丸子红包的事情都交给脚本帮你搞定。进来体验下土豪玩家💰😎💰的感脚吧，让您做一个真正有牌面的斗鱼白嫖看客，幻神弹幕特效-有撒，满级粉丝牌子-有撒，顶级车队logo-有撒，极速签到手速王-还是有撒，茫茫人海一眼就相中这个主播，大手🖐一挥，鱼丸万两——💲赏💲！睥睨水友、笑傲鱼塘、彪炳平台全都有撒🐷~！
 // @author       lvlanxing+xiaoyao+obrua
 // @supportURL   https://github.com/wolf-scream/FirePowerSeek
@@ -98,6 +98,9 @@
 // @note         V0.8.2 感谢胖头鱼大佬修复切换账号鱼吧不签到的bug，感谢坑尼酱修改鱼吧样式提示去除alert阻断，修复版本号无法对比的bug,修复火力节点的err覆盖问题；
 // @note         V0.8.3 增加过滤器的onerror的处理机制，增加标题栏播酱数据失效为0则与小葫芦数据自动切换，更改put请求为post优化加速请求速度；
 // @note         V0.8.4 修车队改签到后跳转的页面，增加用户版本号错误反馈机制，修复福利社抽奖无法参与没有关注的活动；
+// @note         V0.8.5 增加鱼丸收益和红包收益数目显示，增加自动检测因PK导致的停播按钮自动播放，增加vip的推送节点功能；
+// @note         V0.8.6 脚本安全升级，增加隐藏功能-用户匿名，匿名上传用户的共享节点，优化中奖弹幕的随机发送时间，优化红包抽奖条件过滤判断；
+// @note         V0.8.7 新增一键清空背包小礼物的功能，优化访问速度，过滤一些刷新的重复操作；
 // ==/UserScript==
 
 //=============================================================================
@@ -115,9 +118,9 @@ function roomScript() {
     var jumpCount = 100;//auto jump times, don't advise the value larger than 120; this may conduct your account to be forbidden by douyu;
     var jumpDelay = 3;//default jump delay setup, (second);
     var tmGap = 10000;//default send barrage time gap (ms);
-    var msgTxt, msgBtn, firePowerTime, fireJumpTime, popLoopTime, roomAssignTime;//delay task object;
-    var uid = "-", uname="-", shareTM="-", roomId="99999", banRoom=[], banName=[], giftInfoStr="-";//user id，name，roomid, room filter;
-    var fireFlag=true,deityFlag=true,welfareFlag=true,thankFlag=false,selfDanmuFlag=false,mixedFlag=false;
+    var msgTxt, msgBtn, firePowerTime, fireJumpTime, popLoopTime, roomAssignTime, autoPlayCheck;//delay task object;
+    var uid = "0_0", uname="0_0",giftInfoStr="0_0", roomId="99999", aiAppId="", vipList=[], banRoom=[], banName=[];//user id，name，roomid, room filter;
+    var fireFlag=true,deityFlag=true,welfareFlag=true,thankFlag=false,selfDanmuFlag=false,mixedFlag=false,anonymousFlag=false;
     var sbts = (new Date()).getTime();//globle present timestamp
     var tkAdTM = (new Date()).getTime();//thank admin timestamp
     var radioStorage = localStorage.getItem("radioTagStatus🌼🍄🌼")!=null ? localStorage.getItem("radioTagStatus🌼🍄🌼") : "ceaseFire";
@@ -131,13 +134,17 @@ function roomScript() {
                 thankFlag=true;
                 console.info("获取用户配置-->【开启礼物答谢功能】");
             }
+            if(configInfo.indexOf("🀄匿名用户🀄")>-1){
+                anonymousFlag=true;
+                console.info("获取用户配置-->【开启匿名用户功能】");
+            }
             if(configInfo.indexOf("🀄弹幕混用🀄")>-1){
                 mixedFlag=true;
                 console.info("获取用户配置-->【AI与私有弹幕混用】");
             }
             if(configInfo.indexOf("🀄关闭幻神🀄")>-1){
                 deityFlag = false;
-                console.info("获取用户配置-->【关闭幻神特效功能】");
+                console.info("获取用户配置-->【关闭幻神特效模式】");
             }else{
                 msgBtn.addEventListener("mouseup",clickBtnEvent);//binding mouse event
                 document.onkeydown = function(e){e.keyCode==13?clickBtnEvent():false}//binding keybord event
@@ -307,8 +314,7 @@ function roomScript() {
     }
     //AI chat function，140 million relations entity
     function robotAIChat(question){
-        let appid = "&appid=e231f81cd82f994e2843c870f391ac7c";
-        fetch('https://api.ownthink.com/bot?spoken='+question+appid).then(res => {
+        fetch('https://api.ownthink.com/bot?spoken='+question+aiAppId).then(res => {
             return res.json();
         }).then(json => {
             if(json.message=="success" && json.data.type==5000){
@@ -337,7 +343,7 @@ function roomScript() {
             }
         }).catch(err => {
             bombBarrage();//protect running from AI robot death
-            console.warn('REQUEST ERROR', err);
+            console.warn("AI机器人又双叒叕挂了，请联系大佬好好调教AI！");
         })
     }
     //Send Barrage
@@ -410,6 +416,7 @@ function roomScript() {
             }else{
                 msgTxt.value = arrNoPrize[parseInt(Math.random()*arrNoPrize.length)];
             }
+            refreshFishballHarvest(false);
             console.info("中奖弹幕,时间间隔<"+((new Date()).getTime() - sbts)/1000+"s>" + msgTxt.value);
             msgBtn.click();
             clickBtnEvent();
@@ -460,7 +467,7 @@ function roomScript() {
                     jsonAnalytics(0);
                 }
                 if(fireFlag){
-                    shareFirePowerInfo();
+                    shareFirePowerInfo(true,0,0);
                     fireFlag=false;
                 }
             } else {
@@ -469,12 +476,12 @@ function roomScript() {
                     fireFlag=true;
                 }
                 if( (new Date()).getTime() - sbts < 1000*30 ){
-                    awardBarrage();//winning barrage
+                    setTimeout(awardBarrage, parseInt(Math.random()*8+4));//winning barrage, random time to send
                 }
                 console.info("火力弹幕停止,时间累计："+ ((new Date()).getTime() - sbts)/1000 + "s" );
                 if( (radioStorage === "bombFire" && switchStatus==="on") && ((new Date()).getTime() - sbts) > 1000 * fireWait && getDailyRedirect() < parseInt(jumpCount)){//如果超过*分钟没有开火，则跳转！
                     if(cancelFollowRoom()){
-                        popupToast("《火力搜寻跳转》<br>已超过"+fireWait+"s没重开火力<br>跳转前将取关<br>浮窗关闭后跳转！", 3)
+                        popupToast("《火力搜寻跳转》<br>已超过"+fireWait+"s没重开火力<br>跳转前将取关<br>浮窗关闭后跳转！", 3);
                         msgTxt.value = "#取关";
                         msgBtn.click();
                     }else{
@@ -511,47 +518,61 @@ function roomScript() {
             }).then(json => {
                 fireRequestFilter(json.data);
             }).catch(err => {
+                location.reload();//avoid net error abort next task
                 console.error('REQUEST ERROR', err);
             })
         }
     }
+
     //Fire Power Room Filter
     function fireRequestFilter(fireUrl) {
         if(!roomFilter(fireUrl)){
             var myRequest = new Request('https://www.douyu.com/swf_api/h5room/'+fireUrl);
-            fetch(myRequest).then(function(response) {
-                return response.json().then(function(json) {
-                    var jsonData = json.data;
-                    console.info("主播昵称:【"+jsonData.nickname+"】+++游戏名称:【" + jsonData.game_name+"】+++跳转链接=>https://www.douyu.com/"+fireUrl);
-                    if (jsonData.game_name.indexOf("一起看") == -1 && jsonData.game_name.indexOf("二次元") == -1 && jsonData.game_name.indexOf("户外") == -1 && jsonData.game_name.indexOf("汽车") == -1) {
-                        fetch('https://bojianger.com/data/api/common/search.do?keyword='+fireUrl, {
-                            method: 'GET',
-                            mode: 'cors',
-                            cache: 'default',
-                            credentials: 'omit'
-                        }).then(result => {
-                            return result.text();
-                        }).then(txt => {
-                            let json = JSON.parse(txt);
-                            let peopleNum = json.data.anchorVo.audience_count;
-                            if(peopleNum<4000){//if room people is larger than * and then redirect new one
-                                fireUrl = "https://www.douyu.com/" + fireUrl;
-                                let dailyJumpTimes = getDailyRedirect();
-                                dailyJumpTimes!=-1 ? localStorage.setItem((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]", 1+dailyJumpTimes):false;
-                                window.location.href = fireUrl;
-                            }else{
-                                randomFireRequest();
-                            }
-                        }).catch(err => {
-                            console.error('REQUEST ERROR', err);
-                        })
-                    } else {
-                        randomFireRequest();
-                    }
-                });
-            });
+            fetch(myRequest, {
+                method: 'GET',
+                mode: 'no-cors',
+                cache: 'default',
+                credentials: 'omit'
+            }).then(result => {
+                return result.json();
+            }).then(json => {
+                var jsonData = json.data;
+                console.info("主播昵称:【"+jsonData.nickname+"】+++游戏名称:【" + jsonData.game_name+"】+++跳转链接=>https://www.douyu.com/"+fireUrl);
+                if (jsonData.game_name.indexOf("一起看") == -1 && jsonData.game_name.indexOf("二次元") == -1 && jsonData.game_name.indexOf("户外") == -1 && jsonData.game_name.indexOf("汽车") == -1) {
+                    getOnlineAudience();
+                } else {
+                    randomFireRequest();
+                }
+            }).catch(err => {
+                console.warn('房间API接口获取失败');
+                location.reload();//avoid net error abort next task
+            })
         }else{
             randomFireRequest();
+        }
+        function getOnlineAudience(){
+            fetch('https://bojianger.com/data/api/common/search.do?keyword='+fireUrl, {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'default',
+                credentials: 'omit'
+            }).then(result => {
+                return result.text();
+            }).then(txt => {
+                let json = JSON.parse(txt);
+                let peopleNum = json.data.anchorVo.audience_count;
+                if(peopleNum<4000){//if room people is larger than * and then redirect new one
+                    fireUrl = "https://www.douyu.com/" + fireUrl;
+                    let dailyJumpTimes = getDailyRedirect();
+                    dailyJumpTimes!=-1 ? localStorage.setItem((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]", 1+dailyJumpTimes):false;
+                    window.location.href = fireUrl;
+                }else{
+                    randomFireRequest();
+                }
+            }).catch(err => {
+                console.warn('播酱数据获取失败');
+                location.reload();//avoid net error abort next task
+            })
         }
     }
     //===============================================================
@@ -625,7 +646,7 @@ function roomScript() {
         let welfareObj = document.getElementsByClassName("ULotteryStart-topMain")[0];
         // document.getElementsByClassName("LotteryContainer")[0].style.display = "none";
         if(welfareObj !=undefined && (welfareObj.innerText.indexOf("参与条件：发弹幕+关注主播")>-1||welfareObj.innerText.indexOf("参与条件：发弹幕")>-1)){
-            welfareObj = welfareObj.innerText.replace(/\s/g, '|');
+            welfareObj = welfareObj.innerText.replace(/\s/g, ',');
             let remainTime = welfareEntrance.innerText.split(":");
             remainTime = parseInt(remainTime[0]) * 60 + parseInt(remainTime[1]);
             let joinBtn = document.getElementsByClassName("ULotteryStart-joinBtn is-disabled")[0];//join in activity
@@ -644,9 +665,7 @@ function roomScript() {
                 document.getElementsByClassName("ULotteryStart-joinBtn")[0].click();//primary time to join in activity
             }
             if(welfareFlag){//put info
-                let avatar = document.getElementsByClassName("Title-anchorPicBack")[0].getElementsByTagName("img")[0].getAttribute("src");
-                let sendMsg = {"roomId":roomId,"donator":uname,"avatar":avatar,"sendTime":new Date().getTime(),"remainTime":remainTime,"content":welfareObj};
-                getNodeCOS(sendMsg,true);
+                shareFirePowerInfo(false,welfareObj,remainTime);
                 welfareFlag = false;
             }
         }else{
@@ -826,7 +845,6 @@ function roomScript() {
             }
         }
     }
-
     //===============================================================
     //+++++++++++++++++++++++++god scroll effect+++++++++++++++++++
     //===============================================================
@@ -1085,17 +1103,16 @@ function roomScript() {
         for(let i = 0; i< storage.length; i++ ){
             if(storage.key(i).indexOf("FIRE_POWER_ACT_") != -1 || storage.key(i).indexOf("RankCoverage_vesion_") != -1
                || (storage.key(i).indexOf("carAssigned🚦🚍🚦") != -1 && storage.key(i).indexOf("carAssigned🚦🚍🚦"+(new Date()).toLocaleDateString()) == -1 ) //clear history motorcade assign
-               || (storage.key(i).indexOf("carNumber🚖⛽🚖") != -1 && storage.key(i).indexOf("carNumber🚖⛽🚖"+(new Date()).toLocaleDateString()) == -1 ) //clear history motorcade number
                || (storage.key(i).indexOf("giftNumber💖🎁💖") != -1 && storage.key(i).indexOf("giftNumber💖🎁💖"+(new Date()).toLocaleDateString()) == -1 ) //clear history gift number
-               || (storage.key(i).indexOf("📱🌐📱") != -1 && storage.key(i).indexOf((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]") == -1 )||storage.key(i).indexOf("🐛🌵🐤") != -1){//clear history jump count
+               || (storage.key(i).indexOf("📱🌐📱") != -1 && storage.key(i).indexOf((new Date()).toLocaleDateString() + "📱🌐📱[" + uname + "]") == -1 )){//clear history jump count
                 clearList.push(storage.key(i));
                 // storage.removeItem(storage.key(i));
             }
         }
         var num = 0;
         function loopClearStorage(){
-            if(num>=clearList.length){
-                console.info("历史存储垃圾数据清空完毕！");
+            if(num==clearList.length){
+                console.info("历史存储垃圾清空完毕！");
             }else{
                 storage.removeItem(clearList[num]);
                 num++;
@@ -1166,8 +1183,9 @@ function roomScript() {
                     }else{
                         console.info("鱼丸奖励不达标");
                     }
-                }else if (prizeObj.indexOf("红包") != -1 || prizeObj.indexOf("现金") != -1) {
-                    if(prizeObj.indexOf("0.01元") == -1 && prizeObj.indexOf("0.1元") == -1 && prizeObj.indexOf("0.2元") == -1 && prizeObj.indexOf("0.5元") == -1 ){
+                }else if (prizeObj.indexOf("红包") != -1 || prizeObj.indexOf("现金") != -1 ||prizeObj.indexOf("鱼翅") != -1) {
+                    // if(prizeObj.indexOf("0.01元") == -1 && prizeObj.indexOf("0.1元") == -1 && prizeObj.indexOf("0.2元") == -1 && prizeObj.indexOf("0.02元") == -1 ){
+                    if(parseInt(prizeObj.substring(prizeObj.indexOf("赠送")+2,prizeObj.indexOf("元")))>=1){
                         awardFlag = true;
                     }else{
                         console.info("红包奖励不达标");
@@ -1206,7 +1224,6 @@ function roomScript() {
         scrollBarrageObj == undefined ? localStorage.setItem("scrollBarrage➰🍚➰","close") : localStorage.setItem("scrollBarrage➰🍚➰","open");
 
     }
-
     // remember and restore autoplay status
     function autoPlayMemory(){
         var playObj = document.getElementsByClassName("play-8dbf03")[0];
@@ -1215,6 +1232,9 @@ function roomScript() {
             var autoPlayStatus = localStorage.getItem("autoPlayStatus📀📺📀");
             if(autoPlayStatus == "close"){
                 pauseObj.click();
+                // autoPlayCheck=setInterval(autoPlayMemory,15*1000);//30s aoto check once,avoid to PK auto open play
+            }else{
+                clearInterval(autoPlayCheck);
             }
             playObj.addEventListener("mouseup",getAutoPlayStatus);
             pauseObj.addEventListener("mouseup",getAutoPlayStatus);
@@ -1222,13 +1242,11 @@ function roomScript() {
             checkDelayCallback(8);//wait to load
         }
     }
-
     // listenning changing of autoplay status
     function getAutoPlayStatus(){
         var autoPlayObj = document.getElementsByClassName("pause-c594e8 removed-9d4c42")[0];//close player
         autoPlayObj == undefined ? localStorage.setItem("autoPlayStatus📀📺📀","close") : localStorage.setItem("autoPlayStatus📀📺📀","open");
     }
-
     //get user identity info, without considering change uname
     function getUserInfo(){
         let uidObj = document.querySelector(".UserInfo-avatar");
@@ -1390,57 +1408,11 @@ function roomScript() {
         userList = parseInt(userList[userList.length-1]) + 100*userList[1] + 10000*userList[0];
         if(newList>userList){
             GM_info.scriptWillUpdate = true;
-            console.info("脚本最新版为["+newVersion+"],您当前的版本为["+GM_info.script.version+"],旧版本某些功能不再维护,推荐您升级到最新版！");
-        }
-    }
-    // ===================================================================
-    // ========================= Filter Config ===========================
-    // ===================================================================
-    //room filter ; true-contain; false-not include
-    function roomFilter(roomNB){
-        var roomFlag = false;
-        if(banRoom.length>0){
-            for(let i=0;i< banRoom.length;i++){
-                if(banRoom[i]==roomNB){
-                    roomFlag = true;
-                    break;
-                }
+            if(sessionStorage.getItem("tipUpdate")!="true"){
+                alert("薅羊毛最新脚本为["+newVersion+"],您的版本为["+GM_info.script.version+"],旧版即将停用,请您尽快升级！");
+                sessionStorage.setItem("tipUpdate","true");
             }
         }
-        return roomFlag;
-    }
-    //evil user filter ; true contain, false not contain
-    function nameFilter(){
-        var nameFlag = false;
-        if(banName.length>0){
-            for(let j=0;j<banName.length;j++){
-                if(banName[j]==uname){
-                    nameFlag = true;
-                    break;
-                }
-            }
-        }
-        return nameFlag;
-    }
-    function getFilterConfigCoding(){
-        GM_xmlhttpRequest({
-            method: "GET",
-            url: "https://coding.net/u/lvlanxing/p/popzoo/git/raw/master/json/filterConfig.json",
-            onload: function(response) {
-                if(response.responseText.indexOf("404")==-1){
-                    let jsonData = JSON.parse(response.responseText);
-                    // console.info("GM"+response.responseText);
-                    banRoom = jsonData.roomFilter!=undefined ? [].concat(jsonData.roomFilter):banRoom;
-                    banName = jsonData.nameFilter!=undefined ? [].concat(jsonData.nameFilter):banName;
-                    AIwordFilter = jsonData.AIFilter!=undefined ? [].concat(jsonData.AIFilter):AIwordFilter;
-                }else{
-                    getFilterConfigCOS();
-                }
-            },
-            onerror:function(err){
-                getFilterConfigCOS();
-            }
-        });
     }
     // get real roomId
     function getRoomId(){
@@ -1449,7 +1421,7 @@ function roomScript() {
             roomId = roomId.getAttribute("href").substr(roomId.getAttribute("href").indexOf("room_id=")+8)
         }else{
             roomId = "99999";
-            console.warn("无法获取当前房间号,请刷新页面重试！");
+            console.warn("无法获取当前房间号！");
         }
     }
     // ===================================================================
@@ -1502,7 +1474,7 @@ function roomScript() {
                 peopleObj.setAttribute("style","display:none;");
             }
         }).catch(err => {
-            console.error('REQUEST ERROR', err);
+            console.error("无法获取主播信用值");
         })
     }
     // get anchor info from bojianger
@@ -1535,7 +1507,7 @@ function roomScript() {
                 anchorObj.innerHTML = "🎅"+peopleNum +"人&nbsp;💲"+giftValue +"元&nbsp;🌐"+ getDailyRedirect() +"次";
             }
         }).catch(err => {
-            console.error('REQUEST ERROR', err);
+            console.error('播酱数据获取失败');
         })
     }
     function anchorInfoFromHulu(){
@@ -1562,7 +1534,7 @@ function roomScript() {
                 anchorObj.innerHTML = "🎅"+peopleNum +"人&nbsp;💲"+giftValue +"元&nbsp;🌐"+ getDailyRedirect() +"次";
             }
         }).catch(err => {
-            console.error('REQUEST ERROR', err);
+            console.error('小葫芦数据获取失败');
         })
     }
     // ===================================================================
@@ -1641,48 +1613,104 @@ function roomScript() {
         }
     }
     // ===================================================================
+    // ========================= Filter Config ===========================
+    // ===================================================================
+    //room filter ; true-contain; false-not include
+    function roomFilter(roomNB){
+        var roomFlag = false;
+        if(banRoom.length>0){
+            for(let i=0;i< banRoom.length;i++){
+                if(banRoom[i]==roomNB){
+                    roomFlag = true;
+                    break;
+                }
+            }
+        }
+        return roomFlag;
+    }
+    //evil user filter ; true contain, false not contain
+    function nameFilter(){
+        var nameFlag = false;
+        if(banName.length>0){
+            for(let j=0;j<banName.length;j++){
+                if(banName[j]==uname){
+                    nameFlag = true;
+                    break;
+                }
+            }
+        }
+        return nameFlag;
+    }
+    // check current user whether is donator
+    function nobleCheck(){
+        var nobleFlag = false;
+        if(vipList.length>0){
+            for(let j=0;j<vipList.length;j++){
+                if(vipList[j]==uid){
+                    nobleFlag = true;
+                    break;
+                }
+            }
+        }
+        return nobleFlag;
+    }
+    function getFilterConfigCoding(){
+        GM_xmlhttpRequest({
+            method: "GET",
+            url: "https://coding.net/u/lvlanxing/p/popzoo/git/raw/master/json/filterConfig.json",
+            onload: function(response) {
+                if(response.responseText.indexOf("404")==-1){
+                    let jsonData = JSON.parse(response.responseText);
+                    banRoom = jsonData.roomFilter!=undefined ? [].concat(jsonData.roomFilter):banRoom;
+                    banName = jsonData.nameFilter!=undefined ? [].concat(jsonData.nameFilter):banName;
+                    vipList = jsonData.vipConfirm!=undefined ? [].concat(jsonData.vipConfirm):vipList;
+                    aiAppId = jsonData.aiAppId!=undefined ? [].concat(jsonData.aiAppId):aiAppId;
+                    AIwordFilter = jsonData.AIFilter!=undefined ? [].concat(jsonData.AIFilter):AIwordFilter;
+                }
+            },
+            onerror:function(err){
+                console.error("FilterConfig:Failure");
+            }
+        });
+    }
+    // ===================================================================
     // ============================= COS Operate =========================
     // ===================================================================
-    const firePrefix = 'https://fire-room-1253626683.cos.ap-beijing.myqcloud.com/';
+    //白嫖脚本不想上传共享节点的用户请自行注释代码putJumpInfo()和shareFirePowerInfo()，为了方便大家使用所以节点是公开的，还请不要故意毁坏或向节点写入脏数据，小编在此深表感谢！
     const jumpPrefix = 'https://jump-count-1253626683.cos.ap-beijing.myqcloud.com/';
+    const firePrefix = 'https://firepower-1253626683.cos.ap-beijing.myqcloud.com/';
     const welfarePrefix = 'https://welfare-1253626683.cos.ap-beijing.myqcloud.com/';
-    function putJumpInfo(){
-        var key = 'JumpCount/'+dateFormat("YYYY-mm-dd",new Date()) +'/'+uname+'.json';
+    function putJumpInfo(addball,profit){
+        let nickName = anonymousFlag ? "匿名用户":uname.substring(0,2)+"用户";
+        let jumpCount = getDailyRedirect();
+        let file = JSON.stringify({"uname":nickName,"jumpCount":jumpCount,"fishballIncrease":addball,"cashIncome":profit,"version":GM_info.script.version});
+        var key = 'JumpCount/'+dateFormat("YYYY-mm-dd",new Date()) +'/'+ uid +'.json';
+        if(jumpCount>200 && jumpCount <=500){
+            key = 'JumpCount/'+dateFormat("YYYY-mm-dd",new Date()) +'/commonUser/'+ uid +'.json';
+        }else if(jumpCount >500 && jumpCount <=1000){
+            key = 'JumpCount/'+dateFormat("YYYY-mm-dd",new Date()) +'/seniorUser/'+ uid +'.json';
+        }else if(jumpCount>1000){
+            key = 'JumpCount/'+dateFormat("YYYY-mm-dd",new Date()) +'/honorUser/'+ uid +'.json';
+        }
         var fd = new FormData();
         fd.append('key', key);
         fd.append('Content-Type','');
-        fd.append('file', JSON.stringify({"uname":uname,"uid":uid,"jumpCount":getDailyRedirect(),"version":GM_info.script.version}));
+        fd.append('file', file);
         fetch(jumpPrefix,{
             method: 'POST',
             mode: 'cors',
             body: fd,
             credentials: "omit",
-        }).then(response => {
-            // console.info(response);
+        }).then(response => {// console.info(response);
             if(response.headers.get('ETag')!=null){
                 console.log("JumpCountPut:success");
             }
         }).catch(err => {
-            console.error('JumpCountPut:failure');
-        })
-    }    
-    function getFilterConfigCOS(){//second plan
-        fetch(firePrefix+'filterConfig.json',{
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-store',
-            credentials: 'omit'
-        }).then(res => {
-            return res.json();
-        }).then(jsonData => {
-            banRoom = jsonData.roomFilter!=undefined ? [].concat(jsonData.roomFilter):banRoom;
-            banName = jsonData.nameFilter!=undefined ? [].concat(jsonData.nameFilter):banName;
-            AIwordFilter = jsonData.AIFilter!=undefined ? [].concat(jsonData.AIFilter):AIwordFilter;
-        }).catch(err => {
-            console.error('REQUEST ERROR', err);
+            console.warn('JumpCountPut:failure');
         })
     }
-    function putFireInfo(file,date){
+    function putNodeInfo(fname,file){
+        let date = new Date();
         var prefixUrl = firePrefix;
         var key = 'FireNode/'+dateFormat("YYYY-mm-dd",date) +'/'+dateFormat('HH',date)+'-fireInfo.json';
         if(radioStorage==="openFire"){
@@ -1698,61 +1726,40 @@ function roomScript() {
             mode: 'cors',
             body: fd,
             credentials: "omit",
-        }).then(response => {
-            // console.info(response);
+        }).then(response => {// console.info(response);
             if(response.headers.get('ETag')!=null){
                 radioStorage==="openFire" ? console.info("WelfarePut:Success") : console.info("FireRoomPut:Success");
             }
         }).catch(err => {
-            radioStorage==="openFire" ? console.error("WelfarePut:failure") : console.error("FireRoomPut:failure");
-        })
-    }        
-    function getNodeCOS(sendMsg,isFirst){
-        let date = new Date();
-        let reqUrl = firePrefix +'FireNode/'+dateFormat("YYYY-mm-dd",date) +'/'+dateFormat('HH',date)+'-fireInfo.json';
-        if(radioStorage==="openFire"){
-            reqUrl = welfarePrefix +'WelfareNode/'+dateFormat("YYYY-mm-dd",date) +'/'+dateFormat('HH',date)+'-welfareInfo.json';
-        }
-        fetch(reqUrl,{
-            method: 'GET',
-            mode: 'cors',
-            cache: 'no-store',
-            credentials: 'omit'
-        }).then(res => {
-            return res.json();
-        }).then(jsonData => {
-            var addFlag = true;
-            for(let i=0; i<jsonData.length;i++){//remove reduplication
-                if(jsonData[i].roomId == sendMsg.roomId){
-                    let endTimeStamp = jsonData[i].remainTime*1000 + parseInt(jsonData[i].sendTime);
-                    if(endTimeStamp >= (new Date()).getTime()){
-                        addFlag = false;//if one fire activity endtime longer than current time,this fire node will be omit
-                    }
-                }
-            }
-            radioStorage==="openFire" ? console.info("WelfareGet:Success") : console.info("FireRoomGet:Success");
-            if(addFlag){
-                jsonData.unshift(sendMsg);
-                putFireInfo(JSON.stringify(jsonData),date);//putFireInfo(JSON.stringify(jsonData),reqUrl);
-            }
-        }).catch(err => {
-            isFirst ? setTimeout(function(){getNodeCOS(sendMsg,false)},5000) : false;//if error try again later;
+            radioStorage==="openFire" ? console.warn("WelfarePut:failure") : console.warn("FireRoomPut:failure");
         })
     }
-    function shareFirePowerInfo(){
-        if(shareTM=="-" || (new Date().getTime() - shareTM) >60 * 1000){//to avoid frequently transform onchange radio
+    function shareFirePowerInfo(isFire,welfareObj,rmTime){
+        let nickName = anonymousFlag ? "匿名用户":uname.substring(0,2)+"用户";
+        let avatar = document.getElementsByClassName("Title-anchorPicBack")[0].getElementsByTagName("img")[0].getAttribute("src");
+        var sendMsg ="";
+        if(isFire){
             let fireBox = document.querySelector(".FirePowerChatModal-infoBox");
             let remainTime = document.querySelector(".FirePowerChatModal-remainTime");
             if(fireBox!=null&&remainTime!=null){
                 remainTime = remainTime.innerText.split(":");
                 remainTime = parseInt(remainTime[0]) * 60 + parseInt(remainTime[1]);
-                let fireInfo = fireBox.innerText.replace(/\s/g, '|');
-                let avatar = document.getElementsByClassName("Title-anchorPicBack")[0].getElementsByTagName("img")[0].getAttribute("src");
-                let sendMsg = {"roomId":roomId,"donator":uname,"avatar":avatar,"sendTime":new Date().getTime(),"remainTime":remainTime,"content":fireInfo};
-                getNodeCOS(sendMsg,true);
+                let fireInfo = fireBox.innerText.replace(/\s/g, ',');
+                sendMsg = "&roomId="+roomId+"&donator="+nickName+"&sendTime="+new Date().getTime()+"&remainTime="+remainTime+"&content="+fireInfo;
             }
-            shareTM = new Date().getTime();//get curtime
+        }else{
+            sendMsg = "&roomId="+roomId+"&donator="+nickName+"&sendTime="+new Date().getTime()+"&remainTime="+rmTime+"&content="+welfareObj;
         }
+        let tempItem = sessionStorage.getItem("💠shareNode💠");
+        if(tempItem!=null){
+            tempItem = JSON.parse(tempItem);
+            let timeGap = new Date().getTime() - tempItem.saveTime;
+            if(tempItem.sendMsg.indexOf(roomId)>-1 && timeGap<60*1000){
+                return 0;
+            }
+        }
+        putNodeInfo(sendMsg,avatar);
+        sessionStorage.getItem("💠shareNode💠",JSON.stringify({"sendMsg":sendMsg,"saveTime":new Date().getTime()}));
     }
     // ===================================================================
     // ===================== API room fast assign ========================
@@ -1764,7 +1771,7 @@ function roomScript() {
         ajax.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset-UTF-8");
         let paramStr = "rid="+ roomId + "&ctn=" + getEffectCookie('acf_ccn');
         ajax.send(paramStr);
-        ajax.onreadystatechange = function() {
+        ajax.onreadystatechange = function(){
             if (ajax.readyState == 4 && Math.floor(ajax.status/100) == 2) {
                 var json = ajax.response;
                 if(json.data.rank !=-1){
@@ -1904,56 +1911,162 @@ function roomScript() {
     // ===================================================================
     // ======================= gift and car entrance =====================
     // ===================================================================
-    // gift show
-    function giftShowEntrance(){
+    // get today benifit
+    function getFishballHarvest(){
         let showPlace = document.getElementsByClassName("PlayerToolbar-ywInfo")[0];
         if(showPlace!=undefined){
-            let giftTag = document.createElement("dfn");
-            giftTag.innerHTML = "<a href='https://popzoo.github.io/pop/giftshow.html' target='_blank'>🎁礼物</a>";
-            giftTag.setAttribute("class","PlayerToolbar-ywInfo");
-            giftTag.setAttribute("id","gift_view_door");
-            giftTag.setAttribute("style","text-align:left;margin-right:6px;");
-            giftTag.setAttribute("data-info","🎁-斗鱼礼物图鉴，点击可查看动态、静态、欢迎、牌子、成就、广播等图片集锦，统计数据已放入跳转网页底部，这里只做跳转入口;");
-            showPlace.parentNode.insertBefore(giftTag, showPlace);
+            let ballTag = document.createElement("dfn");
+            ballTag.innerHTML = "<span id ='fish_ball_profit'>🌕赚丸-</span>";
+            ballTag.setAttribute("class","PlayerToolbar-ywInfo");
+            // ballTag.setAttribute("id","fish_ball_profit");
+            ballTag.setAttribute("style","text-align:left;margin-right:0px;");
+            ballTag.setAttribute("data-info","🌕-火力丸子收益，这里显示今日参与火力全开获得的鱼丸收益合计，中奖后数据一般会自动更新，点击这里可以手动刷新丸子收益和红包收益两组数据;");
+            showPlace.parentNode.insertBefore(ballTag, showPlace);
+            let cashTag = document.createElement("dfn");
+            cashTag.innerHTML = "<a id ='red_cash_income' href='https://popzoo.github.io/zoo/' target='_blank'>💰红包-</a>";
+            cashTag.setAttribute("class","PlayerToolbar-ywInfo");
+            // cashTag.setAttribute("id","red_cash_income");
+            cashTag.setAttribute("style","text-align:left;margin-right:6px;");
+            cashTag.setAttribute("data-info","💰-火力红包收益，此处显示今日参与火力全开(暂不含粉丝福利社)获得的红包收益合计，中奖后数据一般会自动更新，点击可以跳转时光轴导航页;");
+            showPlace.parentNode.insertBefore(cashTag, showPlace);
+            document.getElementById("fish_ball_profit").addEventListener("click",refreshFishballHarvest);
+            refreshFishballHarvest(true);
         }else{
             checkDelayCallback(10);
         }
     }
-    // motorcade assign entrance and check redupliction
-    function motorcadeEntrance(){
+    // refresh fish ball and red cash
+    function refreshFishballHarvest(isFirst){
+        let curDate = dateFormat("YYYY-mm-dd",new Date());
+        fetch('https://www.douyu.com/japi/firepower/apinc/getLotteryRecord?pageSize=600&startTime='+curDate+'&endTime='+curDate,{//600need more and test
+            method: 'GET',
+            mode: 'no-cors',
+            cache: 'default',
+            credentials: 'include',
+        }).then(res => {
+            return res.json();
+        }).then(json => {
+            json = json.data.list;
+            var fishBallCount = 0;
+            var cashAwardCount = 0;
+            if(json.length>0){
+                for(let i=0;i<json.length;i++){
+                    if(json[i].prize.indexOf("鱼丸")>-1){
+                        fishBallCount += parseInt(json[i].prize.replace("鱼丸",""));
+                    }else if(json[i].prize.indexOf("元红包")>-1){
+                        cashAwardCount += parseInt(json[i].prize.replace("元红包",""));
+                    }
+                }
+            }
+            document.getElementById("fish_ball_profit").innerText="🌕赚丸"+fishBallCount;
+            document.getElementById("red_cash_income").innerText="💰红包"+cashAwardCount;
+            isFirst ? setTimeout(function(){putJumpInfo(fishBallCount,cashAwardCount)}, 30*1000) : false;
+        }).catch(err => {
+            console.error('无法获取收益列表');
+        })
+    }
+    // send all package gift
+    function sendAllPackageGift(){
         let showPlace = document.getElementsByClassName("PlayerToolbar-ywInfo")[0];
         if(showPlace!=undefined){
-            let carTag = document.createElement("dfn");
-            carTag.innerHTML = "<a href='https://msg.douyu.com/motorcade/#' target='_blank'>🚖车队</a>";
-            carTag.setAttribute("class","PlayerToolbar-ywInfo");
-            carTag.setAttribute("id","motorcade_door");
-            carTag.setAttribute("style","text-align:left;margin-right:0;");
-            carTag.setAttribute("data-info","🚖-斗鱼车队入口，点击可进入车队界面，每天首次启动脚本后自动跳转页面执行签到和领取车队加油卡，白嫖车队请点击【🎁礼物】进入【车队展】中查看;");
-            showPlace.parentNode.insertBefore(carTag, showPlace);
-            //check whether is duplicate assign
-            let carStatus = localStorage.getItem("carAssigned🚦🚍🚦"+(new Date()).toLocaleDateString());
-            if(carStatus!="true"){//car no assignment
-                setTimeout(function(){
-                    localStorage.setItem("carAssigned🚦🚍🚦"+(new Date()).toLocaleDateString(),"true");
-                    // openNewTab("https://msg.douyu.com/motorcade/");//method focus new tab
-                    GM_openInTab('https://msg.douyu.com/motorcade/',{active: false});//unfocus new tab
-                },4000);
-            }
+            let giftTag = document.createElement("dfn");
+            giftTag.innerText = "🎁清包";
+            giftTag.setAttribute("class","PlayerToolbar-ywInfo");
+            // giftTag.setAttribute("id","send_all_gift");
+            giftTag.setAttribute("style","text-align:left;margin-right:0px;");
+            giftTag.addEventListener("click",getPackageGiftList);
+            giftTag.setAttribute("data-info","🎁-一键清空背包小礼物，全部赠送给当前的直播间，由于直接采用接口赠送，所以没有横幅显示效果，大家可以再次打开背包查看礼物是否为空;");
+            showPlace.parentNode.insertBefore(giftTag, showPlace);
         }else{
             checkDelayCallback(11);
         }
     }
-    //avoid to forbid jump
-    function openNewTab(url) {
-        var a = document.createElement('a');
-        a.setAttribute('href', url);
-        a.setAttribute('target', '_blank');
-        a.setAttribute('id', "auto_jump_car");
-        if(!document.getElementById("auto_jump_car")) {// avoid add again
-            document.body.appendChild(a);
+    //get package gift
+    function getPackageGiftList(){
+        let count = 0;
+        let packageBtn = document.getElementsByClassName("BackpackButton")[0];
+        if(packageBtn!=undefined){
+            packageBtn.click();
+            getPackageGift();
         }
-        a.click();
+        function getPackageGift(){
+            let giftBlank = document.getElementsByClassName("Backpack-prop is-blank is-disabled")[0];
+            if(giftBlank!=undefined){
+                var effectGiftList = document.getElementsByClassName("Backpack-prop prop is-effect");
+                if(effectGiftList.length>0){
+                    setTimeout(loopDonate,300);
+                }
+                var code = effectGiftList.length-1;
+                function loopDonate(){
+                    if(code == -1){
+                        let closePanel = document.getElementsByClassName("Backpack-closeButton")[0];
+                        closePanel!=undefined ?closePanel.click():false;
+                        popupToast("《一键清空背包》<br>背包小礼物清空成功！", 3);
+                    }else{
+                        var giftNum = effectGiftList[code].getElementsByClassName("Backpack-propCount")[0].innerText;
+                        let giftId = effectGiftList[code].getAttribute("data-propid");
+                        var postData = "propId="+giftId+"&propCount="+giftNum+"&roomId="+roomId+"&bizExt=%7B%22yzxq%22%3A%7B%7D%7D";//{"yzxq":{}}
+                        if(giftId == 912 || giftId == 178 || giftId == 179 || giftId == 180 || giftId==4 || giftId==5){
+                            postData = "propId="+giftId+"&propCount=1&roomId="+roomId+"&bizExt=%7B%22yzxq%22%3A%7B%7D%7D";//{"yzxq":{}}
+                        }
+                        loopSendGift(postData);
+                        function loopSendGift(postData){
+                            fetch('https://www.douyu.com/japi/prop/donate/mainsite/v1', {
+                                method: 'POST',
+                                mode: 'no-cors',
+                                credentials: 'include',
+                                headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                                body: postData
+                            }).then(result => {
+                                return result.json();
+                            }).then(json => {
+                                console.info("送礼状态:"+json.msg);
+                                if((giftId == 912 || giftId == 178 || giftId == 179 || giftId == 180 || giftId==4 || giftId==5) && giftNum>0){
+                                    giftNum--;
+                                    loopSendGift(postData);
+                                }else{
+                                    code--;
+                                    loopDonate();
+                                }
+                            }).catch(err => {
+                                console.error('REQUEST ERROR', err);
+                            })                            
+                        }
+                    }
+                }
+            }else{
+                delayToload();
+            }
+        }
+        function delayToload(){
+            if(count<10){
+                count++;
+                setTimeout(getPackageGift,100);
+            }
+        }
     }
+    // morcade Assign Entrance
+    function motorcadeOpenTab(){
+        let carStatus = localStorage.getItem("carAssigned🚦🚍🚦"+(new Date()).toLocaleDateString());
+        if(carStatus!="true"){//car no assignment
+            setTimeout(function(){
+                localStorage.setItem("carAssigned🚦🚍🚦"+(new Date()).toLocaleDateString(),"true");
+                // openNewTab("https://msg.douyu.com/motorcade/");//method focus new tab
+                GM_openInTab('https://msg.douyu.com/motorcade/',{active: false});//unfocus new tab
+            },4000);
+        }
+    }
+    //avoid to forbid jump
+    // function openNewTab(url) {
+    //     var a = document.createElement('a');
+    //     a.setAttribute('href', url);
+    //     a.setAttribute('target', '_blank');
+    //     a.setAttribute('id', "auto_jump_car");
+    //     if(!document.getElementById("auto_jump_car")) {// avoid add again
+    //         document.body.appendChild(a);
+    //     }
+    //     a.click();
+    // }
     // third statistics jump
     function thirdStatEntrance(){
         let showPlace = document.getElementsByClassName("PlayerToolbar-ywInfo")[0];
@@ -2009,7 +2122,7 @@ function roomScript() {
                     let room_id = badgeList.children[i].getAttribute("data-fans-room");
                     let room_name = badgeList.children[i].firstElementChild.nextElementSibling.innerText.trim();
                     //send fansBar to anchor ||赞4 弱鸡5 稳23 荧光棒268 棒棒哒178 辣眼睛179 怂180 加油卡912
-                    let postData = "propId=268&propCount=1&roomId="+room_id+"&bizExt=%7B%22yzxq%22%3A%7B%7D%7D";
+                    let postData = "propId=268&propCount=1&roomId="+room_id+"&bizExt=%7B%22yzxq%22%3A%7B%7D%7D";//{"yzxq":{}}
                     fetch('https://www.douyu.com/japi/prop/donate/mainsite/v1', {
                         method: 'POST',
                         mode: 'no-cors',
@@ -2048,7 +2161,7 @@ function roomScript() {
                 popupToast("《粉丝续牌子打卡》<br>没有检测到您有粉丝牌<br>不忘初心，拒绝办卡，白嫖大军威武！", 3);
             }
         }).catch(err => {
-            console.error('REQUEST ERROR', err);
+            console.error('粉丝列表获取失败');
         })
     }
     // ===================================================================
@@ -2087,7 +2200,7 @@ function roomScript() {
                     }
                 }
                 waitAjaxData();
-                // click watch time fish food ,can repeat click
+                // click watch time fish food,can repeat click
                 function loopBubbleBox(){
                     if(document.getElementsByClassName("FTP-singleTask-btn")[0] !=undefined){
                         let bubbleBox = document.getElementsByClassName("FTP-bubbleBox is-complete")[0];
@@ -2152,7 +2265,7 @@ function roomScript() {
                 popupToast("《领鱼粮+小礼物》<br>"+json.msg, 3);
             }
         }).catch(err => {
-            console.error('REQUEST ERROR', err);
+            console.error('鱼粮抽奖参与失败');
         })
     }
     // ===================================================================
@@ -2266,7 +2379,7 @@ function roomScript() {
         if(chatCheck==null){
             checkDelayCallback(0);
         }else{//init program
-            sbts = (new Date()).getTime();//record start timestamp
+            sbts = (new Date()).getTime();//init start timestamp
             msgTxt = document.querySelector(".ChatSend-txt");
             msgBtn = document.querySelector(".ChatSend-button");
             createUIElement();//create css and btn
@@ -2276,18 +2389,18 @@ function roomScript() {
             getUserInfo();//get uid,uname
             getRoomId();//get real room_id
             userConfig();//user personal config
+            getFilterConfigCoding();//get filter config
             realPersonNum();//real person number
-            giftShowEntrance();//platform total gift sort number
-            motorcadeEntrance();//motorcade total number and car assign
+            getFishballHarvest();//show daily fishball/cash benefit || jump count
+            sendAllPackageGift();//send all package gift
+            motorcadeOpenTab();//car assign check
             thirdStatEntrance();//third statistic entrance
             addFansClickBtn();//fans donate bars btn
             addFishFoodClickBtn();//add fish food btn
             removeSomeAds();//remove some boring ADs
-            getPhoneStatus();//get phone status --> get fishfood || send danmu no phone
-            getFilterConfigCoding();//get filter config
-            cloudBarrage();//get cloud barrge
+            cloudBarrage();//get cloud danmu
+            getPhoneStatus();//get phone status --> get fishfood || send danmu without phone
             autoAssign();//room auto assign
-            putJumpInfo();//jump Counts
             cancelFollowRoom();//init careList session storage
             getGFVersionNumber();//get lastest version info
             sbts = (new Date()).getTime();//reset timestamp
@@ -2336,15 +2449,15 @@ function roomScript() {
             setTimeout(removeSomeAds,5000);//wait 5s for element loading
         }else if(code===10){
             if(((new Date()).getTime() - sbts)/1000 < 10){
-                setTimeout(giftShowEntrance,1000);//wait 15s for element loading
+                setTimeout(getFishballHarvest,1000);//wait 15s for element loading
             }else{
-                console.warn("无礼物显示位置");
+                console.warn("无红包显示位置");
             }
         }else if(code===11){
             if(((new Date()).getTime() - sbts)/1000 < 10){
-                setTimeout(motorcadeEntrance,1000);//wait 15s for element loading
+                setTimeout(sendAllPackageGift,1000);//wait 15s for element loading
             }else{
-                console.warn("无车队显示位置");
+                console.warn("无清囊显示位置");
             }
         }else if(code===12){
             if(((new Date()).getTime() - sbts)/1000 < 10){
@@ -2697,7 +2810,7 @@ function motorcadeScript(){
                 window.location.href = "https://popzoo.github.io/barrage/";
             }
         });
-    }    
+    }
     setTimeout(createCSS,3000);
 }
 //===============================================================
